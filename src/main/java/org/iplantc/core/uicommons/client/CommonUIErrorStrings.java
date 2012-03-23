@@ -34,4 +34,11 @@ public interface CommonUIErrorStrings extends CommonErrorStrings {
      * @return localized error string.
      */
     String errorReport(String errorName, String errorMessage);
+
+    /**
+     * Error message to indicate that a session keepalive request failed.
+     * 
+     * @return the localized error message.
+     */
+    String keepaliveRequestFailed();
 }
