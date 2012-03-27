@@ -1,28 +1,15 @@
 package org.iplantc.core.uicommons.client.requests;
 
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Timer;
-import java.util.Arrays;
-import java.util.List;
-import org.iplantc.core.uicommons.client.ErrorHandler;
-
-import static org.iplantc.core.uicommons.client.I18N.*;
+import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Periodically sends requests to a URL in order to keep the user's session alive.
- * 
+ *
  * @author Dennis Roberts
  */
 public class KeepaliveTimer {
-
-    /**
-     * The status codes that we treat as being okay.
-     */
-    private static final List<Integer> OKAY_STATUS_CODES = Arrays.asList(301, 302, 200, 0);
 
     /**
      * The number of milliseconds in a minute.
@@ -69,7 +56,7 @@ public class KeepaliveTimer {
 
     /**
      * Initializes the timer.
-     * 
+     *
      * @param url the URL to ping.
      * @param interval the number of minutes between pings.
      */
@@ -84,6 +71,7 @@ public class KeepaliveTimer {
     private void clearTimer() {
         if (timer != null) {
             timer.cancel();
+            timer.cleanUp();
             timer = null;
         }
     }
@@ -94,15 +82,16 @@ public class KeepaliveTimer {
     private class PingTimer extends Timer {
 
         /**
-         * The builder used to build requests to the server.
+         * The frame to use when sending keepalive requests.
          */
-        private RequestBuilder requestBuilder;
+        private Frame frame;
 
         /**
          * @param url the URL to send keepalive requests to.
          */
         public PingTimer(String url) {
-            requestBuilder = new RequestBuilder(RequestBuilder.GET, url);
+            frame = new Frame(url);
+            frame.setVisible(false);
         }
 
         /**
@@ -110,34 +99,15 @@ public class KeepaliveTimer {
          */
         @Override
         public void run() {
-            sendRequest(requestBuilder);
+            frame.removeFromParent();
+            RootPanel.get().add(frame);
         }
 
         /**
-         * Sends a request using the given request builder, following redirects if there are any.
-         * 
-         * @param builder the request builder. 
+         * Removes the frame used to send keepalive requests from its parent.
          */
-        private void sendRequest(RequestBuilder builder) {
-            try {
-                builder.sendRequest(null, new RequestCallback() {
-
-                    @Override
-                    public void onResponseReceived(Request request, Response response) {
-                        int status = response.getStatusCode();
-                        if (!OKAY_STATUS_CODES.contains(status)) {
-                            ErrorHandler.post(ERROR.keepaliveRequestFailed());
-                        }
-                    }
-
-                    @Override
-                    public void onError(Request request, Throwable exception) {
-                        ErrorHandler.post(ERROR.keepaliveRequestFailed(), exception);
-                    }
-                });
-            }
-            catch (RequestException ignore) {
-            }
+        public void cleanUp() {
+            frame.removeFromParent();
         }
     }
 }
