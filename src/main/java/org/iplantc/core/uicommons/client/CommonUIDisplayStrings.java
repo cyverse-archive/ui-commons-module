@@ -16,13 +16,13 @@ public interface CommonUIDisplayStrings extends CommonDisplayStrings {
      * @return string representing the text
      */
     String publishedOn();
-    
+
     /**
-     * Display text for No Analyses to display.
+     * Display text for No Apps to display.
      * 
      * @return a String representing the text.
      */
-    String noAnalyses();
+    String noApps();
 
     /**
      * Localized display text used as a filter field empty text string in the data window.
