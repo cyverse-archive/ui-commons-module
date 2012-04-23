@@ -1,5 +1,11 @@
 package org.iplantc.core.uicommons.client.models;
 
+import org.iplantc.core.jsonutil.JsonUtil;
+
+import com.google.gwt.json.client.JSONBoolean;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
+
 /**
  * 
  * A singleton hold user general settings
@@ -12,11 +18,14 @@ public class UserSettings {
     private boolean enableEmailNotification;
     private String defaultFileSelectorPath;
 
+    public static final String EMAIL_NOTIFCATOIN = "enableEmailNotification";
+    public static final String DEFAULT_FIFLE_SELECTOR_APTH = "defaultFileSelectorPath";
+
     private static UserSettings instance;
 
     private UserSettings() {
         this.enableEmailNotification = false;
-        this.defaultFileSelectorPath = null;
+        this.defaultFileSelectorPath = "";
     }
 
     public static UserSettings getInstance() {
@@ -25,6 +34,11 @@ public class UserSettings {
         }
 
         return instance;
+    }
+
+    public void setValues(JSONObject obj) {
+        setEnableEmailNotification(JsonUtil.getBoolean(obj, EMAIL_NOTIFCATOIN, false));
+        setDefaultFileSelectorPath(JsonUtil.getString(obj, DEFAULT_FIFLE_SELECTOR_APTH));
     }
 
     /**
@@ -53,6 +67,18 @@ public class UserSettings {
      */
     public String getDefaultFileSelectorPath() {
         return defaultFileSelectorPath;
+    }
+
+    /**
+     * Get json representation
+     * 
+     * @return JSONObject json representation of this obbject
+     */
+    public JSONObject toJson() {
+        JSONObject obj = new JSONObject();
+        obj.put(EMAIL_NOTIFCATOIN, JSONBoolean.getInstance(isEnableEmailNotification()));
+        obj.put(DEFAULT_FIFLE_SELECTOR_APTH, new JSONString(getDefaultFileSelectorPath()));
+        return obj;
     }
 
 }
