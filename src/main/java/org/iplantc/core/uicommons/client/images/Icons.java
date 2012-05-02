@@ -31,4 +31,12 @@ public interface Icons extends ClientBundle {
     @Source("book.png")
     ImageResource subCategory();
 
+    /**
+     * Image resource.
+     * 
+     * @return image.
+     */
+    @Source("magnifier.png")
+    ImageResource search();
+
 }
