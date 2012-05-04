@@ -41,9 +41,9 @@ public class UserSettings {
 
     public void setValues(JSONObject obj) {
         if (obj != null) {
-            setEnableEmailNotification(JsonUtil.getBoolean(obj, EMAIL_NOTIFCATOIN, false));
+            setEnableEmailNotification(JsonUtil.getBoolean(obj, EMAIL_NOTIFCATOIN, true));
             setDefaultFileSelectorPath(JsonUtil.getString(obj, DEFAULT_FIFLE_SELECTOR_APTH));
-            setRememberLastPath(JsonUtil.getBoolean(obj, REMEMBER_LAST_PATH, false));
+            setRememberLastPath(JsonUtil.getBoolean(obj, REMEMBER_LAST_PATH, true));
         }
     }
 
