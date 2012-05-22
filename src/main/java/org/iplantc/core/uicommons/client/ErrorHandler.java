@@ -95,6 +95,8 @@ public class ErrorHandler {
 
         String date = I18N.DISPLAY.date() + ": " + new Date().toString(); //$NON-NLS-1$
 
-        return gwtVersion + NEWLINE + gxtVersion + NEWLINE + userAgent + NEWLINE + date;
+        String host = I18N.DISPLAY.host() + ":" + GWT.getHostPageBaseURL();
+
+        return gwtVersion + NEWLINE + gxtVersion + NEWLINE + userAgent + NEWLINE + date + NEWLINE + host;
     }
 }
