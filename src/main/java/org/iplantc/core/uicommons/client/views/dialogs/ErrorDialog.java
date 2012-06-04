@@ -4,6 +4,7 @@ import org.iplantc.core.uicommons.client.Constants;
 import org.iplantc.core.uicommons.client.I18N;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -26,8 +27,8 @@ import com.google.gwt.user.client.ui.Image;
  * 
  */
 public class ErrorDialog extends Dialog {
-    private String errorMsg;
-    private String description;
+    private final String errorMsg;
+    private final String description;
 
     /**
      * Instantiate from an error message and description.
@@ -85,7 +86,7 @@ public class ErrorDialog extends Dialog {
     }
 
     private Button buildDetailsButton(final ContentPanel detailsPanel) {
-        Button b = new ToggleButton(I18N.DISPLAY.details() + " &raquo;");
+        Button b = new ToggleButton(I18N.DISPLAY.details() + " &raquo;"); //$NON-NLS-1$
         b.setWidth(70);
 
         b.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -105,6 +106,7 @@ public class ErrorDialog extends Dialog {
         hp.setStyleAttribute("background-color", "#F1F1F1"); //$NON-NLS-1$ //$NON-NLS-2$
         hp.setHeight(70);
         hp.setSpacing(5);
+        hp.setScrollMode(Scroll.AUTO);
         return hp;
     }
 
