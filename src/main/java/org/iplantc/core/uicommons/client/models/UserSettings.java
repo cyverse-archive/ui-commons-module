@@ -18,10 +18,12 @@ public class UserSettings {
     private boolean enableEmailNotification;
     private String defaultFileSelectorPath;
     private boolean rememberLastPath;
+    private boolean saveSession;
 
     public static final String EMAIL_NOTIFCATOIN = "enableEmailNotification";
     public static final String DEFAULT_FIFLE_SELECTOR_APTH = "defaultFileSelectorPath";
     public static final String REMEMBER_LAST_PATH = "rememberLastPath";
+    public static final String SAVE_SESSION = "saveSession";
 
     private static UserSettings instance;
 
@@ -29,6 +31,7 @@ public class UserSettings {
         this.enableEmailNotification = false;
         this.defaultFileSelectorPath = "";
         this.rememberLastPath = false;
+        this.saveSession = true;
     }
 
     public static UserSettings getInstance() {
@@ -44,6 +47,7 @@ public class UserSettings {
             setEnableEmailNotification(JsonUtil.getBoolean(obj, EMAIL_NOTIFCATOIN, true));
             setDefaultFileSelectorPath(JsonUtil.getString(obj, DEFAULT_FIFLE_SELECTOR_APTH));
             setRememberLastPath(JsonUtil.getBoolean(obj, REMEMBER_LAST_PATH, true));
+            setSaveSession(JsonUtil.getBoolean(obj, SAVE_SESSION, true));
         }
     }
 
@@ -100,6 +104,19 @@ public class UserSettings {
      */
     public boolean isRememberLastPath() {
         return rememberLastPath;
+    }
+
+    /**
+     * 
+     * 
+     * @param saveSession
+     */
+    public void setSaveSession(boolean saveSession) {
+        this.saveSession = saveSession;
+    }
+
+    public boolean isSaveSession() {
+        return saveSession;
     }
 
 }
