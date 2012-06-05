@@ -89,6 +89,7 @@ public class UserSettings {
         obj.put(EMAIL_NOTIFCATOIN, JSONBoolean.getInstance(isEnableEmailNotification()));
         obj.put(DEFAULT_FIFLE_SELECTOR_APTH, new JSONString(getDefaultFileSelectorPath()));
         obj.put(REMEMBER_LAST_PATH, JSONBoolean.getInstance(isRememberLastPath()));
+        obj.put(SAVE_SESSION, JSONBoolean.getInstance(isSaveSession()));
         return obj;
     }
 
