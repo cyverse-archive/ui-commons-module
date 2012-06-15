@@ -32,6 +32,8 @@ public class UserInfo {
     private String email;
     private String username;
     private String fullUsername;
+    private String firstName;
+    private String lastName;
 
     /**
      * Constructs a default instance of the object with all fields being set to null.
@@ -131,5 +133,33 @@ public class UserInfo {
      */
     public void setFullUsername(String fullUsername) {
         this.fullUsername = fullUsername;
+    }
+
+    /**
+     * @param lastName the lastName to set
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+     * @return the lastName
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * @param firstName the firstName to set
+     */
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    /**
+     * @return the firstName
+     */
+    public String getFirstName() {
+        return firstName;
     }
 }
