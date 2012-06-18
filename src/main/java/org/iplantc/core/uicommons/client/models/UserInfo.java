@@ -12,19 +12,32 @@ import com.google.gwt.json.client.JSONObject;
  * @author sriram
  * 
  */
+@SuppressWarnings("nls")
 public class UserInfo {
     /**
      * Defines an attribute for User ID.
      */
     public static String ATTR_UID = "shibbolethUid";
+
     /**
      * Defines an attribute for User Email
      */
     public static String ATTR_EMAIL = "shibbolethMail";
+
     /**
      * Defines an attribute for the fully qualified username.
      */
     public static String ATTR_USERNAME = "shibbolethEppn";
+
+    /**
+     * Defines an attribute for the User's First Name.
+     */
+    public static String ATTR_FIRSTNAME = "firstName";
+
+    /**
+     * Defines an attribute for the User's Last Name.
+     */
+    public static String ATTR_LASTNAME = "lastName";
 
     private static UserInfo instance;
 
