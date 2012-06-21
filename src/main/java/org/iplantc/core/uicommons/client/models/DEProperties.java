@@ -123,7 +123,7 @@ public class DEProperties {
      * Default output folder name
      * 
      */
-    private String defaulyOutputFolderName;
+    private String defaultOutputFolderName;
 
     /**
      * @return the contextClickEnabled
@@ -195,7 +195,7 @@ public class DEProperties {
         privateWorkspace = properties.get(PRIVATE_WORKSPACE);
         privateWorkspaceItems = properties.get(PRIVATE_WORKSPACE_ITEMS);
         defaultBetaCategoryId = properties.get(DEFAULT_BETA_CATEGORY_ID);
-        defaulyOutputFolderName = properties.get(DEFAULT_OUTPUT_FOLDER_NAME);
+        defaultOutputFolderName = properties.get(DEFAULT_OUTPUT_FOLDER_NAME);
         contextClickEnabled = getBoolean(properties, CONTEXT_CLICK_ENABLED, false);
         notificationPollInterval = getInt(properties, NOTIFICATION_POLL_INTERVAL, 60);
         keepaliveTarget = properties.get(KEEPALIVE_TARGET);
@@ -292,17 +292,17 @@ public class DEProperties {
     }
 
     /**
-     * @param defaulyOutputFolderName the defaulyOutputFolderName to set
+     * @param defaultOutputFolderName the defaultOutputFolderName to set
      */
-    public void setDefaulyOutputFolderName(String defaulyOutputFolderName) {
-        this.defaulyOutputFolderName = defaulyOutputFolderName;
+    public void setDefaultOutputFolderName(String defaultOutputFolderName) {
+        this.defaultOutputFolderName = defaultOutputFolderName;
     }
 
     /**
-     * @return the defaulyOutputFolderName
+     * @return the defaultOutputFolderName
      */
-    public String getDefaulyOutputFolderName() {
-        return defaulyOutputFolderName;
+    public String getDefaultOutputFolderName() {
+        return defaultOutputFolderName;
     }
 
     /**
