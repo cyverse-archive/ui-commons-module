@@ -19,11 +19,13 @@ public class UserSettings {
     private String defaultFileSelectorPath;
     private boolean rememberLastPath;
     private boolean saveSession;
+    private String defaultOutputFolder;
 
     public static final String EMAIL_NOTIFCATOIN = "enableEmailNotification";
     public static final String DEFAULT_FIFLE_SELECTOR_APTH = "defaultFileSelectorPath";
     public static final String REMEMBER_LAST_PATH = "rememberLastPath";
     public static final String SAVE_SESSION = "saveSession";
+    public static final String DEFAULT_OUTPUT_FOLDER = "defaultOutputFolder";
 
     private static UserSettings instance;
 
@@ -32,6 +34,7 @@ public class UserSettings {
         this.defaultFileSelectorPath = "";
         this.rememberLastPath = false;
         this.saveSession = true;
+        this.defaultOutputFolder = "";
     }
 
     public static UserSettings getInstance() {
@@ -48,6 +51,7 @@ public class UserSettings {
             setDefaultFileSelectorPath(JsonUtil.getString(obj, DEFAULT_FIFLE_SELECTOR_APTH));
             setRememberLastPath(JsonUtil.getBoolean(obj, REMEMBER_LAST_PATH, true));
             setSaveSession(JsonUtil.getBoolean(obj, SAVE_SESSION, true));
+            setDefaultOutputFolder(JsonUtil.getString(obj, DEFAULT_OUTPUT_FOLDER));
         }
     }
 
@@ -90,6 +94,7 @@ public class UserSettings {
         obj.put(DEFAULT_FIFLE_SELECTOR_APTH, new JSONString(getDefaultFileSelectorPath()));
         obj.put(REMEMBER_LAST_PATH, JSONBoolean.getInstance(isRememberLastPath()));
         obj.put(SAVE_SESSION, JSONBoolean.getInstance(isSaveSession()));
+        obj.put(DEFAULT_OUTPUT_FOLDER, new JSONString(getDefaultOutputFolder()));
         return obj;
     }
 
@@ -120,4 +125,17 @@ public class UserSettings {
         return saveSession;
     }
 
+    /**
+     * @param defaultOutputFolder the new default output folder.
+     */
+    public void setDefaultOutputFolder(String defaultOutputFolder) {
+        this.defaultOutputFolder = defaultOutputFolder;
+    }
+
+    /**
+     * @return the default output folder.
+     */
+    public String getDefaultOutputFolder() {
+        return defaultOutputFolder;
+    }
 }
