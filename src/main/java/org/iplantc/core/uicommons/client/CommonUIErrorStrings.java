@@ -41,4 +41,11 @@ public interface CommonUIErrorStrings extends CommonErrorStrings {
      * @return the localized error message.
      */
     String keepaliveRequestFailed();
+
+    /**
+     * Localized text for App name field validation messages.
+     * 
+     * @return string representing the text
+     */
+    String invalidAppNameMsg(String invalidStartingCharSet, String invalidCharSet);
 }
