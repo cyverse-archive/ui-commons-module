@@ -39,4 +39,12 @@ public interface Icons extends ClientBundle {
     @Source("magnifier.png")
     ImageResource search();
 
+    /**
+     * Image resource.
+     * 
+     * @return image.
+     */
+    @Source("new.gif")
+    ImageResource add();
+
 }
