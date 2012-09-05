@@ -47,4 +47,12 @@ public interface Icons extends ClientBundle {
     @Source("new.gif")
     ImageResource add();
 
+    /**
+     * Image resource for window title-bars and the taskbar.
+     * 
+     * @return image.
+     */
+    @Source("whitelogo_sm.png")
+    ImageResource whitelogoSmall();
+
 }

@@ -39,4 +39,11 @@ public interface CommonUiConstants extends CommonConstants {
      * @return string representing the character set.
      */
     String appNameRestrictedStartingChars();
+
+    /**
+     * The default tag prefix used by the window manager when creating a "handle" for a window.
+     * 
+     * @return a string representing the default prefix used for a window
+     */
+    String windowTag();
 }

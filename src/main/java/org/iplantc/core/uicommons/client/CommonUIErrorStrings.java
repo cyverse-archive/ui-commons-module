@@ -48,4 +48,18 @@ public interface CommonUIErrorStrings extends CommonErrorStrings {
      * @return string representing the text
      */
     String invalidAppNameMsg(String invalidStartingCharSet, String invalidCharSet);
+
+    /**
+     * Localized error message to show when something goes wrong with confluence
+     * 
+     * @return
+     */
+    String confluenceError();
+
+    /**
+     * Error message displayed when the application fails to retrieve folder contents.
+     * 
+     * @return localized error string.
+     */
+    String retrieveFolderInfoFailed();
 }

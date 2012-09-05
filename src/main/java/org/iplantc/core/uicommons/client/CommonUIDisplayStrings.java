@@ -73,4 +73,32 @@ public interface CommonUIDisplayStrings extends CommonDisplayStrings {
      * @return a string representing the localized text.
      */
     String dragAndDropPrompt();
+
+    /**
+     * Localized text for applications
+     * 
+     * @return string representing the text
+     */
+    String close();
+
+    /**
+     * Localized text for applications
+     * 
+     * @return string representing the text
+     */
+    String minimize();
+
+    /**
+     * Localized text for applications
+     * 
+     * @return string representing the text
+     */
+    String maximize();
+
+    /**
+     * Localized text for applications
+     * 
+     * @return string representing the text
+     */
+    String restore();
 }
