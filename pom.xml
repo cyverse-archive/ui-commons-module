@@ -15,7 +15,7 @@
 		<!-- Current GXT Version -->
 		<gxt.version>3.0.1</gxt.version>
 		<!-- Current GWT Version -->
-		<gwt.version>2.5.0-rc1</gwt.version>
+		<gwt.version>2.5.0-rc2</gwt.version>
 		<!-- Define OS/Platform Independent Character Encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -31,6 +31,7 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 			<version>${gwt.version}</version>
+            <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -77,7 +78,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.5.0-rc1</version>
+				<version>${gwt.version}</version>
 				<executions>
 					<execution>
 						<goals>
@@ -137,10 +138,10 @@
 	</build>
    
 	<repositories>
-		<repository>
+		<!-- <repository>
 			<id>gwt-maven</id>
 			<url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo/</url>
-		</repository>
+		</repository> -->
 		<repository>
 			<id>iplantCollaborative</id>
 			<name>The iPlant Collaborative local repository</name>

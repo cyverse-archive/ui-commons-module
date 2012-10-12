@@ -4,6 +4,8 @@
     <inherits name="com.google.gwt.user.User" />
     <inherits name="org.iplantc.core.JsonUtil"/>
     <inherits name='com.extjs.gxt.ui.GXT'/>
+    
+    <inherits name="com.google.gwt.junit.JUnit" />
     <source path="client"/>
     <source path="uicommons"/>
 </module>
