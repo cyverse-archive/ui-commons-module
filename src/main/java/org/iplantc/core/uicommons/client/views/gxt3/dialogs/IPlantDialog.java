@@ -26,11 +26,16 @@ public class IPlantDialog extends Dialog {
     private void init() {
         setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
         setModal(true);
+        setAutoHide(true);
+        setResizable(false);
+        setHideOnButtonClick(true);
     }
 
     @Override
     protected void onButtonPressed(TextButton button) {
-        super.onButtonPressed(button);
+        if (isHideOnButtonClick()) {
+            hide(button);
+        }
         if (button == getButtonBar().getItemByItemId(PredefinedButton.OK.name())) {
             callEventHandlers(okButtonSelectHandlers, button);
         } else if (button == getButtonBar().getItemByItemId(PredefinedButton.CANCEL.name())) {
