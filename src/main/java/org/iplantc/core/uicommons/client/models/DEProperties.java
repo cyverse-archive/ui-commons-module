@@ -83,6 +83,12 @@ public class DEProperties {
     private static final String KEEPALIVE_INTERVAL = KEEPALIVE_PREFIX + "interval";
 
     /**
+     * Max search results
+     * 
+     */
+    private static final String MAX_SEARCH_RESULTS = PROPERTY_NAME_PREFIX + "max-search";
+
+    /**
      * The single instance of this class.
      */
     private static DEProperties instance;
@@ -124,6 +130,12 @@ public class DEProperties {
      * 
      */
     private String defaultOutputFolderName;
+
+    /**
+     * max search results
+     * 
+     */
+    private int maxSearchResults;
 
     /**
      * @return the contextClickEnabled
@@ -200,6 +212,7 @@ public class DEProperties {
         notificationPollInterval = getInt(properties, NOTIFICATION_POLL_INTERVAL, 60);
         keepaliveTarget = properties.get(KEEPALIVE_TARGET);
         keepaliveInterval = getInt(properties, KEEPALIVE_INTERVAL, -1);
+        setMaxSearchResults(getInt(properties, MAX_SEARCH_RESULTS, 50));
     }
 
     /**
@@ -317,5 +330,19 @@ public class DEProperties {
      */
     public int getKeepaliveInterval() {
         return keepaliveInterval;
+    }
+
+    /**
+     * @return the maxSearchResults
+     */
+    public int getMaxSearchResults() {
+        return maxSearchResults;
+    }
+
+    /**
+     * @param maxSearchResults the maxSearchResults to set
+     */
+    public void setMaxSearchResults(int maxSearchResults) {
+        this.maxSearchResults = maxSearchResults;
     }
 }

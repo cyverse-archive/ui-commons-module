@@ -39,6 +39,7 @@ public class UserInfo {
      */
     public static String ATTR_LASTNAME = "lastName";
 
+
     private static UserInfo instance;
 
     private String workspaceId;
@@ -47,6 +48,7 @@ public class UserInfo {
     private String fullUsername;
     private String firstName;
     private String lastName;
+    private String trashPath;
 
     /**
      * Constructs a default instance of the object with all fields being set to null.
@@ -174,5 +176,19 @@ public class UserInfo {
      */
     public String getFirstName() {
         return firstName;
+    }
+
+    /**
+     * @return the trashPath
+     */
+    public String getTrashPath() {
+        return trashPath;
+    }
+
+    /**
+     * @param trashPath the trashPath to set
+     */
+    public void setTrashPath(String trashPath) {
+        this.trashPath = trashPath;
     }
 }
