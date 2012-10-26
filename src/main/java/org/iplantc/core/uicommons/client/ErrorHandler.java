@@ -3,6 +3,7 @@ package org.iplantc.core.uicommons.client;
 import java.util.Date;
 
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.uicommons.client.errorHandling.models.ServiceError;
 import org.iplantc.core.uicommons.client.views.dialogs.ErrorDialog;
 
 import com.extjs.gxt.ui.client.GXT;
@@ -98,5 +99,11 @@ public class ErrorHandler {
         String host = I18N.DISPLAY.host() + ": " + GWT.getHostPageBaseURL();
 
         return gwtVersion + NEWLINE + gxtVersion + NEWLINE + userAgent + NEWLINE + date + NEWLINE + host;
+    }
+
+    public static void post(ServiceError error, Throwable caught) {
+
+        ErrorDialog ed = new ErrorDialog(error.getErrorCode().toString(), caught.getMessage());
+        ed.show();
     }
 }

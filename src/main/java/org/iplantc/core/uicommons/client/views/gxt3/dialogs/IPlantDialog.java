@@ -23,7 +23,7 @@ public class IPlantDialog extends Dialog {
         init();
     }
 
-    private void init() {
+    protected void init() {
         setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
         setModal(true);
         setAutoHide(true);
