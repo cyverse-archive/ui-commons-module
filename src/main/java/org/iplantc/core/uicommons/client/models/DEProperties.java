@@ -30,6 +30,11 @@ public class DEProperties {
     private static final String DATA_MGMT_BASE_URL = "org.iplantc.services.de-data-mgmt.base"; //$NON-NLS-1$
 
     /**
+     * Properties key of the base URL of the Kif-share service.
+     */
+    private static final String KIFSHARE_TICKET_BASE_URL = "org.iplantc.services.de-data-mgmt.view-tickets";
+
+    /**
      * Properties key of the notification polling interval
      */
     private static final String NOTIFICATION_POLL_INTERVAL = "org.iplantc.discoveryenvironment.notifications.poll-interval"; //$NON-NLS-1$
@@ -97,6 +102,11 @@ public class DEProperties {
      * The base URL of the data management services.
      */
     private String dataMgmtBaseUrl;
+
+    /**
+     * The base URL of the Kif-share service.
+     */
+    private String kifShareTicketBaseUrl;
 
     /**
      * The polling interval
@@ -201,6 +211,7 @@ public class DEProperties {
      */
     public void initialize(Map<String, String> properties) {
         dataMgmtBaseUrl = properties.get(DATA_MGMT_BASE_URL);
+        kifShareTicketBaseUrl = properties.get(KIFSHARE_TICKET_BASE_URL);
         muleServiceBaseUrl = properties.get(MULE_SERVICE_BASE_URL);
         unproctedMuleServiceBaseUrl = properties.get(UNPROTECTED_MULE_SERVICE_BASE_URL);
         serverPushEnabled = Boolean.parseBoolean(properties.get(SERVER_PUSH_ENABLED));
@@ -263,6 +274,15 @@ public class DEProperties {
      */
     public String getDataMgmtBaseUrl() {
         return dataMgmtBaseUrl;
+    }
+
+    /**
+     * Gets the base URL of the Kif-share service.
+     * 
+     * @return the URL as a string.
+     */
+    public String getKifShareTicketBaseUrl() {
+        return kifShareTicketBaseUrl;
     }
 
     /**
