@@ -58,6 +58,16 @@ public class ErrorHandler {
         ed.show();
     }
 
+    /**
+     * Posts a message box with the error message summary provided by the <code>ServiceError</code> object.
+     * 
+     * @param error the error object representing the error.
+     * @param caught
+     */
+    public static void post(ServiceError error, Throwable caught) {
+        post(error.getErrorMsg(), caught);
+    }
+
     private static String parseExceptionJson(Throwable caught) {
         String exceptionMessage = caught.getMessage();
 
@@ -100,10 +110,5 @@ public class ErrorHandler {
 
         return gwtVersion + NEWLINE + gxtVersion + NEWLINE + userAgent + NEWLINE + date + NEWLINE + host;
     }
-
-    public static void post(ServiceError error, Throwable caught) {
-
-        ErrorDialog ed = new ErrorDialog(error.getErrorCode().toString(), caught.getMessage());
-        ed.show();
-    }
+    
 }
