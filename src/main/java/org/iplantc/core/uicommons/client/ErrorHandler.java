@@ -61,11 +61,36 @@ public class ErrorHandler {
     /**
      * Posts a message box with the error message summary provided by the <code>ServiceError</code> object.
      * 
+     * TODO JDS Using info from given ServiceError, create new Throwable to pass to sibling overridden method.
      * @param error the error object representing the error.
      * @param caught
      */
     public static void post(ServiceError error, Throwable caught) {
-        post(error.getErrorMsg(), caught);
+
+        // Build a new Exception message for the ErrorHandler details panel.
+        String errDetails = ""; //$NON-NLS-1$
+        if (!error.getStatus().isEmpty()) {
+            errDetails += I18N.ERROR.serviceErrorStatus(error.getStatus());
+        }
+        if (!error.getErrorCode().isEmpty()) {
+            errDetails += "\n" + I18N.ERROR.serviceErrorCode(error.getErrorCode()); //$NON-NLS-1$
+        }
+        
+        /*
+         * JDS - The if block below used to be in DiskResourceServiceCallback in DE-Webapp. The issue is
+         * that it used to be for a field named "reason" in the error json response. Using the new "ErrorMsg" roll up 
+         * is going to be a duplicate. 
+         * TODO JDS Need to determine what the default error fields are, and if they include a "Reason" field.
+         */
+        if(!error.getReason().isEmpty()){
+            errDetails += "\n" + I18N.ERROR.serviceErrorReason(error.getReason()); //$NON-NLS-1$
+        }else if (!error.getErrorMsg().isEmpty()) {
+            errDetails += "\n" + I18N.ERROR.serviceErrorReason(error.getErrorMsg()); //$NON-NLS-1$
+        }
+        
+
+        Throwable newCaught = new Exception(errDetails, caught);
+        post(error.getErrorMsg(), newCaught);
     }
 
     private static String parseExceptionJson(Throwable caught) {

@@ -62,4 +62,28 @@ public interface CommonUIErrorStrings extends CommonErrorStrings {
      * @return localized error string.
      */
     String retrieveFolderInfoFailed();
+    
+    /**
+     * Error message for display in the error dialog details when a service call fails.
+     * 
+     * @param status
+     * @return localized error string.
+     */
+    String serviceErrorStatus(String status);
+
+    /**
+     * Error message for display in the error dialog details when a service call fails.
+     * 
+     * @param code
+     * @return localized error string.
+     */
+    String serviceErrorCode(String code);
+
+    /**
+     * Error message for display in the error dialog details when a service call fails.
+     * 
+     * @param reason
+     * @return localized error string.
+     */
+    String serviceErrorReason(String reason);
 }

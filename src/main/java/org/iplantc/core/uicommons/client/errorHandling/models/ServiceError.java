@@ -29,4 +29,11 @@ public interface ServiceError {
      * @return
      */
     String getErrorMsg();
+
+    /**
+     * XXX JDS This key is only used in one or two error codes and should not be relied upon.
+     * TODO JDS Request consistent error message JSON response format from backend services.
+     * @return
+     */
+    String getReason();
 }
