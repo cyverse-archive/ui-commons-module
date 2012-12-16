@@ -48,6 +48,14 @@ public interface Icons extends ClientBundle {
     ImageResource add();
 
     /**
+     * Image resource
+     * 
+     * @return image.
+     */
+    @Source("delete.gif")
+    ImageResource delete();
+
+    /**
      * Image resource for window title-bars and the taskbar.
      * 
      * @return image.
