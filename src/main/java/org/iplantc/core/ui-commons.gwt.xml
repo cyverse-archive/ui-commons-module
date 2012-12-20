@@ -8,4 +8,5 @@
     <inherits name="com.google.gwt.junit.JUnit" />
     <source path="client"/>
     <source path="uicommons"/>
+    <inherits name="com.google.web.bindery.autobean.AutoBean"/>
 </module>
