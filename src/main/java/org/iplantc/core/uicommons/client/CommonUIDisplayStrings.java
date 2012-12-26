@@ -101,4 +101,41 @@ public interface CommonUIDisplayStrings extends CommonDisplayStrings {
      * @return string representing the text
      */
     String restore();
+
+    /**
+     * 
+     * @return
+     */
+    String collaboratorRemoved();
+
+    /**
+     * 
+     * @return
+     */
+    String collaboratorAdded();
+
+    /**
+     * 
+     * @return
+     */
+    String collaboratorAddConfirm(String name);
+
+    /**
+     * 
+     * @return
+     */
+    String collaboratorRemoveConfirm(String name);
+
+    /**
+     * 
+     * @return
+     */
+    String collaboratorSearchTruncated();
+
+    /**
+     * Localized display text search collaborators
+     * 
+     * @return a string representing the localized text.
+     */
+    String searchCollab();
 }

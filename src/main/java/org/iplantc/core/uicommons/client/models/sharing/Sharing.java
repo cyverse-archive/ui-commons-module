@@ -20,9 +20,19 @@ public class Sharing {
         return collaborator.getUserName();
     }
 
-//    public String getName() {
-//        return collaborator.getName();
-//    }
+    public String getName() {
+        StringBuilder builder = new StringBuilder();
+        if (collaborator.getFirstName() != null && !collaborator.getFirstName().isEmpty()) {
+            builder.append(collaborator.getFirstName());
+            if (collaborator.getLastName() != null && !collaborator.getLastName().isEmpty()) {
+                builder.append(" " + collaborator.getLastName());
+            }
+            return builder.toString();
+        } else {
+            return collaborator.getUserName();
+        }
+
+    }
 
     @Override
     public boolean equals(Object o) {

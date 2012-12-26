@@ -86,4 +86,19 @@ public interface CommonUIErrorStrings extends CommonErrorStrings {
      * @return localized error string.
      */
     String serviceErrorReason(String reason);
+
+    /**
+     * Localized error message to show when something goes wrong with adding collaborators
+     * 
+     * @return
+     */
+    String addCollabErrorMsg();
+
+    /**
+     * Localized error message to show when something goes wrong with removing collaborators
+     * 
+     * @return
+     */
+    String removeCollabErrorMsg();
+
 }

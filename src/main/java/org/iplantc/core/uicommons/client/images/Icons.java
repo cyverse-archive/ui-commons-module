@@ -63,4 +63,12 @@ public interface Icons extends ClientBundle {
     @Source("whitelogo_sm.png")
     ImageResource whitelogoSmall();
 
+    /**
+     * Image resource.
+     * 
+     * @return image.
+     */
+    @Source("group_key.png")
+    ImageResource share();
+
 }
