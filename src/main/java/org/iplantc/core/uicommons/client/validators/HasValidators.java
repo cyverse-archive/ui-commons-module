@@ -8,6 +8,8 @@ public interface HasValidators<T> {
     
     void addValidator(Validator<T> validator);
     
+    void addValidators(List<Validator<T>> validators);
+
     void removeValidator(Validator<T> validator);
 
     List<Validator<T>> getValidators();
