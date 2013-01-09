@@ -1,0 +1,21 @@
+.anchor {
+  font-size: 11px;
+  padding: 4px;
+  cursor: pointer;
+  color:#0098AA;
+  text-decoration: none;
+  overflow: visible;
+}
+
+.anchor .anchorText {
+	  text-align: left;
+}
+
+.anchor .anchorMouseOver {
+	text-decoration: underline;
+	background-color: #ededed;
+}
+
+.anchor .anchorMouseOut {
+	text-decoration: none;
+}
