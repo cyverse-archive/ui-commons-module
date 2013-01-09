@@ -14,7 +14,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  * @author jstroot
  * 
  */
-public class IPlantDialog extends Dialog {
+public class IPlantDialog extends Dialog implements IsHideable {
 
     private final ArrayList<SelectHandler> okButtonSelectHandlers = new ArrayList<SelectHandler>();
     private final ArrayList<SelectHandler> cancelButtonSelectHandlers = new ArrayList<SelectHandler>();
