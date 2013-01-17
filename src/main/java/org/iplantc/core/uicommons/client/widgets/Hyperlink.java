@@ -10,8 +10,9 @@ import com.extjs.gxt.ui.client.widget.Html;
  * A Hyper link widget for Discovery Environment and tool integration
  * 
  * @author sriram
- * 
+ * @deprecated JDS This class is GXT 2.2.5 based and needs to be replaced.
  */
+@Deprecated
 public class Hyperlink extends Html {
 
     /**
