@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.errorHandling.models.ServiceError;
-import org.iplantc.core.uicommons.client.views.dialogs.ErrorDialog;
+import org.iplantc.core.uicommons.client.views.gxt3.dialogs.ErrorDialog3;
 
 import com.extjs.gxt.ui.client.GXT;
 import com.google.gwt.core.client.GWT;
@@ -54,8 +54,8 @@ public class ErrorHandler {
             errorDetails = parseExceptionJson(caught) + NEWLINE + NEWLINE + errorDetails;
         }
 
-        ErrorDialog ed = new ErrorDialog(errorSummary, errorDetails);
-        ed.show();
+        ErrorDialog3 ed3 = new ErrorDialog3(errorSummary, errorDetails);
+        ed3.show();
     }
 
     /**
