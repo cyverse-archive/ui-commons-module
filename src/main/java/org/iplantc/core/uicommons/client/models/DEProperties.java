@@ -43,8 +43,12 @@ public class DEProperties {
     /**
      * Properties key of the context click enabled option
      */
-
     private static final String CONTEXT_CLICK_ENABLED = "org.iplantc.discoveryenvironment.contextMenu.enabled";
+
+    /**
+     * Properties key of the "Manage Data Links" UI elements enabled config.
+     */
+    private static final String TICKETS_ENABLED = "org.iplantc.discoveryenvironment.tickets.enabled";
 
     /**
      * The prefix used in each of the private workspace property names.
@@ -118,6 +122,11 @@ public class DEProperties {
      * Context click option
      */
     private boolean contextClickEnabled;
+
+    /**
+     * Display or hide "Manage Data Links" UI elements.
+     */
+    private boolean ticketsEnabled;
 
     /**
      * private workspace name
@@ -221,6 +230,7 @@ public class DEProperties {
         defaultBetaCategoryId = properties.get(DEFAULT_BETA_CATEGORY_ID);
         defaultOutputFolderName = properties.get(DEFAULT_OUTPUT_FOLDER_NAME);
         contextClickEnabled = getBoolean(properties, CONTEXT_CLICK_ENABLED, false);
+        ticketsEnabled = getBoolean(properties, TICKETS_ENABLED, true);
         notificationPollInterval = getInt(properties, NOTIFICATION_POLL_INTERVAL, 60);
         keepaliveTarget = properties.get(KEEPALIVE_TARGET);
         keepaliveInterval = getInt(properties, KEEPALIVE_INTERVAL, -1);
@@ -365,5 +375,12 @@ public class DEProperties {
      */
     public void setMaxSearchResults(int maxSearchResults) {
         this.maxSearchResults = maxSearchResults;
+    }
+
+    /**
+     * @return config to display or hide "Manage Data Links" UI elements.
+     */
+    public boolean isTicketsEnabled() {
+        return ticketsEnabled;
     }
 }
