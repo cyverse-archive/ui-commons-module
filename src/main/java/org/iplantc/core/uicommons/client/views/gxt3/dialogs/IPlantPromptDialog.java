@@ -69,7 +69,7 @@ public class IPlantPromptDialog extends IPlantDialog {
         textField.addValidator(validator);
     }
 
-    protected String getFieldText() {
+    public String getFieldText() {
         return textField.getCurrentValue();
     }
 
