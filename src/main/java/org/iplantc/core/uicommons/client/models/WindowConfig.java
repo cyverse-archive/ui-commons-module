@@ -14,7 +14,6 @@ import com.google.gwt.json.client.JSONString;
  * 
  */
 public class WindowConfig extends JSONObject {
-    private static final long serialVersionUID = 3602295075858973528L;
     public static final String IS_MAXIMIZED = "isMaximized"; //$NON-NLS-1$
     public static final String IS_MINIMIZED = "isMinimized"; //$NON-NLS-1$
     public static final String WIN_LEFT = "win_left"; //$NON-NLS-1$

@@ -7,15 +7,14 @@ import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
+import org.iplantc.core.uicommons.client.I18N;
+import org.iplantc.core.uicommons.client.events.CollaboratorsLoadedEvent;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
-import org.iplantc.core.uicommons.client.I18N;
 import org.iplantc.core.uicommons.client.models.collaborators.Collaborator;
 import org.iplantc.core.uicommons.client.models.collaborators.CollaboratorAutoBeanFactory;
 import org.iplantc.core.uicommons.client.models.collaborators.CollaboratorsList;
-import org.iplantc.core.uicommons.client.events.CollaboratorsLoadedEvent;
 import org.iplantc.core.uicommons.client.services.CollaboratorsServiceFacade;
-import com.sencha.gxt.widget.core.client.info.Info;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -25,6 +24,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
+import com.sencha.gxt.widget.core.client.info.Info;
 
 /**
  * @author sriram
@@ -45,6 +45,7 @@ public class CollaboratorsUtil {
         if (truncated) {
             AlertMessageBox amb = new AlertMessageBox(I18N.DISPLAY.searchCollab(),
                     I18N.DISPLAY.collaboratorSearchTruncated());
+            amb.show();
         }
         return bean.as().getCollaborators();
     }
