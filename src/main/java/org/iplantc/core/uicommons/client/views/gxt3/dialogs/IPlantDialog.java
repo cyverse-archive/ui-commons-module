@@ -43,6 +43,10 @@ public class IPlantDialog extends Dialog implements IsHideable {
         }
     }
 
+    protected TextButton getOkButton() {
+        return TextButton.class.cast(getButtonBar().getItemByItemId(PredefinedButton.OK.name()));
+    }
+
     public void addOkButtonSelectHandler(final SelectHandler handler) {
         okButtonSelectHandlers.add(handler);
     }

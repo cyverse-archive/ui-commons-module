@@ -7,4 +7,6 @@ public interface CommonUiValidationMessages extends Messages {
     String analysisNameValidationMsg();
 
     String invalidEmail();
+
+    String invalidUrl();
 }
