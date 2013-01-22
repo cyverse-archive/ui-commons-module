@@ -3,6 +3,7 @@ package org.iplantc.core.uicommons.client.views.gxt3.dialogs;
 import java.util.ArrayList;
 
 import com.google.gwt.cell.client.Cell.Context;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -44,7 +45,12 @@ public class IPlantDialog extends Dialog implements IsHideable {
     }
 
     protected TextButton getOkButton() {
-        return TextButton.class.cast(getButtonBar().getItemByItemId(PredefinedButton.OK.name()));
+
+        Widget okButton = getButtonBar().getItemByItemId(PredefinedButton.OK.name());
+        if ((okButton != null) && (okButton instanceof TextButton)) {
+            return (TextButton)okButton;
+        }
+        return null;
     }
 
     public void addOkButtonSelectHandler(final SelectHandler handler) {
