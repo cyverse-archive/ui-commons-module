@@ -38,10 +38,15 @@ public class IPlantDialog extends Dialog implements IsHideable {
             hide(button);
         }
         if (button == getButtonBar().getItemByItemId(PredefinedButton.OK.name())) {
+            onOkButtonClicked();
             callEventHandlers(okButtonSelectHandlers, button);
         } else if (button == getButtonBar().getItemByItemId(PredefinedButton.CANCEL.name())) {
             callEventHandlers(cancelButtonSelectHandlers, button);
         }
+    }
+
+    protected void onOkButtonClicked() {
+
     }
 
     protected TextButton getOkButton() {
@@ -57,7 +62,7 @@ public class IPlantDialog extends Dialog implements IsHideable {
         okButtonSelectHandlers.add(handler);
     }
 
-    public void addCancleButtonSelectHandler(final SelectHandler handler) {
+    public void addCancelButtonSelectHandler(final SelectHandler handler) {
         cancelButtonSelectHandlers.add(handler);
     }
 

@@ -12,6 +12,14 @@ public interface Icons extends ClientBundle {
      * 
      * @return image.
      */
+    @Source("arrow_undo.png")
+    ImageResource arrowUndo();
+
+    /**
+     * Image resource.
+     * 
+     * @return image.
+     */
     @Source("book_add.png")
     ImageResource category();
 

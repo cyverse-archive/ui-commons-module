@@ -138,4 +138,6 @@ public interface CommonUIDisplayStrings extends CommonDisplayStrings {
      * @return a string representing the localized text.
      */
     String searchCollab();
+
+    String reset();
 }
