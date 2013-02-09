@@ -12,6 +12,7 @@ public enum WindowType {
     HELP,
     IDROP_LITE,
     NOTIFICATIONS,
-    SIMPLE_DOWNLOAD;
+    SIMPLE_DOWNLOAD,
+    WORKFLOW_INTEGRATION;
 
 }
