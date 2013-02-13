@@ -1,4 +1,4 @@
-package org.iplantc.core.uicommons.client.models.autobeans;
+package org.iplantc.core.uicommons.client.models;
 
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 import com.google.web.bindery.autobean.shared.Splittable;
