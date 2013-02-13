@@ -5,6 +5,10 @@ import com.google.web.bindery.autobean.shared.Splittable;
 
 public interface WindowState {
 
+    WindowType getConfigType();
+
+    void setConfigType(WindowType type);
+
     boolean isMaximized();
 
     boolean isMinimized();
