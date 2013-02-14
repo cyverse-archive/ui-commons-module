@@ -173,13 +173,4 @@ public class IPlantDialog extends Dialog {
         return panel;
     }
 
-    /**
-     * Defines a specific click handler for the selection of the OK button for an instance of
-     * iPlantDialog.
-     * 
-     * @author lenards
-     * 
-     */
-    public static abstract class DialogOkClickHandler extends SelectionListener<ButtonEvent> {
-    }
 }

@@ -6,9 +6,10 @@ import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.errorHandling.models.ServiceError;
 import org.iplantc.core.uicommons.client.views.gxt3.dialogs.ErrorDialog3;
 
-import com.extjs.gxt.ui.client.GXT;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.Window;
+import com.sencha.gxt.core.client.GXT;
 
 /**
  * Provides a uniform manner for posting errors to the user.
@@ -124,10 +125,10 @@ public class ErrorHandler {
         String gwtVersion = I18N.DISPLAY.gwtVersion() + " " + GWT.getVersion(); //$NON-NLS-1$
 
         String gxtVersion = I18N.DISPLAY.gxtVersion() + " " + I18N.DISPLAY.majorVersion() //$NON-NLS-1$
-                + ": " + GXT.getVersion().getMajor() + " " + I18N.DISPLAY.minorVersion() + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + GXT.getVersion().getMajor();
+                + ": " + GXT.getVersion() + " " + I18N.DISPLAY.minorVersion() + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + GXT.getVersion().getRelease();
 
-        String userAgent = I18N.DISPLAY.userAgent() + " " + GXT.getUserAgent(); //$NON-NLS-1$
+        String userAgent = I18N.DISPLAY.userAgent() + " " + Window.Navigator.getUserAgent(); //$NON-NLS-1$
 
         String date = I18N.DISPLAY.date() + ": " + new Date().toString(); //$NON-NLS-1$
 
