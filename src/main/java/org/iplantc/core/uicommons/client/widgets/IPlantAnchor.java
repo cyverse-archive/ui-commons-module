@@ -3,6 +3,7 @@
  */
 package org.iplantc.core.uicommons.client.widgets;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -21,6 +22,7 @@ import com.sencha.gxt.widget.core.client.Component;
 /**
  * A widget to create html link like <a> tag
  * 
+ * TODO JDS This class needs to transformed into a cell-backed widget.
  * @author sriram
  * 
  */
@@ -47,6 +49,10 @@ public class IPlantAnchor extends Component implements HasClickHandlers, HasMous
         addEventHandler(handler);
     }
 
+    public IPlantAnchor(String text, int width, ClickHandler handler) {
+        this(text, width, (IPlantAnchorAppearance)GWT.create(IPlantAnchorAppearance.class), handler);
+    }
+
 
     private void addEventHandler(ClickHandler handler) {
         addClickHandler(handler);
@@ -55,7 +61,6 @@ public class IPlantAnchor extends Component implements HasClickHandlers, HasMous
             @Override
             public void onMouseOut(MouseOutEvent event) {
                 IPlantAnchor.this.appearance.onMouseOut(getElement());
-                System.out.println("mouseout");
             }
         });
         addMouseOverHandler(new MouseOverHandler() {
@@ -63,7 +68,6 @@ public class IPlantAnchor extends Component implements HasClickHandlers, HasMous
             @Override
             public void onMouseOver(MouseOverEvent event) {
                 IPlantAnchor.this.appearance.onMouseOver(getElement());
-                System.out.println("mouseover");
             }
         });
     }
