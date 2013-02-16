@@ -28,7 +28,7 @@ public interface ServiceError {
      * 
      * @return
      */
-    String getErrorMsg();
+    String generateErrorMsg();
 
     /**
      * XXX JDS This key is only used in one or two error codes and should not be relied upon.

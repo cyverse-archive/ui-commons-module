@@ -6,6 +6,7 @@ import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.errorHandling.models.ServiceError;
 import org.iplantc.core.uicommons.client.views.gxt3.dialogs.ErrorDialog3;
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
@@ -83,15 +84,15 @@ public class ErrorHandler {
          * is going to be a duplicate. 
          * TODO JDS Need to determine what the default error fields are, and if they include a "Reason" field.
          */
-        if(!error.getReason().isEmpty()){
+        if (!Strings.isNullOrEmpty(error.getReason())) {
             errDetails += "\n" + I18N.ERROR.serviceErrorReason(error.getReason()); //$NON-NLS-1$
-        }else if (!error.getErrorMsg().isEmpty()) {
-            errDetails += "\n" + I18N.ERROR.serviceErrorReason(error.getErrorMsg()); //$NON-NLS-1$
+        } else if (!Strings.isNullOrEmpty(error.generateErrorMsg())) {
+            errDetails += "\n" + I18N.ERROR.serviceErrorReason(error.generateErrorMsg()); //$NON-NLS-1$
         }
         
 
         Throwable newCaught = new Exception(errDetails, caught);
-        post(error.getErrorMsg(), newCaught);
+        post(error.generateErrorMsg(), newCaught);
     }
 
     private static String parseExceptionJson(Throwable caught) {
