@@ -16,6 +16,8 @@
 		<gxt.version>3.0.1</gxt.version>
 		<!-- Current GWT Version -->
 		<gwt.version>2.5.0</gwt.version>
+		<!-- Current Google Guava Version -->
+        <googleGuava.version>13.0.1</googleGuava.version>
 		<!-- Define OS/Platform Independent Character Encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -49,6 +51,13 @@
 			<version>4.5</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+           <groupId>com.google.guava</groupId>
+           <artifactId>guava-gwt</artifactId>
+           <version>${googleGuava.version}</version>
+        </dependency>
+        
 		<dependency>
 			<groupId>org.iplantc.core</groupId>
 			<artifactId>jsonutil</artifactId>
