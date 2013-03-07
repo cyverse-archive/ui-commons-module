@@ -46,4 +46,19 @@ public interface CommonUiConstants extends CommonConstants {
      * @return a string representing the default prefix used for a window
      */
     String windowTag();
+
+    /**
+     * key board short cuts
+     * 
+     * @return
+     */
+    String dataKeyShortCut();
+
+    String appsKeyShortCut();
+
+    String analysisKeyShortCut();
+
+    String notifyKeyShortCut();
+
+    String closeKeyShortCut();
 }
