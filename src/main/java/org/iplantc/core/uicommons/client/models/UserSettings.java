@@ -22,11 +22,11 @@ public class UserSettings {
     private boolean rememberLastPath;
     private boolean saveSession;
     private String defaultOutputFolder;
-    private Character dataShortCut;
-    private Character appShortCut;
-    private Character analysesShortCut;
-    private Character notifyShortCut;
-    private Character closeShortCut;
+    private String dataShortCut;
+    private String appShortCut;
+    private String analysesShortCut;
+    private String notifyShortCut;
+    private String closeShortCut;
 
     public static final String EMAIL_NOTIFCATOIN = "enableEmailNotification";
     public static final String DEFAULT_FIFLE_SELECTOR_APTH = "defaultFileSelectorPath";
@@ -79,12 +79,12 @@ public class UserSettings {
         if (temp != null) {
             String stringValue = temp.isString().stringValue();
             if (stringValue != null) {
-                setCloseShortCut(stringValue.charAt(0));
+                setCloseShortCut(stringValue);
             } else {
-                setCloseShortCut(Constants.CLIENT.closeKeyShortCut().charAt(0));
+                setCloseShortCut(Constants.CLIENT.closeKeyShortCut());
             }
         } else {
-            setCloseShortCut(Constants.CLIENT.closeKeyShortCut().charAt(0));
+            setCloseShortCut(Constants.CLIENT.closeKeyShortCut());
         }
 
     }
@@ -94,12 +94,12 @@ public class UserSettings {
         if (temp != null) {
             String stringValue = temp.isString().stringValue();
             if (stringValue != null) {
-                setDataShortCut(stringValue.charAt(0));
+                setDataShortCut(stringValue);
             } else {
-                setDataShortCut(Constants.CLIENT.dataKeyShortCut().charAt(0));
+                setDataShortCut(Constants.CLIENT.dataKeyShortCut());
             }
         } else {
-            setDataShortCut(Constants.CLIENT.dataKeyShortCut().charAt(0));
+            setDataShortCut(Constants.CLIENT.dataKeyShortCut());
         }
     }
     
@@ -108,12 +108,12 @@ public class UserSettings {
         if (temp != null) {
             String stringValue = temp.isString().stringValue();
             if (stringValue != null) {
-                setAppsShortCut(stringValue.charAt(0));
+                setAppsShortCut(stringValue);
             } else {
-                setAppsShortCut(Constants.CLIENT.appsKeyShortCut().charAt(0));
+                setAppsShortCut(Constants.CLIENT.appsKeyShortCut());
             }
         } else {
-            setAppsShortCut(Constants.CLIENT.appsKeyShortCut().charAt(0));
+            setAppsShortCut(Constants.CLIENT.appsKeyShortCut());
         }
 
     }
@@ -123,12 +123,12 @@ public class UserSettings {
         if (temp != null) {
             String stringValue = temp.isString().stringValue();
             if (stringValue != null) {
-                setAnalysesShortCut(stringValue.charAt(0));
+                setAnalysesShortCut(stringValue);
             } else {
-                setAnalysesShortCut(Constants.CLIENT.analysisKeyShortCut().charAt(0));
+                setAnalysesShortCut(Constants.CLIENT.analysisKeyShortCut());
             }
         } else {
-            setAnalysesShortCut(Constants.CLIENT.analysisKeyShortCut().charAt(0));
+            setAnalysesShortCut(Constants.CLIENT.analysisKeyShortCut());
         }
 
     }
@@ -138,46 +138,46 @@ public class UserSettings {
         if (temp != null) {
             String stringValue = temp.isString().stringValue();
             if (stringValue != null) {
-                setNotifiShortCut(stringValue.charAt(0));
+                setNotifiShortCut(stringValue);
             } else {
-                setNotifiShortCut(Constants.CLIENT.notifyKeyShortCut().charAt(0));
+                setNotifiShortCut(Constants.CLIENT.notifyKeyShortCut());
             }
         } else {
-            setNotifiShortCut(Constants.CLIENT.notifyKeyShortCut().charAt(0));
+            setNotifiShortCut(Constants.CLIENT.notifyKeyShortCut());
         }
 
     }
 
-    public void setDataShortCut(Character c) {
+    public void setDataShortCut(String c) {
         this.dataShortCut = c;
         
     }
 
-    public Character getDataShortCut() {
+    public String getDataShortCut() {
         return dataShortCut;
     }
 
-    public void setAppsShortCut(Character c) {
+    public void setAppsShortCut(String c) {
         this.appShortCut = c;
     }
 
-    public Character getAppsShortCut() {
+    public String getAppsShortCut() {
         return appShortCut;
     }
 
-    public void setAnalysesShortCut(Character c) {
+    public void setAnalysesShortCut(String c) {
         this.analysesShortCut = c;
     }
 
-    public Character getAnalysesShortCut() {
+    public String getAnalysesShortCut() {
         return analysesShortCut;
     }
 
-    public void setNotifiShortCut(Character c) {
+    public void setNotifiShortCut(String c) {
         this.notifyShortCut = c;
     }
 
-    public Character getNotifiShortCut() {
+    public String getNotifiShortCut() {
         return notifyShortCut;
     }
     /**
@@ -267,14 +267,14 @@ public class UserSettings {
     /**
      * @return the closeShortCut
      */
-    public Character getCloseShortCut() {
+    public String getCloseShortCut() {
         return closeShortCut;
     }
 
     /**
      * @param closeShortCut the closeShortCut to set
      */
-    public void setCloseShortCut(Character closeShortCut) {
+    public void setCloseShortCut(String closeShortCut) {
         this.closeShortCut = closeShortCut;
     }
 }
