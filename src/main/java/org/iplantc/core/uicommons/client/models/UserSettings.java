@@ -220,6 +220,11 @@ public class UserSettings {
         obj.put(REMEMBER_LAST_PATH, JSONBoolean.getInstance(isRememberLastPath()));
         obj.put(SAVE_SESSION, JSONBoolean.getInstance(isSaveSession()));
         obj.put(DEFAULT_OUTPUT_FOLDER, new JSONString(getDefaultOutputFolder()));
+        obj.put(APPS_KB_SHORTCUT, new JSONString(getAppsShortCut()));
+        obj.put(ANALYSIS_KB_SHORTCUT, new JSONString(getAnalysesShortCut()));
+        obj.put(DATA_KB_SHORTCUT, new JSONString(getDataShortCut()));
+        obj.put(NOTIFICATION_KB_SHORTCUT, new JSONString(getNotifiShortCut()));
+        obj.put(CLOSE_KB_SHORTCU_STRING, new JSONString(getCloseShortCut()));
         return obj;
     }
 
