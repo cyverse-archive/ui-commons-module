@@ -1,6 +1,6 @@
 package org.iplantc.core.uicommons.client.models.sharing;
 
-import org.iplantc.core.uicommons.client.models.collaborators.Collaborator;
+import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
 
 /**
  * 

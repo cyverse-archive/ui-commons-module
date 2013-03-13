@@ -138,6 +138,37 @@ public interface CommonUIDisplayStrings extends CommonDisplayStrings {
      * @return a string representing the localized text.
      */
     String searchCollab();
+    
+    /**
+     * Localized display text for collaborators
+     * 
+     * @return a string representing the localized text.
+     */
+    String collaborators();
+
+    /**
+     * Localized display text for search collaborators
+     * 
+     * @return a string representing the localized text.
+     */
+    String collabSearchPrompt();
+
+    /**
+     * Localized display text for no collaborators
+     * 
+     * @return a string representing the localized text.
+     */
+
+    String noCollaborators();
+
+    /**
+     * Localized display text for showing current collaborators list
+     * 
+     * @return a string representing the localized text.
+     */
+    String currentCollabList();
+    
+    String searching();
 
     String reset();
 }

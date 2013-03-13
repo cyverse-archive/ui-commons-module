@@ -8,12 +8,12 @@ import java.util.List;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.I18N;
+import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
+import org.iplantc.core.uicommons.client.collaborators.models.CollaboratorAutoBeanFactory;
+import org.iplantc.core.uicommons.client.collaborators.models.CollaboratorsList;
 import org.iplantc.core.uicommons.client.events.CollaboratorsLoadedEvent;
 import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.models.UserInfo;
-import org.iplantc.core.uicommons.client.models.collaborators.Collaborator;
-import org.iplantc.core.uicommons.client.models.collaborators.CollaboratorAutoBeanFactory;
-import org.iplantc.core.uicommons.client.models.collaborators.CollaboratorsList;
 import org.iplantc.core.uicommons.client.services.CollaboratorsServiceFacade;
 
 import com.google.gwt.core.client.GWT;
