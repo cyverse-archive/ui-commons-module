@@ -23,6 +23,7 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.sencha.gxt.core.shared.FastMap;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 import com.sencha.gxt.widget.core.client.info.Info;
 
@@ -98,6 +99,10 @@ public class CollaboratorsUtil {
                 return c;
             }
         }
+        return getDummyCollaborator(userName);
+    }
+
+    public static Collaborator getDummyCollaborator(String userName) {
         JSONObject obj = new JSONObject();
         obj.put("username", new JSONString(userName));
         AutoBean<Collaborator> bean = AutoBeanCodex.decode(factory, Collaborator.class,
@@ -107,6 +112,11 @@ public class CollaboratorsUtil {
 
     public static boolean isCollaborator(Collaborator c) {
         return getCurrentCollaborators().contains(c);
+    }
+
+    public static void getUserInfo(List<String> usernames,
+            final AsyncCallback<FastMap<Collaborator>> superCallback) {
+        facade.getUserInfo(usernames, new GetUserInfoCallback(superCallback));
     }
 
     /**
@@ -240,6 +250,44 @@ public class CollaboratorsUtil {
                 callback.onSuccess(null);
             }
         }
+    }
+
+    private static class GetUserInfoCallback implements AsyncCallback<String> {
+
+        private final AsyncCallback<FastMap<Collaborator>> superCallback;
+
+        public GetUserInfoCallback(AsyncCallback<FastMap<Collaborator>> superCallback) {
+            this.superCallback = superCallback;
+        }
+
+        @Override
+        public void onFailure(Throwable caught) {
+            if (superCallback != null) {
+                superCallback.onFailure(caught);
+            }
+        }
+
+        @Override
+        public void onSuccess(String result) {
+            if (superCallback != null) {
+                FastMap<Collaborator> userResults = new FastMap<Collaborator>();
+
+                JSONObject users = JsonUtil.getObject(result);
+                if (result != null) {
+
+                    for (String username : users.keySet()) {
+                        JSONObject userJson = JsonUtil.getObject(users, username);
+                        AutoBean<Collaborator> bean = AutoBeanCodex.decode(factory, Collaborator.class,
+                                userJson.toString());
+                        userResults.put(username, bean.as());
+                    }
+
+                }
+
+                superCallback.onSuccess(userResults);
+            }
+        }
+
     }
 
     private static final class RemoveCollaboratorCallback implements AsyncCallback<String> {

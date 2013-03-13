@@ -3,6 +3,8 @@
  */
 package org.iplantc.core.uicommons.client.services;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.json.client.JSONObject;
 /**
@@ -17,5 +19,7 @@ public interface CollaboratorsServiceFacade {
     public void addCollaborators(JSONObject users, AsyncCallback<String> callback);
 
     public void removeCollaborators(JSONObject users, AsyncCallback<String> callback);
+
+    public void getUserInfo(List<String> usernames, AsyncCallback<String> callback);
 
 }
