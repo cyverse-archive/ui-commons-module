@@ -171,4 +171,10 @@ public interface CommonUIDisplayStrings extends CommonDisplayStrings {
     String searching();
 
     String reset();
+
+    String noCollaboratorsSearchResult();
+
+    String search();
+
+    String myCollaborators();
 }

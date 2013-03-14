@@ -6,6 +6,7 @@ package org.iplantc.core.uicommons.client.collaborators.presenter;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.util.CollaboratorsUtil;
+import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.I18N;
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
 import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsView;
@@ -23,7 +24,7 @@ public class ManageCollaboratorsPresenter implements Presenter {
     private final ManageCollaboratorsView view;
 
     public static enum MODE {
-        MANAGE, SEARCH
+        MANAGE, SEARCH, SELECT
     };
 
     public ManageCollaboratorsPresenter(ManageCollaboratorsView view) {
@@ -63,7 +64,7 @@ public class ManageCollaboratorsPresenter implements Presenter {
 
             @Override
             public void onFailure(Throwable caught) {
-                // do nothing
+                ErrorHandler.post(caught);
             }
         });
 
@@ -88,7 +89,7 @@ public class ManageCollaboratorsPresenter implements Presenter {
 
             @Override
             public void onFailure(Throwable caught) {
-                // do nothing
+                ErrorHandler.post(caught);
             }
         });
 
@@ -113,7 +114,6 @@ public class ManageCollaboratorsPresenter implements Presenter {
 
             @Override
             public void onSuccess(Void result) {
-                updateCurrentMode(MODE.MANAGE);
                 view.unmask();
                 view.loadData(CollaboratorsUtil.getCurrentCollaborators());
             }
@@ -141,7 +141,7 @@ public class ManageCollaboratorsPresenter implements Presenter {
 
             @Override
             public void onSuccess(Void result) {
-                updateCurrentMode(MODE.SEARCH);
+                setCurrentMode(MODE.SEARCH);
                 view.unmask();
                 view.loadData(CollaboratorsUtil.getSearchResutls());
             }
@@ -149,8 +149,19 @@ public class ManageCollaboratorsPresenter implements Presenter {
 
     }
 
-    private void updateCurrentMode(MODE m) {
+    @Override
+    public void setCurrentMode(MODE m) {
         view.setMode(m);
+    }
+
+    @Override
+    public MODE getCurrentMode() {
+        return view.getMode();
+    }
+
+    @Override
+    public List<Collaborator> getSelectedCollaborators() {
+        return view.getSelectedCollaborators();
     }
 
 }

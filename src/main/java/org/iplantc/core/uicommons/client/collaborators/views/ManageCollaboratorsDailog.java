@@ -8,6 +8,7 @@ import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
 import org.iplantc.core.uicommons.client.collaborators.models.CollaboratorKeyProvider;
 import org.iplantc.core.uicommons.client.collaborators.models.CollaboratorProperties;
 import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter;
+import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
 import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsView.Presenter;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -32,13 +33,14 @@ public class ManageCollaboratorsDailog extends Dialog {
 
     private CheckBoxSelectionModel<Collaborator> checkBoxModel;
     private CollaboratorProperties properties;
+    private Presenter p;
 
-    public ManageCollaboratorsDailog() {
+    public ManageCollaboratorsDailog(MODE mode) {
         init();
         ListStore<Collaborator> store = new ListStore<Collaborator>(new CollaboratorKeyProvider());
         ColumnModel<Collaborator> cm = buildColumnModel();
-        ManageCollaboratorsView view = new ManageCollaboratorsViewImpl(checkBoxModel, cm, store);
-        Presenter p = new ManageCollaboratorsPresenter(view);
+        ManageCollaboratorsView view = new ManageCollaboratorsViewImpl(checkBoxModel, cm, store, mode);
+        p = new ManageCollaboratorsPresenter(view);
         p.go(this);
     }
 
@@ -77,6 +79,10 @@ public class ManageCollaboratorsDailog extends Dialog {
         });
         ok.setId("okBtn");
         getButtonBar().add(ok);
+    }
+
+    public TextButton getOkButton() {
+        return getButtonById("okBtn");
     }
 
     private ColumnModel<Collaborator> buildColumnModel() {
@@ -118,6 +124,10 @@ public class ManageCollaboratorsDailog extends Dialog {
         configs.add(email);
         return new ColumnModel<Collaborator>(configs);
 
+    }
+
+    public List<Collaborator> getSelectedCollaborators() {
+        return p.getSelectedCollaborators();
     }
 
 }

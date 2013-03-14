@@ -6,7 +6,7 @@ package org.iplantc.core.uicommons.client.collaborators.views;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
-import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter;
+import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -25,6 +25,12 @@ public interface ManageCollaboratorsView extends IsWidget {
         void loadCurrentCollaborators();
 
         void searchUsers(String searchTerm);
+        
+        void setCurrentMode(MODE mode);
+
+        MODE getCurrentMode();
+
+        List<Collaborator> getSelectedCollaborators();
 
     }
 
@@ -38,5 +44,9 @@ public interface ManageCollaboratorsView extends IsWidget {
 
     void unmask();
 
-    void setMode(ManageCollaboratorsPresenter.MODE mode);
+    void setMode(MODE mode);
+
+    List<Collaborator> getSelectedCollaborators();
+
+    MODE getMode();
 }

@@ -87,4 +87,12 @@ public interface Icons extends ClientBundle {
     @Source("close.png")
     ImageResource close();
 
+    /**
+     * Image resource.
+     * 
+     * @return image.
+     */
+    @Source("group.png")
+    ImageResource viewCurrentCollabs();
+
 }

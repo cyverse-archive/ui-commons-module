@@ -9,8 +9,8 @@
 	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
 	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form">
 	
-   <ui:with type="org.iplantc.de.client.images.Icons" field="icons"/>
-   <ui:with type="org.iplantc.de.client.DEDisplayStrings" field="strings" />
+   <ui:with type="org.iplantc.core.uicommons.client.images.Icons" field="icons"/>
+   <ui:with type="org.iplantc.core.uicommons.client.CommonUIDisplayStrings" field="strings" />
 
 	<!-- Main Panel -->
 	<ui:with field="listStore" type="com.sencha.gxt.data.shared.ListStore" />
@@ -53,7 +53,7 @@
 				ui:field="con" borders="true">
 				<!-- This is the tool bar -->
 				<container:north layoutData="{northData}">
-				    <container:HorizontalLayoutContainer>
+				    <container:HorizontalLayoutContainer ui:field="searchPanel">
 				    	<form:TextField debugId="idTxtSearch" ui:field="searchField" emptyText="{strings.searchCollab}" width="200"></form:TextField>
 				    	<button:TextButton debugId="idBtnSearch" ui:field="searchBtn"     icon="{icons.search}" ></button:TextButton>
 				    	<button:TextButton debugId="idShowCollabBtn" ui:field="showCollabsBtn"  icon="{icons.viewCurrentCollabs}" enabled="true" visible="false" ></button:TextButton>
@@ -65,9 +65,10 @@
 						pixelSize="445,175" collapsible="false" headerVisible="true">
 						<container:VerticalLayoutContainer pixelSize="445,150">
 						<container:child >
-							<toolbar:ToolBar height="30">
-								<button:TextButton debugId="idAddBtn" ui:field="addBtn"  text="{strings.add}"   icon="{icons.add}" enabled="false" ></button:TextButton>
-				    			<button:TextButton debugId="idDeleteBtn" ui:field="deleteBtn" text="{strings.delete}" icon="{icons.delete}" enabled="false"></button:TextButton>
+							<toolbar:ToolBar height="30" ui:field="toolbar">
+								<button:TextButton debugId="idAddBtn" ui:field="addBtn"  text="{strings.add}"   icon="{icons.add}" visible="false"></button:TextButton>
+				    			<button:TextButton debugId="idDeleteBtn" ui:field="deleteBtn" text="{strings.delete}" icon="{icons.delete}" visible="false"></button:TextButton>
+								<button:TextButton debugId="idManage" ui:field="manageBtn" text="Manage Collaborators"  visible="false"></button:TextButton>
 							</toolbar:ToolBar>
 							</container:child>
 							<container:child layoutData="{middleData}">
