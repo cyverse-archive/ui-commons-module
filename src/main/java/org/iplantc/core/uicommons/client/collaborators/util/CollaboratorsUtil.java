@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.iplantc.core.uicommons.client.util;
+package org.iplantc.core.uicommons.client.collaborators.util;
 
 import java.util.List;
 

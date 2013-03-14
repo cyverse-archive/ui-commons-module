@@ -6,7 +6,7 @@ import org.iplantc.core.uicommons.client.I18N;
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
 import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter;
 import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
-import org.iplantc.core.uicommons.client.util.CollaboratorsUtil;
+import org.iplantc.core.uicommons.client.collaborators.util.CollaboratorsUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyDownEvent;

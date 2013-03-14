@@ -5,10 +5,10 @@ package org.iplantc.core.uicommons.client.collaborators.presenter;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.util.CollaboratorsUtil;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.I18N;
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
+import org.iplantc.core.uicommons.client.collaborators.util.CollaboratorsUtil;
 import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsView;
 import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsView.Presenter;
 
