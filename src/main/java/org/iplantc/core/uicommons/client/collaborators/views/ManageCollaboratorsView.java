@@ -24,8 +24,6 @@ public interface ManageCollaboratorsView extends IsWidget {
 
         void loadCurrentCollaborators();
 
-        void searchUsers(String searchTerm);
-        
         void setCurrentMode(MODE mode);
 
         MODE getCurrentMode();
@@ -49,4 +47,6 @@ public interface ManageCollaboratorsView extends IsWidget {
     List<Collaborator> getSelectedCollaborators();
 
     MODE getMode();
+
+    void addCollaborators(List<Collaborator> models);
 }

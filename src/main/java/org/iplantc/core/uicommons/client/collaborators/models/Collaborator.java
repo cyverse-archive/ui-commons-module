@@ -40,4 +40,10 @@ public interface Collaborator {
 
     @PropertyName("email")
     public String getEmail();
+
+    @PropertyName("institution")
+    public String getInstitution();
+
+    @PropertyName("institution")
+    public void setInstitution(String ins);
 }

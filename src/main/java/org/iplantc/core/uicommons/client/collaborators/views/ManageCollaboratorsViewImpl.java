@@ -3,15 +3,15 @@ package org.iplantc.core.uicommons.client.collaborators.views;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.I18N;
+import org.iplantc.core.uicommons.client.collaborators.events.UserSearchResultSelected.USER_SEARCH_EVENT_TAG;
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
 import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter;
 import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
-import org.iplantc.core.uicommons.client.collaborators.util.CollaboratorsUtil;
+import org.iplantc.core.uicommons.client.collaborators.util.UserSearchField;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
@@ -25,7 +25,6 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.CheckBoxSelectionModel;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
@@ -47,22 +46,11 @@ public class ManageCollaboratorsViewImpl extends Composite implements ManageColl
     Grid<Collaborator> grid;
 
     @UiField
-    TextButton searchBtn;
-
-    @UiField
-    TextButton showCollabsBtn;
-
-    @UiField
-    TextButton addBtn;
-
-    @UiField
     TextButton deleteBtn;
 
     @UiField
     TextButton manageBtn;
 
-    @UiField
-    TextField searchField;
 
     @UiField
     FramedPanel collaboratorListPnl;
@@ -73,6 +61,9 @@ public class ManageCollaboratorsViewImpl extends Composite implements ManageColl
     @UiField
     BorderLayoutContainer con;
 
+    @UiField(provided = true)
+    UserSearchField searchField;
+
     @UiField
     ToolBar toolbar;
 
@@ -82,15 +73,6 @@ public class ManageCollaboratorsViewImpl extends Composite implements ManageColl
 
     private ManageCollaboratorsPresenter.MODE mode;
 
-    private final class SearchFieldKeyPressDownImpl implements KeyDownHandler {
-        @Override
-        public void onKeyDown(KeyDownEvent event) {
-            if (event.getNativeKeyCode() == 13) {
-                submitSearch(null);
-            }
-        }
-    }
-
     @UiTemplate("ManageCollaboratorsView.ui.xml")
     interface MyUiBinder extends UiBinder<Widget, ManageCollaboratorsViewImpl> {
     }
@@ -99,6 +81,7 @@ public class ManageCollaboratorsViewImpl extends Composite implements ManageColl
             ColumnModel<Collaborator> cm, final ListStore<Collaborator> store, MODE mode) {
         this.cm = cm;
         this.listStore = store;
+        searchField = new UserSearchField(USER_SEARCH_EVENT_TAG.MANAGE);
         widget = uiBinder.createAndBindUi(this);
         grid.setSelectionModel(checkBoxModel);
         grid.getSelectionModel().setSelectionMode(SelectionMode.MULTI);
@@ -108,8 +91,6 @@ public class ManageCollaboratorsViewImpl extends Composite implements ManageColl
     }
 
     private void init() {
-        searchField.addKeyDownHandler(new SearchFieldKeyPressDownImpl());
-        searchField.setAutoValidate(true);
         collaboratorListPnl.setHeadingText(I18N.DISPLAY.myCollaborators());
         grid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<Collaborator>() {
 
@@ -117,55 +98,29 @@ public class ManageCollaboratorsViewImpl extends Composite implements ManageColl
             public void onSelectionChanged(SelectionChangedEvent<Collaborator> event) {
                 if (event.getSelection() != null && event.getSelection().size() > 0) {
                     if (mode.equals(MODE.MANAGE)) {
-                        deleteBtn.setVisible(true);
+                        deleteBtn.enable();
                     } else {
-                        deleteBtn.setVisible(false);
-                    }
-
-                    if (mode.equals(MODE.SEARCH)) {
-                        addBtn.setVisible(true);
-                    } else {
-                        addBtn.setVisible(false);
+                        deleteBtn.disable();
                     }
 
                     if (mode.equals(MODE.SELECT)) {
                         manageBtn.setVisible(true);
-                        addBtn.setVisible(false);
-                        deleteBtn.setVisible(false);
+                        deleteBtn.disable();
                     } else {
                         manageBtn.setVisible(false);
                     }
 
                 } else {
-                    deleteBtn.setVisible(false);
-                    addBtn.setVisible(false);
+                    deleteBtn.disable();
                 }
 
             }
         });
     }
 
-    @UiHandler("searchBtn")
-    void submitSearch(SelectEvent event) {
-        String searchTerm = searchField.getCurrentValue();
-        searchField.clearInvalid();
-        if (searchTerm != null && !searchTerm.isEmpty() && searchTerm.length() > 2) {
-            collaboratorListPnl.setHeadingText(I18N.DISPLAY.search() + ": " + searchTerm);
-            presenter.searchUsers(searchTerm);
-        } else {
-            searchField.forceInvalid("3 chars minimum");
-
-        }
-    }
-    
     @UiHandler("manageBtn")
     void manageCollaborators(SelectEvent event) {
         setMode(MODE.MANAGE);
-    }
-
-    @UiHandler("addBtn")
-    void addCollaborator(SelectEvent event) {
-        presenter.addAsCollaborators(grid.getSelectionModel().getSelectedItems());
     }
 
     @UiHandler("deleteBtn")
@@ -173,13 +128,6 @@ public class ManageCollaboratorsViewImpl extends Composite implements ManageColl
         presenter.removeFromCollaborators(grid.getSelectionModel().getSelectedItems());
     }
 
-    @UiHandler("showCollabsBtn")
-    void showCurrentCollaborators(SelectEvent event) {
-        loadData(CollaboratorsUtil.getCurrentCollaborators());
-        setMode(MODE.MANAGE);
-
-        showCollabsBtn.setVisible(false);
-    }
 
     @Override
     public void setMode(ManageCollaboratorsPresenter.MODE mode) {
@@ -188,15 +136,8 @@ public class ManageCollaboratorsViewImpl extends Composite implements ManageColl
             case MANAGE:
                 grid.getView().setEmptyText(I18N.DISPLAY.noCollaborators());
                 collaboratorListPnl.setHeadingText(I18N.DISPLAY.myCollaborators());
-                showCollabsBtn.setVisible(false);
                 manageBtn.setVisible(false);
                 con.show(LayoutRegion.NORTH);
-                break;
-            case SEARCH:
-                grid.getView().setEmptyText(I18N.DISPLAY.noCollaboratorsSearchResult());
-                showCollabsBtn.setVisible(true);
-                con.show(LayoutRegion.NORTH);
-                manageBtn.setVisible(false);
                 break;
             case SELECT:
                 grid.getView().setEmptyText(I18N.DISPLAY.noCollaborators());
@@ -256,6 +197,11 @@ public class ManageCollaboratorsViewImpl extends Composite implements ManageColl
     @Override
     public List<Collaborator> getSelectedCollaborators() {
         return grid.getSelectionModel().getSelectedItems();
+    }
+
+    @Override
+    public void addCollaborators(List<Collaborator> models) {
+        listStore.addAll(models);
     }
 
 }

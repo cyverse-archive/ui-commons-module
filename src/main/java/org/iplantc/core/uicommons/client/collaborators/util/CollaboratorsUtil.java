@@ -46,6 +46,7 @@ public class CollaboratorsUtil {
         if (truncated) {
             AlertMessageBox amb = new AlertMessageBox(I18N.DISPLAY.searchCollab(),
                     I18N.DISPLAY.collaboratorSearchTruncated());
+            amb.setModal(true);
             amb.show();
         }
         return bean.as().getCollaborators();

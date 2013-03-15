@@ -118,10 +118,10 @@ public class ManageCollaboratorsDailog extends Dialog {
         });
         configs.add(name);
 
-        ColumnConfig<Collaborator, String> email = new ColumnConfig<Collaborator, String>(
-                properties.email(), 150);
-        email.setHeader(I18N.DISPLAY.email());
-        configs.add(email);
+        ColumnConfig<Collaborator, String> ins = new ColumnConfig<Collaborator, String>(
+                properties.institution(), 150);
+        ins.setHeader(I18N.DISPLAY.institution());
+        configs.add(ins);
         return new ColumnModel<Collaborator>(configs);
 
     }

@@ -3,10 +3,20 @@
  */
 package org.iplantc.core.uicommons.client.collaborators.util;
 
+import org.iplantc.core.uicommons.client.I18N;
+import org.iplantc.core.uicommons.client.collaborators.events.UserSearchResultSelected;
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
+import org.iplantc.core.uicommons.client.events.EventBus;
 
 import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -30,7 +40,7 @@ import com.sencha.gxt.widget.core.client.form.ComboBox;
 
 /**
  * @author sriram
- *
+ * 
  */
 public class UserSearchField implements IsWidget {
 
@@ -38,8 +48,10 @@ public class UserSearchField implements IsWidget {
 
     private ComboBox<Collaborator> combo;
 
+    private final UserSearchResultSelected.USER_SEARCH_EVENT_TAG tag;
+
     interface UserTemplate extends XTemplates {
-        @XTemplate("<div> {c.firstName} {c.lastName} <br/> {c.email} </div>")
+        @XTemplate(source = "UserSearchResult.html")
         SafeHtml render(Collaborator c);
     }
 
@@ -56,8 +68,87 @@ public class UserSearchField implements IsWidget {
 
     }
 
-    public UserSearchField() {
+    public UserSearchField(UserSearchResultSelected.USER_SEARCH_EVENT_TAG tag) {
+        this.tag = tag;
         this.searchProxy = new UserSearchRPCProxy();
+        PagingLoader<UsersLoadConfig, PagingLoadResult<Collaborator>> loader = buildLoader();
+
+        ListStore<Collaborator> store = buildStore();
+        loader.addLoadHandler(new LoadResultListStoreBinding<UsersLoadConfig, Collaborator, PagingLoadResult<Collaborator>>(
+                store));
+
+        final UserTemplate template = GWT.create(UserTemplate.class);
+
+        ListView<Collaborator, Collaborator> view = buildView(store, template);
+
+        ComboBoxCell<Collaborator> cell = buildComboCell(store, view);
+        initCombo(loader, cell);
+    }
+
+    private void initCombo(PagingLoader<UsersLoadConfig, PagingLoadResult<Collaborator>> loader,
+            ComboBoxCell<Collaborator> cell) {
+        combo = new ComboBox<Collaborator>(cell);
+        combo.setLoader(loader);
+        combo.setMinChars(3);
+        combo.setWidth(300);
+        combo.setHideTrigger(true);
+        combo.setEmptyText(I18N.DISPLAY.searchCollab());
+        combo.addSelectionHandler(new SelectionHandler<Collaborator>() {
+
+            @Override
+            public void onSelection(SelectionEvent<Collaborator> event) {
+                EventBus bus = EventBus.getInstance();
+                UserSearchResultSelected usrs = new UserSearchResultSelected(UserSearchField.this.tag
+                        .toString(), combo
+                                .getListView().getSelectionModel().getSelectedItem());
+                bus.fireEvent(usrs);
+
+            }
+        });
+    }
+
+    private ComboBoxCell<Collaborator> buildComboCell(ListStore<Collaborator> store,
+            ListView<Collaborator, Collaborator> view) {
+        ComboBoxCell<Collaborator> cell = new ComboBoxCell<Collaborator>(store,
+                new StringLabelProvider<Collaborator>() {
+
+                    @Override
+                    public String getLabel(Collaborator c) {
+                        return c.getFirstName() + " " + c.getLastName();
+                    }
+
+                }, view) {
+            @Override
+            protected void onEnterKeyDown(Context context, Element parent, Collaborator value,
+                    NativeEvent event, ValueUpdater<Collaborator> valueUpdater) {
+                if (isExpanded()) {
+                    super.onEnterKeyDown(context, parent, value, event, valueUpdater);
+                }
+            }
+
+        };
+
+        return cell;
+    }
+
+    private ListView<Collaborator, Collaborator> buildView(ListStore<Collaborator> store,
+            final UserTemplate template) {
+        ListView<Collaborator, Collaborator> view = new ListView<Collaborator, Collaborator>(store,
+                new IdentityValueProvider<Collaborator>());
+
+        view.setCell(new AbstractCell<Collaborator>() {
+
+            @Override
+            public void render(com.google.gwt.cell.client.Cell.Context context, Collaborator value,
+                    SafeHtmlBuilder sb) {
+                sb.append(template.render(value));
+            }
+
+        });
+        return view;
+    }
+
+    private PagingLoader<UsersLoadConfig, PagingLoadResult<Collaborator>> buildLoader() {
         PagingLoader<UsersLoadConfig, PagingLoadResult<Collaborator>> loader = new PagingLoader<UsersLoadConfig, PagingLoadResult<Collaborator>>(
                 searchProxy);
         UsersLoadConfig loadConfig = UserSearchAutoBeanFactory.instance.loadConfig().as();
@@ -73,50 +164,20 @@ public class UserSearchField implements IsWidget {
 
             }
         });
-        
-        ListStore<Collaborator> store = new ListStore<Collaborator>(new ModelKeyProvider<Collaborator>() {
+        return loader;
+    }
+
+    private ListStore<Collaborator> buildStore() {
+        ListStore<Collaborator> store = new ListStore<Collaborator>(
+                new ModelKeyProvider<Collaborator>() {
 
                     @Override
                     public String getKey(Collaborator item) {
                         return item.getId();
                     }
-            
-                });
-        loader.addLoadHandler(new LoadResultListStoreBinding<UsersLoadConfig, Collaborator, PagingLoadResult<Collaborator>>(
-                store));
-        
-        
-        final UserTemplate template = GWT.create(UserTemplate.class);
-        
-        ListView<Collaborator, Collaborator> view = new ListView<Collaborator, Collaborator>(store,
-                new IdentityValueProvider<Collaborator>());
-        
-        
-        view.setCell(new AbstractCell<Collaborator>() {
 
-            @Override
-            public void render(com.google.gwt.cell.client.Cell.Context context, Collaborator value,
-                    SafeHtmlBuilder sb) {
-                sb.append(template.render(value));
-            }
-            
-        });
-        
-        
-        ComboBoxCell<Collaborator> cell = new ComboBoxCell<Collaborator>(store,
-                new StringLabelProvider<Collaborator>() {
-            
-            @Override
-            public String getLabel(Collaborator c) {
-                        return c.getFirstName() + " " + c.getLastName();
-            }
-            
-        }, view);
-        combo = new ComboBox<Collaborator>(cell);
-        combo.setLoader(loader);
-        combo.setPageSize(10);
-        combo.setWidth(300);
-        combo.setHideTrigger(true);
+                });
+        return store;
     }
 
     @Override

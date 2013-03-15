@@ -3,14 +3,16 @@
  */
 package org.iplantc.core.uicommons.client.collaborators.presenter;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.I18N;
+import org.iplantc.core.uicommons.client.collaborators.events.UserSearchResultSelected;
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
 import org.iplantc.core.uicommons.client.collaborators.util.CollaboratorsUtil;
 import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsView;
 import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsView.Presenter;
+import org.iplantc.core.uicommons.client.events.EventBus;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
@@ -24,13 +26,28 @@ public class ManageCollaboratorsPresenter implements Presenter {
     private final ManageCollaboratorsView view;
 
     public static enum MODE {
-        MANAGE, SEARCH, SELECT
+        MANAGE, SELECT
     };
 
     public ManageCollaboratorsPresenter(ManageCollaboratorsView view) {
         this.view = view;
         view.setPresenter(this);
         loadCurrentCollaborators();
+        addEventHandlers();
+    }
+
+    private void addEventHandlers() {
+        EventBus.getInstance().addHandler(UserSearchResultSelected.TYPE, new UserSearchResultSelected.UserSearchResultSelectedEventHandler() {
+            
+            @Override
+            public void onUserSearchResultSelected(UserSearchResultSelected userSearchResultSelected) {
+                        if (userSearchResultSelected.getTag().equalsIgnoreCase(
+                                UserSearchResultSelected.USER_SEARCH_EVENT_TAG.MANAGE.toString())) {
+                            addAsCollaborators(Arrays.asList(userSearchResultSelected.getCollaborator()));
+                        }
+                
+            }
+                });
     }
 
     /*
@@ -59,7 +76,7 @@ public class ManageCollaboratorsPresenter implements Presenter {
             @Override
             public void onSuccess(Void result) {
                 // remove added models from search results
-                view.removeCollaborators(models);
+                view.addCollaborators(models);
             }
 
             @Override
@@ -122,32 +139,6 @@ public class ManageCollaboratorsPresenter implements Presenter {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.iplantc.de.client.collaborators.views.ManageCollaboratorsView.Presenter#searchUsers(java.lang
-     * .String)
-     */
-    @Override
-    public void searchUsers(String searchTerm) {
-        view.mask(I18N.DISPLAY.searching());
-        CollaboratorsUtil.search(searchTerm, new AsyncCallback<Void>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                view.unmask();
-            }
-
-            @Override
-            public void onSuccess(Void result) {
-                setCurrentMode(MODE.SEARCH);
-                view.unmask();
-                view.loadData(CollaboratorsUtil.getSearchResutls());
-            }
-        });
-
-    }
 
     @Override
     public void setCurrentMode(MODE m) {
