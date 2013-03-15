@@ -3,22 +3,21 @@
  */
 package org.iplantc.core.uicommons.client.collaborators.util;
 
-import java.util.List;
-
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
+import org.iplantc.core.uicommons.client.collaborators.util.UserSearchField.UsersLoadConfig;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.data.client.loader.RpcProxy;
-import com.sencha.gxt.data.shared.loader.FilterConfig;
-import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfig;
-import com.sencha.gxt.data.shared.loader.ListLoadResult;
+import com.sencha.gxt.data.shared.loader.PagingLoadResult;
+import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;
 
 /**
  * @author sriram
  *
  */
-public class UserSearchRPCProxy extends RpcProxy<FilterPagingLoadConfig, ListLoadResult<Collaborator>> {
+public class UserSearchRPCProxy extends
+ RpcProxy<UsersLoadConfig, PagingLoadResult<Collaborator>> {
 
     private String lastQueryText = ""; //$NON-NLS-1$
 
@@ -30,13 +29,10 @@ public class UserSearchRPCProxy extends RpcProxy<FilterPagingLoadConfig, ListLoa
     }
 
     @Override
-    public void load(FilterPagingLoadConfig loadConfig,
-            final AsyncCallback<ListLoadResult<Collaborator>> callback) {
+    public void load(UsersLoadConfig loadConfig,
+            final AsyncCallback<PagingLoadResult<Collaborator>> callback) {
 
-        List<FilterConfig> filters = loadConfig.getFilters();
-        if (filters != null && filters.size() > 0) {
-            lastQueryText = filters.get(0).getValue();
-        }
+        lastQueryText = loadConfig.getQuery();
 
         if (lastQueryText == null || lastQueryText.isEmpty()) {
             // nothing to search
@@ -44,16 +40,10 @@ public class UserSearchRPCProxy extends RpcProxy<FilterPagingLoadConfig, ListLoa
         }
 
         CollaboratorsUtil.search(lastQueryText, new AsyncCallback<Void>() {
-            @SuppressWarnings("serial")
             @Override
             public void onSuccess(Void result) {
-                callback.onSuccess(new ListLoadResult<Collaborator>() {
-
-                    @Override
-                    public List<Collaborator> getData() {
-                        return CollaboratorsUtil.getSearchResutls();
-                    }
-                });
+                callback.onSuccess(new PagingLoadResultBean<Collaborator>(CollaboratorsUtil
+                        .getSearchResutls(), CollaboratorsUtil.getSearchResutls().size(), 0));
             }
 
             @Override

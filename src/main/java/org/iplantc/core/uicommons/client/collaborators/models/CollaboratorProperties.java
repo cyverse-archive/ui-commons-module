@@ -12,4 +12,6 @@ import com.sencha.gxt.data.shared.PropertyAccess;
  */
 public interface CollaboratorProperties extends PropertyAccess<Collaborator> {
     ValueProvider<Collaborator, String> email();
+
+    ValueProvider<Collaborator, String> firstName();
 }
