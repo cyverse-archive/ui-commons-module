@@ -8,6 +8,11 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 
+/**
+ * 
+ * @deprecated Class needs to be deleted or ported to GXT3
+ */
+@Deprecated
 public class BoundedTextField<D> extends TextField<D> {
     private Set<Character> allowed;
 

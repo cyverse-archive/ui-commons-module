@@ -4,7 +4,10 @@ import com.extjs.gxt.ui.client.widget.Label;
 
 /**
  * A label that looks like a FormPanel label.
+ * 
+ * @deprecated Class needs to be deleted or ported to GXT3
  */
+@Deprecated
 public class FormLabel extends Label {
 
     /**

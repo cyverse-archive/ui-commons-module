@@ -9,8 +9,9 @@ import com.extjs.gxt.ui.client.widget.form.Validator;
  * A validator to validate email address
  * 
  * @author sriram
- * 
+ * @deprecated Class needs to be deleted or ported to GXT3
  */
+@Deprecated
 public class BasicEmailValidator implements Validator {
 
     @Override
