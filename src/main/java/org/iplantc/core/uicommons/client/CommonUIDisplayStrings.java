@@ -2,8 +2,6 @@ package org.iplantc.core.uicommons.client;
 
 import org.iplantc.de.client.CommonDisplayStrings;
 
-import com.google.gwt.safehtml.shared.SafeHtml;
-
 /** Display strings that are shared between applications */
 public interface CommonUIDisplayStrings extends CommonDisplayStrings {
     

@@ -10,7 +10,7 @@
    </ui:style>
    
    <ui:with field="display" type="org.iplantc.core.uicommons.client.CommonUIDisplayStrings"/>
-   <ui:with field="icons" type="org.iplantc.core.uicommons.client.views.gxt3.dialogs.ErrorDialog3.Icons"></ui:with>
+   <ui:with field="icons" type="org.iplantc.core.resources.client.IplantResources"></ui:with>
    
    <ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="topData">
     <ui:attributes width="1" height="40" />

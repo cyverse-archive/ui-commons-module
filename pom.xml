@@ -73,7 +73,7 @@
             <artifactId>metadata</artifactId>
             <version>gxt3Sandbox-SNAPSHOT</version>
       </dependency>
-		<dependency>
+  	<dependency>
 			<groupId>org.jmock</groupId>
 			<artifactId>jmock-junit4</artifactId>
 			<version>2.5.1</version>

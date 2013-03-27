@@ -19,12 +19,10 @@
     <inherits name="com.google.web.bindery.autobean.AutoBean"/>
     <inherits name="com.google.gwt.uibinder.UiBinder" />
 
-    <!-- iPlant Module Dependencies -->
-    <inherits name="org.iplantc.core.JsonUtil"/>
-    
     <!-- Testing -->
     <inherits name="com.google.gwt.junit.JUnit" />
-
+    <inherits name='org.iplantc.de.DiscoveryEnvironmentCommon' />
+	<inherits name="org.iplantc.core.Metadata"/>
     <source path="client"/>
     <source path="uicommons"/>
 </module>
