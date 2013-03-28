@@ -1,9 +1,9 @@
 /**
- * 
+ *
  */
 package org.iplantc.core.uicommons.client.collaborators.util;
 
-import org.iplantc.core.uicommons.client.I18N;
+import org.iplantc.core.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.collaborators.events.UserSearchResultSelected;
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
 import org.iplantc.core.uicommons.client.events.EventBus;
@@ -38,7 +38,7 @@ import com.sencha.gxt.widget.core.client.form.ComboBox;
 
 /**
  * @author sriram
- * 
+ *
  */
 public class UserSearchField implements IsWidget {
 

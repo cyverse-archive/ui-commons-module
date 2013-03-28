@@ -1,10 +1,10 @@
 package org.iplantc.core.uicommons.client.collaborators.events;
 
+import org.iplantc.core.uicommons.client.collaborators.events.UserSearchResultSelected.UserSearchResultSelectedEventHandler;
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import org.iplantc.core.uicommons.client.collaborators.events.UserSearchResultSelected.UserSearchResultSelectedEventHandler;
 
 /**
  * 

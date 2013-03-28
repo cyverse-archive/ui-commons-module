@@ -3,6 +3,7 @@ package org.iplantc.core.uicommons.client;
 import java.util.Date;
 
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.errorHandling.models.ServiceError;
 import org.iplantc.core.uicommons.client.views.gxt3.dialogs.ErrorDialog3;
 
@@ -14,16 +15,16 @@ import com.sencha.gxt.core.client.GXT;
 
 /**
  * Provides a uniform manner for posting errors to the user.
- * 
+ *
  * @author amuir
- * 
+ *
  */
 public class ErrorHandler {
     private static final String NEWLINE = "\n"; //$NON-NLS-1$
 
     /**
      * Post a message box with error styles with the argument error message.
-     * 
+     *
      * @param error the string message to include in the displayed dialog
      */
     public static void post(String error) {
@@ -33,7 +34,7 @@ public class ErrorHandler {
     /**
      * Post a message box with error styles with a general error message summary and the given caught
      * with additional error details.
-     * 
+     *
      * @param caught
      */
     public static void post(Throwable caught) {
@@ -43,7 +44,7 @@ public class ErrorHandler {
     /**
      * Post a message box with error styles with the given error message summary and optional caught with
      * additional error details.
-     * 
+     *
      * @param errorSummary
      * @param caught
      */
@@ -62,7 +63,7 @@ public class ErrorHandler {
 
     /**
      * Posts a message box with the error message summary provided by the <code>ServiceError</code> object.
-     * 
+     *
      * TODO JDS Using info from given ServiceError, create new Throwable to pass to sibling overridden method.
      * @param error the error object representing the error.
      * @param caught
@@ -77,11 +78,11 @@ public class ErrorHandler {
         if (!error.getErrorCode().isEmpty()) {
             errDetails += "\n" + I18N.ERROR.serviceErrorCode(error.getErrorCode()); //$NON-NLS-1$
         }
-        
+
         /*
          * JDS - The if block below used to be in DiskResourceServiceCallback in DE-Webapp. The issue is
-         * that it used to be for a field named "reason" in the error json response. Using the new "ErrorMsg" roll up 
-         * is going to be a duplicate. 
+         * that it used to be for a field named "reason" in the error json response. Using the new "ErrorMsg" roll up
+         * is going to be a duplicate.
          * TODO JDS Need to determine what the default error fields are, and if they include a "Reason" field.
          */
         if (!Strings.isNullOrEmpty(error.getReason())) {
@@ -89,7 +90,7 @@ public class ErrorHandler {
         } else if (!Strings.isNullOrEmpty(error.generateErrorMsg())) {
             errDetails += "\n" + I18N.ERROR.serviceErrorReason(error.generateErrorMsg()); //$NON-NLS-1$
         }
-        
+
 
         Throwable newCaught = new Exception(errDetails, caught);
         post(error.generateErrorMsg(), newCaught);
@@ -119,7 +120,7 @@ public class ErrorHandler {
 
     /**
      * Builds a string with details about the GXT user agent and version, and GWT version.
-     * 
+     *
      * @return A system description string.
      */
     private static String getSystemDescription() {
@@ -137,5 +138,5 @@ public class ErrorHandler {
 
         return gwtVersion + NEWLINE + gxtVersion + NEWLINE + userAgent + NEWLINE + date + NEWLINE + host;
     }
-    
+
 }

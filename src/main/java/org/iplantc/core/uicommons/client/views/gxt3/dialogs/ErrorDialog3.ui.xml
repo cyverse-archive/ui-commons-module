@@ -8,25 +8,25 @@
    <ui:style>
    	 .bg-color { background-color: #F1F1F1; }
    </ui:style>
-   
-   <ui:with field="display" type="org.iplantc.core.uicommons.client.CommonUIDisplayStrings"/>
+
+   <ui:with field="display" type="org.iplantc.core.resources.client.messages.IplantDisplayStrings"/>
    <ui:with field="icons" type="org.iplantc.core.resources.client.IplantResources"></ui:with>
-   
+
    <ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="topData">
     <ui:attributes width="1" height="40" />
-  </ui:with>   
+  </ui:with>
    <ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="middleData">
     <ui:attributes width="-1" height="-1" />
-  </ui:with>   
+  </ui:with>
    <ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="bottomData">
     <ui:attributes width="1" height="-1" />
-  </ui:with>   
+  </ui:with>
    <container:VerticalLayoutContainer>
-      <container:child layoutData="{topData}">                                  
+      <container:child layoutData="{topData}">
          <container:HorizontalLayoutContainer ui:field="msgHorzPanel"
                                               styleName="{style.bg-color}">
             <g:Image resource="{icons.iconError}" />
-            <g:HTML ui:field="errorMsg" /> 
+            <g:HTML ui:field="errorMsg" />
          </container:HorizontalLayoutContainer>
       </container:child>
       <container:child layoutData="{middleData}">
@@ -44,4 +44,4 @@
    </container:VerticalLayoutContainer>
 
 
-</ui:UiBinder> 
+</ui:UiBinder>

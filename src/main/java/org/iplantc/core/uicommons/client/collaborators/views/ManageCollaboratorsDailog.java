@@ -3,7 +3,7 @@ package org.iplantc.core.uicommons.client.collaborators.views;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.I18N;
+import org.iplantc.core.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
 import org.iplantc.core.uicommons.client.collaborators.models.CollaboratorKeyProvider;
 import org.iplantc.core.uicommons.client.collaborators.models.CollaboratorProperties;
@@ -27,7 +27,7 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
 /**
  * @author sriram
- * 
+ *
  */
 public class ManageCollaboratorsDailog extends Dialog {
 

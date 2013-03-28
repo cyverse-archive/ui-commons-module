@@ -1,13 +1,13 @@
 /**
- * 
+ *
  */
 package org.iplantc.core.uicommons.client.collaborators.util;
 
 import java.util.List;
 
 import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.core.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.ErrorHandler;
-import org.iplantc.core.uicommons.client.I18N;
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
 import org.iplantc.core.uicommons.client.collaborators.models.CollaboratorAutoBeanFactory;
 import org.iplantc.core.uicommons.client.collaborators.models.CollaboratorsList;
@@ -29,7 +29,7 @@ import com.sencha.gxt.widget.core.client.info.Info;
 
 /**
  * @author sriram
- * 
+ *
  */
 public class CollaboratorsUtil {
 
@@ -45,7 +45,7 @@ public class CollaboratorsUtil {
         boolean truncated = JsonUtil.getBoolean(obj, "truncated", false);
         if (truncated) {
             AlertMessageBox amb = new AlertMessageBox(I18N.DISPLAY.searchCollab(),
-                    I18N.DISPLAY.collaboratorSearchTruncated());
+            		I18N.DISPLAY.collaboratorSearchTruncated());
             amb.setModal(true);
             amb.show();
         }
@@ -226,7 +226,7 @@ public class CollaboratorsUtil {
 
         @Override
         public void onFailure(Throwable caught) {
-            ErrorHandler.post(I18N.ERROR.addCollabErrorMsg(), caught);
+            ErrorHandler.post(org.iplantc.core.resources.client.messages.I18N.ERROR.addCollabErrorMsg(), caught);
             if (callback != null) {
                 callback.onFailure(caught);
             }
@@ -246,7 +246,7 @@ public class CollaboratorsUtil {
             }
 
             Info.display(I18N.DISPLAY.collaboratorAdded(),
-                    I18N.DISPLAY.collaboratorAddConfirm(builder.toString()));
+            		I18N.DISPLAY.collaboratorAddConfirm(builder.toString()));
             if (callback != null) {
                 callback.onSuccess(null);
             }
@@ -303,7 +303,7 @@ public class CollaboratorsUtil {
 
         @Override
         public void onFailure(Throwable caught) {
-            ErrorHandler.post(I18N.ERROR.removeCollabErrorMsg(), caught);
+            ErrorHandler.post(org.iplantc.core.resources.client.messages.I18N.ERROR.removeCollabErrorMsg(), caught);
             if (callback != null) {
                 callback.onFailure(caught);
             }
@@ -324,7 +324,7 @@ public class CollaboratorsUtil {
             }
 
             Info.display(I18N.DISPLAY.collaboratorRemoved(),
-                    I18N.DISPLAY.collaboratorRemoveConfirm(builder.toString()));
+            		I18N.DISPLAY.collaboratorRemoveConfirm(builder.toString()));
             if (callback != null) {
                 callback.onSuccess(null);
             }
