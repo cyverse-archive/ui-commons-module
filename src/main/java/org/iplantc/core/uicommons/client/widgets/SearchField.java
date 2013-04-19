@@ -1,75 +1,63 @@
 package org.iplantc.core.uicommons.client.widgets;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.util.DelayedTask;
-import com.extjs.gxt.ui.client.widget.form.TriggerField;
-import com.extjs.gxt.ui.client.widget.grid.filters.StringFilter;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.common.base.Strings;
+import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.KeyCodeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.sencha.gxt.cell.core.client.form.TextInputCell;
+import com.sencha.gxt.core.client.util.DelayedTask;
+import com.sencha.gxt.data.shared.loader.FilterConfig;
+import com.sencha.gxt.data.shared.loader.FilterConfigBean;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
+import com.sencha.gxt.data.shared.loader.PagingLoadResult;
+import com.sencha.gxt.data.shared.loader.PagingLoader;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
- * A TriggerField used for filtering a Grid. The trigger's style will toggle between a search icon when
- * the filter is not set, and a clear icon which allows the user to clear the filter when it is set.
+ * A TextField used for fetching filtered results with a given PagingLoader and a FilterPagingLoadConfig.
+ * If the given PagingLoader does not already reuse a FilterPagingLoadConfig, this class will create one
+ * before loading the Loader.
  * 
  * @author psarando
  * 
  */
-public class SearchField extends TriggerField<String> {
-    public enum TriggerMode {
-        SEARCH("x-form-search-trigger"), //$NON-NLS-1$
-        CLEAR("x-form-clear-trigger"); //$NON-NLS-1$
-
-        private String triggerStyle;
-
-        TriggerMode(String triggerStyle) {
-            this.triggerStyle = triggerStyle;
-        }
-
-        protected String getTriggerStyle() {
-            return triggerStyle;
-        }
-    }
-
-    private final StringFilter filter;
-    private TriggerMode mode;
+public class SearchField<T> extends TextField {
+    private final PagingLoader<FilterPagingLoadConfig, PagingLoadResult<T>> loader;
     private int minChars = 3;
-    private int queryDelay = 500;
     private final DelayedTask dqTask;
+    private final SearchFieldKeyUpHandler searchQueryHandler;
 
-    public SearchField(String dataIndex) {
-        filter = new StringFilter(dataIndex);
-        dqTask = new DelayedTask(new Listener<BaseEvent>() {
+    public SearchField(PagingLoader<FilterPagingLoadConfig, PagingLoadResult<T>> loader) {
+        super(new SearchFieldCell());
+
+        this.loader = loader;
+
+        dqTask = new DelayedTask() {
             @Override
-            public void handleEvent(BaseEvent be) {
-                doQuery(getRawValue());
+            public void onExecute() {
+                doQuery(getCurrentValue());
             }
-        });
+        };
 
-        setTriggerMode(TriggerMode.SEARCH);
+        ((SearchFieldCell)getCell()).setEnterKeyHandler(dqTask);
+        searchQueryHandler = new SearchFieldKeyUpHandler(dqTask);
+
+        addKeyUpHandler(searchQueryHandler);
     }
 
     /**
-     * Sets the TriggerMode of this field, which also updates the trigger's icon style.
-     * 
-     * @param mode
+     * @return The loader passed to this field's constructor.
      */
-    public void setTriggerMode(TriggerMode mode) {
-        this.mode = mode;
-        setTriggerStyle(mode.getTriggerStyle());
-
-        if (isRendered()) {
-            // KLUDGE this should by handled by GXT in the setTriggerStyle method?
-            trigger.dom.setClassName("x-form-trigger " + triggerStyle); //$NON-NLS-1$
-        }
-    }
-
-    /**
-     * @return
-     */
-    public StringFilter getFilter() {
-        return filter;
+    public PagingLoader<FilterPagingLoadConfig, PagingLoadResult<T>> getLoader() {
+        return loader;
     }
 
     /**
@@ -97,83 +85,149 @@ public class SearchField extends TriggerField<String> {
      * @return the query delay
      */
     public int getQueryDelay() {
-        return queryDelay;
+        return searchQueryHandler.getQueryDelay();
     }
 
     /**
      * The length of time in milliseconds to delay between the start of typing and sending the query to
-     * the StringFilter.
+     * the Loader.
      * 
      * @param queryDelay the query delay
      */
     public void setQueryDelay(int queryDelay) {
-        this.queryDelay = queryDelay;
+        searchQueryHandler.setQueryDelay(queryDelay);
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onKeyUp(FieldEvent fe) {
-        super.onKeyUp(fe);
-
-        if (!isReadOnly() && isEditable()) {
-            int keyCode = fe.getKeyCode();
-
-            if (keyCode == KeyCodes.KEY_ENTER) {
-                doQuery(getRawValue());
-            } else if (!fe.isSpecialKey() || keyCode == KeyCodes.KEY_BACKSPACE
-                    || keyCode == KeyCodes.KEY_DELETE) {
-                // Delay setting the StringFilter.
-                dqTask.delay(queryDelay);
-            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void onTriggerClick(ComponentEvent ce) {
-        if (mode == TriggerMode.SEARCH) {
-            doQuery(getRawValue());
-        } else {
-            clearSearchField();
-        }
-    }
-
-    /**
-     * Sets the given value in the search field, and in the StringFilter if the value meets the min-chars
-     * limit. If the value is empty, this will clear the search field and StringFilter, and set the
-     * TriggerMode to SEARCH. Otherwise it sets the TriggerMode to CLEAR.
+     * Loads the Loader with the given value set in its Filters, if the value meets the min-chars limit.
+     * If the value is empty, then calls {@link SearchField#clearSearchField()} is called.
      * 
      * @param filterValue
      */
     public void doQuery(String filterValue) {
-        if (filterValue == null || filterValue.isEmpty()) {
+        if (Strings.isNullOrEmpty(filterValue)) {
             clearSearchField();
         } else {
-            setTriggerMode(TriggerMode.CLEAR);
-
             if (filterValue.length() >= minChars) {
-                filter.setValue(filterValue);
+                loader.load(getParams(filterValue));
             }
         }
     }
 
     /**
-     * Clears the value in the text box and the filter, and sets the TriggerMode to SEARCH.
+     * Clears the value in the text box, then calls {@link SearchField#clearFilter()}.
      */
     protected void clearSearchField() {
-        setTriggerMode(TriggerMode.SEARCH);
         setValue(null);
         clearFilter();
     }
 
     /**
-     * Sets the StringFilter value to null.
+     * Tells the loader to load with its Filter values cleared.
      */
     protected void clearFilter() {
-        filter.setValue(null);
+        loader.load(getParams(null));
+    }
+
+    protected FilterPagingLoadConfig getParams(String query) {
+        FilterPagingLoadConfig config;
+        if (loader.isReuseLoadConfig()) {
+            config = loader.getLastLoadConfig();
+        } else {
+            config = new FilterPagingLoadConfigBean();
+        }
+
+        List<FilterConfig> filters = config.getFilters();
+        if (filters == null) {
+            filters = new ArrayList<FilterConfig>();
+            config.setFilters(filters);
+        }
+
+        if (filters.isEmpty()) {
+            FilterConfigBean filter = new FilterConfigBean();
+            filters.add(filter);
+        }
+
+        for (FilterConfig filter : config.getFilters()) {
+            filter.setValue(query);
+        }
+
+        config.setOffset(0);
+
+        return config;
+    }
+
+    /**
+     * A KeyUpHandler that calls the given DelayedTask if the KeyUpEvent key is not a modifier key.
+     * 
+     * @author psarando
+     * 
+     */
+    private class SearchFieldKeyUpHandler implements KeyUpHandler {
+        private int queryDelay = 500;
+        private final DelayedTask dqTask;
+
+        public SearchFieldKeyUpHandler(DelayedTask dqTask) {
+            this.dqTask = dqTask;
+        }
+
+        public int getQueryDelay() {
+            return queryDelay;
+        }
+
+        public void setQueryDelay(int queryDelay) {
+            this.queryDelay = queryDelay;
+        }
+
+        private boolean isModifierKey(int keyCode) {
+            switch (keyCode) {
+                case KeyCodes.KEY_ENTER:
+                    // Enter is special cased by TextInputCells, so it's handled by SearchFieldCell.
+                case KeyCodes.KEY_ALT:
+                case KeyCodes.KEY_CTRL:
+                case KeyCodes.KEY_END:
+                case KeyCodes.KEY_ESCAPE:
+                case KeyCodes.KEY_HOME:
+                case KeyCodes.KEY_PAGEDOWN:
+                case KeyCodes.KEY_PAGEUP:
+                case KeyCodes.KEY_SHIFT:
+                case KeyCodes.KEY_TAB:
+                    return true;
+                default:
+                    return KeyCodeEvent.isArrow(keyCode);
+            }
+        }
+
+        @Override
+        public void onKeyUp(KeyUpEvent event) {
+            if (!isReadOnly() && !isModifierKey(event.getNativeKeyCode())) {
+                // Delay triggering the query.
+                if (dqTask != null) {
+                    dqTask.delay(queryDelay);
+                }
+            }
+        }
+    }
+
+    /**
+     * A TextInputCell that calls a given DelayedTask in its onEnterKeyDown method.
+     * 
+     * @author psarando
+     * 
+     */
+    private static class SearchFieldCell extends TextInputCell {
+        private DelayedTask handler;
+
+        public void setEnterKeyHandler(DelayedTask handler) {
+            this.handler = handler;
+        }
+
+        @Override
+        protected void onEnterKeyDown(Context context, Element parent, String value,
+            NativeEvent event, ValueUpdater<String> valueUpdater) {
+            if (handler != null) {
+                handler.delay(0);
+            }
+        }
     }
 }
