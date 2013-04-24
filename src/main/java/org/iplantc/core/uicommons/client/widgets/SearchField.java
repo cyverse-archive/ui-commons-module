@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.base.Strings;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyCodeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -30,7 +31,7 @@ import com.sencha.gxt.widget.core.client.form.TextField;
  * 
  */
 public class SearchField<T> extends TextField {
-    private final PagingLoader<FilterPagingLoadConfig, PagingLoadResult<T>> loader;
+    protected final PagingLoader<FilterPagingLoadConfig, PagingLoadResult<T>> loader;
     private int minChars = 3;
     private final DelayedTask dqTask;
     private final SearchFieldKeyUpHandler searchQueryHandler;
@@ -51,13 +52,17 @@ public class SearchField<T> extends TextField {
         searchQueryHandler = new SearchFieldKeyUpHandler(dqTask);
 
         addKeyUpHandler(searchQueryHandler);
+
+        initSize();
     }
 
     /**
-     * @return The loader passed to this field's constructor.
+     * Set max input field size.
      */
-    public PagingLoader<FilterPagingLoadConfig, PagingLoadResult<T>> getLoader() {
-        return loader;
+    private void initSize() {
+        setWidth(255);
+        InputElement inputField = getInputEl().cast();
+        inputField.setMaxLength(255);
     }
 
     /**
@@ -130,6 +135,25 @@ public class SearchField<T> extends TextField {
     }
 
     protected FilterPagingLoadConfig getParams(String query) {
+        FilterPagingLoadConfig config = getLoaderConfig();
+
+        List<FilterConfig> filters = getConfigFilters(config);
+
+        if (filters.isEmpty()) {
+            FilterConfigBean filter = new FilterConfigBean();
+            filters.add(filter);
+        }
+
+        for (FilterConfig filter : filters) {
+            filter.setValue(query);
+        }
+
+        config.setOffset(0);
+
+        return config;
+    }
+
+    protected FilterPagingLoadConfig getLoaderConfig() {
         FilterPagingLoadConfig config;
         if (loader.isReuseLoadConfig()) {
             config = loader.getLastLoadConfig();
@@ -137,24 +161,17 @@ public class SearchField<T> extends TextField {
             config = new FilterPagingLoadConfigBean();
         }
 
+        return config;
+    }
+
+    protected List<FilterConfig> getConfigFilters(FilterPagingLoadConfig config) {
         List<FilterConfig> filters = config.getFilters();
         if (filters == null) {
             filters = new ArrayList<FilterConfig>();
             config.setFilters(filters);
         }
 
-        if (filters.isEmpty()) {
-            FilterConfigBean filter = new FilterConfigBean();
-            filters.add(filter);
-        }
-
-        for (FilterConfig filter : config.getFilters()) {
-            filter.setValue(query);
-        }
-
-        config.setOffset(0);
-
-        return config;
+        return filters;
     }
 
     /**
@@ -223,8 +240,8 @@ public class SearchField<T> extends TextField {
         }
 
         @Override
-        protected void onEnterKeyDown(Context context, Element parent, String value,
-            NativeEvent event, ValueUpdater<String> valueUpdater) {
+        protected void onEnterKeyDown(Context context, Element parent, String value, NativeEvent event,
+                ValueUpdater<String> valueUpdater) {
             if (handler != null) {
                 handler.delay(0);
             }
