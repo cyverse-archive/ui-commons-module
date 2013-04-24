@@ -33,8 +33,8 @@ public class IPlantAnchorDefaultAppearance implements IPlantAnchorAppearance {
         String anchorMouseOut();
     }
 
-    private final Style style;
-    private final Template template;
+    protected Style style;
+    protected Template template;
 
     public interface Resources extends ClientBundle {
         @Source("IPlantAnchorDefaultAppearance.css")

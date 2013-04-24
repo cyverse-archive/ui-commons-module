@@ -2,70 +2,80 @@ package org.iplantc.core.uicommons.client.models;
 
 import java.util.Map;
 
+@SuppressWarnings("nls")
 public class DEProperties {
     /**
      * The prefix used in each of the property names.
      */
-    private static final String PROPERTY_NAME_PREFIX = "org.iplantc.discoveryenvironment."; //$NON-NLS-1$
+    private static final String PROPERTY_NAME_PREFIX = "org.iplantc.discoveryenvironment.";
 
     /**
      * The base URL used to access the Mule services.
      */
-    private static final String MULE_SERVICE_BASE_URL = PROPERTY_NAME_PREFIX + "muleServiceBaseUrl"; //$NON-NLS-1$
+    private static final String MULE_SERVICE_BASE_URL = PROPERTY_NAME_PREFIX + "muleServiceBaseUrl";
 
     /**
      * The base URL used to access the Mule services.
      */
     private static final String UNPROTECTED_MULE_SERVICE_BASE_URL = PROPERTY_NAME_PREFIX
-            + "unprotectedMuleServiceBaseUrl"; //$NON-NLS-1$
+            + "unprotectedMuleServiceBaseUrl";
 
     /**
      * Properties key used to indicate if server-push messaging is enabled. (under development)
      */
-    private static final String SERVER_PUSH_ENABLED = PROPERTY_NAME_PREFIX + "serverPushEnabled"; //$NON-NLS-1$
+    private static final String SERVER_PUSH_ENABLED = PROPERTY_NAME_PREFIX + "serverPushEnabled";
 
     /**
      * Properties key of the base URL of the data management services.
      */
-    private static final String DATA_MGMT_BASE_URL = "org.iplantc.services.de-data-mgmt.base"; //$NON-NLS-1$
+    private static final String DATA_MGMT_BASE_URL = "org.iplantc.services.de-data-mgmt.base";
+
+    /**
+     * Properties key of the base URL of the Kif-share service.
+     */
+    private static final String KIFSHARE_TICKET_BASE_URL = "org.iplantc.services.de-data-mgmt.view-tickets";
 
     /**
      * Properties key of the notification polling interval
      */
-    private static final String NOTIFICATION_POLL_INTERVAL = "org.iplantc.discoveryenvironment.notifications.poll-interval"; //$NON-NLS-1$
+    private static final String NOTIFICATION_POLL_INTERVAL = "org.iplantc.discoveryenvironment.notifications.poll-interval";
 
     /**
      * Properties key of the context click enabled option
      */
+    private static final String CONTEXT_CLICK_ENABLED = "org.iplantc.discoveryenvironment.contextMenu.enabled";
 
-    private static final String CONTEXT_CLICK_ENABLED = "org.iplantc.discoveryenvironment.contextMenu.enabled";//$NON-NLS-1$
+    /**
+     * Properties key of the "Manage Data Links" UI elements enabled config.
+     */
+    private static final String TICKETS_ENABLED = "org.iplantc.discoveryenvironment.tickets.enabled";
 
     /**
      * The prefix used in each of the private workspace property names.
      */
-    private static final String WORKSPACE_PREFIX = "org.iplantc.discoveryenvironment.workspace."; //$NON-NLS-1$
+    private static final String WORKSPACE_PREFIX = "org.iplantc.discoveryenvironment.workspace.";
 
     /**
      * Properties key for the private workspace
      */
-    private static final String PRIVATE_WORKSPACE = WORKSPACE_PREFIX + "rootAnalysisGroup"; //$NON-NLS-1$
+    private static final String PRIVATE_WORKSPACE = WORKSPACE_PREFIX + "rootAnalysisGroup";
 
     /**
      * Properties key for the private workspace items
      */
-    private static final String PRIVATE_WORKSPACE_ITEMS = WORKSPACE_PREFIX + "defaultAnalysisGroups"; //$NON-NLS-1$
+    private static final String PRIVATE_WORKSPACE_ITEMS = WORKSPACE_PREFIX + "defaultAnalysisGroups";
 
     /**
      * Properties key for the default Beta Category ID
      */
     private static final String DEFAULT_BETA_CATEGORY_ID = WORKSPACE_PREFIX
-            + "defaultBetaAnalysisGroupId"; //$NON-NLS-1$
+            + "defaultBetaAnalysisGroupId";
 
     /**
      * Properties key for the default output folder name
      */
     private static final String DEFAULT_OUTPUT_FOLDER_NAME = WORKSPACE_PREFIX
-            + "defaultOutputFolderName"; //$NON-NLS-1$
+            + "defaultOutputFolderName";
 
     /**
      * The prefix used for each of the keepalive configuration parameters.
@@ -99,6 +109,11 @@ public class DEProperties {
     private String dataMgmtBaseUrl;
 
     /**
+     * The base URL of the Kif-share service.
+     */
+    private String kifShareTicketBaseUrl;
+
+    /**
      * The polling interval
      */
     private int notificationPollInterval;
@@ -107,6 +122,11 @@ public class DEProperties {
      * Context click option
      */
     private boolean contextClickEnabled;
+
+    /**
+     * Display or hide "Manage Data Links" UI elements.
+     */
+    private boolean ticketsEnabled;
 
     /**
      * private workspace name
@@ -201,6 +221,7 @@ public class DEProperties {
      */
     public void initialize(Map<String, String> properties) {
         dataMgmtBaseUrl = properties.get(DATA_MGMT_BASE_URL);
+        kifShareTicketBaseUrl = properties.get(KIFSHARE_TICKET_BASE_URL);
         muleServiceBaseUrl = properties.get(MULE_SERVICE_BASE_URL);
         unproctedMuleServiceBaseUrl = properties.get(UNPROTECTED_MULE_SERVICE_BASE_URL);
         serverPushEnabled = Boolean.parseBoolean(properties.get(SERVER_PUSH_ENABLED));
@@ -209,6 +230,7 @@ public class DEProperties {
         defaultBetaCategoryId = properties.get(DEFAULT_BETA_CATEGORY_ID);
         defaultOutputFolderName = properties.get(DEFAULT_OUTPUT_FOLDER_NAME);
         contextClickEnabled = getBoolean(properties, CONTEXT_CLICK_ENABLED, false);
+        ticketsEnabled = getBoolean(properties, TICKETS_ENABLED, true);
         notificationPollInterval = getInt(properties, NOTIFICATION_POLL_INTERVAL, 60);
         keepaliveTarget = properties.get(KEEPALIVE_TARGET);
         keepaliveInterval = getInt(properties, KEEPALIVE_INTERVAL, -1);
@@ -263,6 +285,15 @@ public class DEProperties {
      */
     public String getDataMgmtBaseUrl() {
         return dataMgmtBaseUrl;
+    }
+
+    /**
+     * Gets the base URL of the Kif-share service.
+     * 
+     * @return the URL as a string.
+     */
+    public String getKifShareTicketBaseUrl() {
+        return kifShareTicketBaseUrl;
     }
 
     /**
@@ -344,5 +375,12 @@ public class DEProperties {
      */
     public void setMaxSearchResults(int maxSearchResults) {
         this.maxSearchResults = maxSearchResults;
+    }
+
+    /**
+     * @return config to display or hide "Manage Data Links" UI elements.
+     */
+    public boolean isTicketsEnabled() {
+        return ticketsEnabled;
     }
 }
