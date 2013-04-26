@@ -72,4 +72,8 @@ public class IPlantDialog extends Dialog implements IsHideable {
         }
     }
 
+    public void setOkButtonText(String text) {
+        getOkButton().setText(text);
+    }
+
 }
