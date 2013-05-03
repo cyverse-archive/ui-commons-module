@@ -21,7 +21,14 @@ public abstract class AsyncCallbackConverter<F, T> implements AsyncCallback<F> {
 
     @Override
     public void onSuccess(F result) {
+        // JDS Perform conversion and pass result to callback.
         this.callback.onSuccess(convertFrom(result));
+    }
+
+    @Override
+    public void onFailure(Throwable caught) {
+        // JDS Forward the failure to the callback by default.
+        this.callback.onFailure(caught);
     }
 
     /**
