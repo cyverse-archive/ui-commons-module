@@ -19,6 +19,7 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.button.ButtonBar;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.button.ToolButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.CheckBoxSelectionModel;
@@ -34,6 +35,7 @@ public class ManageCollaboratorsDailog extends Dialog {
     private CheckBoxSelectionModel<Collaborator> checkBoxModel;
     private CollaboratorProperties properties;
     private Presenter p;
+    private ToolButton tool_help;
 
     public ManageCollaboratorsDailog(MODE mode) {
         init();
@@ -51,6 +53,8 @@ public class ManageCollaboratorsDailog extends Dialog {
 
     private void initDialog() {
         setHeadingText(I18N.DISPLAY.collaborators());
+        tool_help = new ToolButton(ToolButton.QUESTION);
+        getHeader().addTool(tool_help);
         setPixelSize(450, 400);
         setButtons();
         setResizable(false);
