@@ -27,7 +27,6 @@ public class IPlantDialog extends Dialog implements IsHideable {
     protected void init() {
         setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
         setModal(true);
-        setAutoHide(true);
         setResizable(false);
         setHideOnButtonClick(true);
     }
