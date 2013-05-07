@@ -19,7 +19,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
-import com.sencha.gxt.widget.core.client.button.ToolButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.CheckBoxSelectionModel;
@@ -35,9 +34,9 @@ public class ManageCollaboratorsDailog extends IPlantDialog {
     private CheckBoxSelectionModel<Collaborator> checkBoxModel;
     private CollaboratorProperties properties;
     private Presenter p;
-    private ToolButton tool_help;
 
     public ManageCollaboratorsDailog(MODE mode) {
+        super(true);
         initDialog();
         ListStore<Collaborator> store = new ListStore<Collaborator>(new CollaboratorKeyProvider());
         ColumnModel<Collaborator> cm = buildColumnModel();
@@ -52,15 +51,13 @@ public class ManageCollaboratorsDailog extends IPlantDialog {
         properties = GWT.create(CollaboratorProperties.class);
         setPredefinedButtons(PredefinedButton.OK);
         setHeadingText(I18N.DISPLAY.collaborators());
-        tool_help = new ToolButton(ToolButton.QUESTION);
-        getHeader().addTool(tool_help);
-        tool_help.addSelectHandler(new SelectHandler() {
+        help_tool.addSelectHandler(new SelectHandler() {
             
             @Override
             public void onSelect(SelectEvent event) {
                 ContextualHelpPopup popup = new ContextualHelpPopup();
                 popup.add(new HTML(I18N.HELP.collaboratorsHelp()));
-                popup.showAt(tool_help.getAbsoluteLeft(), tool_help.getAbsoluteTop() + 15);
+                popup.showAt(help_tool.getAbsoluteLeft(), help_tool.getAbsoluteTop() + 15);
             }
         });
         setPixelSize(450, 400);
