@@ -10,15 +10,15 @@ import org.iplantc.core.uicommons.client.collaborators.models.CollaboratorProper
 import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter;
 import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
 import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsView.Presenter;
+import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IPlantDialog;
+import org.iplantc.core.uicommons.client.widgets.ContextualHelpPopup;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
-import com.sencha.gxt.widget.core.client.Dialog;
-import com.sencha.gxt.widget.core.client.button.ButtonBar;
-import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.button.ToolButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
@@ -30,7 +30,7 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
  * @author sriram
  *
  */
-public class ManageCollaboratorsDailog extends Dialog {
+public class ManageCollaboratorsDailog extends IPlantDialog {
 
     private CheckBoxSelectionModel<Collaborator> checkBoxModel;
     private CollaboratorProperties properties;
@@ -38,7 +38,7 @@ public class ManageCollaboratorsDailog extends Dialog {
     private ToolButton tool_help;
 
     public ManageCollaboratorsDailog(MODE mode) {
-        init();
+        initDialog();
         ListStore<Collaborator> store = new ListStore<Collaborator>(new CollaboratorKeyProvider());
         ColumnModel<Collaborator> cm = buildColumnModel();
         ManageCollaboratorsView view = new ManageCollaboratorsViewImpl(checkBoxModel, cm, store, mode);
@@ -46,47 +46,36 @@ public class ManageCollaboratorsDailog extends Dialog {
         p.go(this);
     }
 
-    private void init() {
-        initDialog();
-        properties = GWT.create(CollaboratorProperties.class);
-    }
+
 
     private void initDialog() {
+        properties = GWT.create(CollaboratorProperties.class);
+        setPredefinedButtons(PredefinedButton.OK);
         setHeadingText(I18N.DISPLAY.collaborators());
         tool_help = new ToolButton(ToolButton.QUESTION);
         getHeader().addTool(tool_help);
+        tool_help.addSelectHandler(new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
+                ContextualHelpPopup popup = new ContextualHelpPopup();
+                popup.add(new HTML(I18N.HELP.collaboratorsHelp()));
+                popup.showAt(tool_help.getAbsoluteLeft(), tool_help.getAbsoluteTop() + 15);
+            }
+        });
         setPixelSize(450, 400);
-        setButtons();
-        setResizable(false);
+        addOkButtonHandler();
         setHideOnButtonClick(true);
-
     }
 
-    private void setButtons() {
-        ButtonBar buttonBar = getButtonBar();
-        int ctn = buttonBar.getWidgetCount();
-        for (int i = 0; i < ctn; i++) {
-            buttonBar.remove(i);
-        }
-        setOkButton();
-
-    }
-
-    private void setOkButton() {
-        TextButton ok = new TextButton("Ok");
-        ok.addSelectHandler(new SelectHandler() {
+    private void addOkButtonHandler() {
+        addOkButtonSelectHandler(new SelectHandler() {
 
             @Override
             public void onSelect(SelectEvent event) {
                 hide();
             }
         });
-        ok.setId("okBtn");
-        getButtonBar().add(ok);
-    }
-
-    public TextButton getOkButton() {
-        return getButtonById("okBtn");
     }
 
     private ColumnModel<Collaborator> buildColumnModel() {
