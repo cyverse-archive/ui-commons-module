@@ -21,7 +21,6 @@ public class ErrorDialog3 extends IPlantDialog {
     interface ErrorDialog3UiBinder extends UiBinder<Widget, ErrorDialog3> {
     }
 
-
     @UiField
     HTML errorMsg;
 
