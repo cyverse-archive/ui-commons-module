@@ -1,8 +1,6 @@
 package org.iplantc.core.uicommons.client.views.gxt3.dialogs;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -22,13 +20,6 @@ public class ErrorDialog3 extends IPlantDialog {
 
     interface ErrorDialog3UiBinder extends UiBinder<Widget, ErrorDialog3> {
     }
-
-    public interface Icons extends ClientBundle {
-
-        @Source("images/icon-error.gif")
-        ImageResource iconError();
-    }
-
 
     @UiField
     HTML errorMsg;
