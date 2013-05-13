@@ -3,218 +3,147 @@ package org.iplantc.core.uicommons.client.info;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.iplantc.core.resources.client.AnnouncerStyle;
-import org.iplantc.core.resources.client.IplantResources;
-
-import com.google.gwt.dom.client.Style.Float;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.web.bindery.event.shared.HandlerRegistration;
-import com.sencha.gxt.core.client.Style.Side;
-import com.sencha.gxt.core.client.dom.XElement;
-import com.sencha.gxt.widget.core.client.Popup;
-import com.sencha.gxt.widget.core.client.button.IconButton.IconConfig;
-import com.sencha.gxt.widget.core.client.button.ToolButton;
-import com.sencha.gxt.widget.core.client.container.CssFloatLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.CssFloatLayoutContainer.CssFloatData;
-import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
- * Objects of this class display a message in the top center of the view port. The message may be a
- * widget, allowing a user to interact with the message to obtain more information. By default, the
- * message is closable by the user and will close automatically after 10 seconds.
+ * A queue for IplantAnnouncement popups that controls which one is displayed and its position.
+ * 
+ * Announcements are displayed by this class in the top center of the view port. The message may be a
+ * String or a widget, allowing a user to interact with the message to obtain more information. By
+ * default, an IplantAnnouncementConfig is used to determine the message timeout and if it is closable by
+ * the user.
  * 
  * Only one message can be displayed at time. If a second message is scheduled, it will be shown once the
  * first one times out.
  */
-public final class IplantAnnouncer {
+public class IplantAnnouncer {
 
-    private static final AnnouncerStyle STYLE;
-    private static final IconConfig CLOSER_CFG;
-    private static final int DEFAULT_TIMEOUT_ms;
-    private static final Queue<IplantAnnouncer> announcers;
+    private static final Queue<IplantAnnouncement> announcements;
+    private static final Timer timer;
 
     static {
-        STYLE = IplantResources.RESOURCES.getAnnouncerStyle();
-        STYLE.ensureInjected();
-        CLOSER_CFG = new IconConfig(STYLE.closeButton(), STYLE.closeButtonOver());
-        DEFAULT_TIMEOUT_ms = 10000;
-        announcers = new LinkedList<IplantAnnouncer>();
-    }
-
-    private static void removeAnnouncer(final IplantAnnouncer oldAnnouncer) {
-        if (announcers.contains(oldAnnouncer)) {
-            announcers.remove(oldAnnouncer);
-        }
-        showNextAnnouncer();
-    }
-
-    private static void scheduleAnnouncer(final IplantAnnouncer newAnnouncer) {
-        if (announcers.contains(newAnnouncer)) {
-            return;
-        }
-        announcers.add(newAnnouncer);
-        showNextAnnouncer();
-    }
-
-    private static void showNextAnnouncer() {
-        if (announcers.isEmpty()) {
-            return;
-        }
-        announcers.peek().show();
-        if (announcers.size() > 1) {
-            announcers.peek().indicateMore();
-        } else {
-            announcers.peek().indicateNoMore();
-        }
-    }
-
-    private final class CloseHandler implements SelectHandler {
-        @Override
-        public void onSelect(final SelectEvent event) {
-            remove();
-        }
-    }
-
-    private final class CloseTimer extends Timer {
-        @Override
-        public void run() {
-            remove();
-        };
-    }
-
-    private final Popup panel;
-    private final Timer timer;
-    private final int timeout_ms;
-
-    private boolean showing;
-    private HandlerRegistration positionerRegistration;
-
-    /**
-     * Constructs a user closable announcer that will close automatically after 10 seconds.
-     * 
-     * @param content the message widget
-     */
-    public IplantAnnouncer(final IsWidget content) {
-        this(content, true, DEFAULT_TIMEOUT_ms);
-    }
-
-    /**
-     * Constructs an announcer that will close automatically after 10 seconds.
-     * 
-     * @param content the message widget
-     * @param closable a flag indicating whether or not the message is user closable.
-     */
-    public IplantAnnouncer(final IsWidget content, final boolean closable) {
-        this(content, closable, DEFAULT_TIMEOUT_ms);
-    }
-
-    /**
-     * Constructs an announcer. Setting a timeout of 0 or less will cause the message to not close
-     * automatically.
-     * 
-     * If the closable flag is set to false, the message must close automatically. In this case, if the
-     * provided timeout is 0 or less, the message will close automatically after 10 seconds.
-     * 
-     * @param content the message widget
-     * @param closable a flag indicating whether or not the message is closable.
-     * @param timeout_ms the amount of time in milliseconds to wait before automatically closing the
-     *            message.
-     */
-    public IplantAnnouncer(final IsWidget content, final boolean closable, final int timeout_ms) {
-        this.panel = new Popup();
-        this.timer = new CloseTimer();
-        this.timeout_ms = (!closable && timeout_ms <= 0) ? DEFAULT_TIMEOUT_ms : timeout_ms;
-        this.showing = false;
-        this.positionerRegistration = null;
-        initPanel(content, closable);
-    }
-
-    private void initPanel(final IsWidget content, final boolean closable) {
-        final SimpleContainer contentContainer = new SimpleContainer();
-        contentContainer.setWidget(content);
-        contentContainer.addStyleName(STYLE.content());
-
-        final CssFloatLayoutContainer layout = new CssFloatLayoutContainer();
-        layout.add(contentContainer, new CssFloatData(-1));
-
-        if (closable) {
-            final ToolButton closeButton = new ToolButton(CLOSER_CFG, new CloseHandler());
-            layout.add(closeButton, new CssFloatData(-1));
-            closeButton.getElement().getStyle().setFloat(Float.RIGHT);
-        }
-
-        panel.setWidget(layout);
-        panel.setAutoHide(false);
-        panel.addStyleName(STYLE.panel());
-        panel.setShadow(true);
-    }
-
-    /**
-     * closes the message
-     */
-    public void remove() {
-        showing = false;
-        unregisterPositioner();
-        timer.cancel();
-        panel.hide();
-        removeAnnouncer(this);
-    }
-
-    /**
-     * Schedules a message to be shown.
-     */
-    public void schedule() {
-        scheduleAnnouncer(this);
-    }
-
-    private void indicateMore() {
-        panel.addStyleName(STYLE.panelMultiple());
-    }
-
-    private void indicateNoMore() {
-        panel.removeStyleName(STYLE.panelMultiple());
-    }
-
-    private void show() {
-        if (!showing) {
-            panel.show();
-            positionPanel();
-            registerPositioner();
-            if (timeout_ms > 0) {
-                timer.schedule(timeout_ms);
-            }
-            showing = true;
-        }
-    }
-
-    private void registerPositioner() {
-        unregisterPositioner();
-        positionerRegistration = Window.addResizeHandler(new ResizeHandler() {
+        announcements = new LinkedList<IplantAnnouncement>();
+        timer = new CloseTimer();
+        Window.addResizeHandler(new ResizeHandler() {
             @Override
             public void onResize(final ResizeEvent event) {
-                positionPanel();
+                positionAnnouncer();
             }
         });
     }
 
-    private void unregisterPositioner() {
-        if (positionerRegistration != null) {
-            positionerRegistration.removeHandler();
-            positionerRegistration = null;
+    private static void removeAnnouncement() {
+        if (announcements.isEmpty()) {
+            return;
+        }
+
+        IplantAnnouncement popup = announcements.poll();
+        timer.cancel();
+        popup.hide();
+
+        showNextAnnouncement();
+    }
+
+    private static void scheduleAnnouncement(final IplantAnnouncement newAnnouncement) {
+        if (announcements.contains(newAnnouncement)) {
+            return;
+        }
+        announcements.add(newAnnouncement);
+        showNextAnnouncement();
+    }
+
+    private static void showNextAnnouncement() {
+        if (announcements.isEmpty()) {
+            return;
+        }
+
+        IplantAnnouncement popup = announcements.peek();
+        popup.show();
+        positionAnnouncer();
+        if (popup.getTimeOut() > 0) {
+            timer.schedule(popup.getTimeOut());
+        }
+
+        if (announcements.size() > 1) {
+            popup.indicateMore();
+        } else {
+            popup.indicateNoMore();
         }
     }
 
-    private void positionPanel() {
-        final XElement panElmt = panel.getElement();
-        final int panelWid = panElmt.getMargins(Side.LEFT, Side.RIGHT) + panElmt.getOffsetWidth();
-        panel.getElement().setX((Window.getClientWidth() - panelWid) / 2);
-        panel.getElement().setY(0);
+    private static final class CloseHandler implements SelectHandler {
+        @Override
+        public void onSelect(final SelectEvent event) {
+            removeAnnouncement();
+        }
     }
 
+    private static final class CloseTimer extends Timer {
+        @Override
+        public void run() {
+            removeAnnouncement();
+        };
+    }
+
+    protected static void positionAnnouncer() {
+        if (announcements.isEmpty()) {
+            return;
+        }
+
+        IplantAnnouncement popup = announcements.peek();
+
+        int x = (Window.getClientWidth() - popup.getOffsetWidth()) / 2;
+        int y = 0;
+        popup.setPagePosition(x, y);
+    }
+
+    /**
+     * Schedules a user closable announcement that will close automatically after 10 seconds.
+     * 
+     * @param message The plain text announcement message.
+     */
+    public static void schedule(String message) {
+        schedule(new HTML(message));
+    }
+
+    /**
+     * Schedules an announcement using the given IplantAnnouncementConfig.
+     * 
+     * @param message The plain text announcement message.
+     * @param config The announcement configuration.
+     */
+    public static void schedule(String message, IplantAnnouncementConfig config) {
+        schedule(new HTML(message), new IplantAnnouncementConfig());
+    }
+
+    /**
+     * Schedules a user closable announcement that will close automatically after 10 seconds.
+     * 
+     * @param content A Widget containing the announcement message.
+     */
+    public static void schedule(IsWidget content) {
+        schedule(content, new IplantAnnouncementConfig());
+    }
+
+    /**
+     * Schedules an announcement using the given IplantAnnouncementConfig.
+     * 
+     * @param content A Widget containing the announcement message.
+     * @param config The announcement configuration.
+     */
+    public static void schedule(IsWidget content, IplantAnnouncementConfig config) {
+        IplantAnnouncement popup = new IplantAnnouncement(content, config);
+        if (config.isClosable()) {
+            popup.addCloseButtonHandler(new CloseHandler());
+        }
+
+        scheduleAnnouncement(popup);
+    }
 }
