@@ -226,7 +226,7 @@ public class CollaboratorsUtil {
 
         @Override
         public void onFailure(Throwable caught) {
-            ErrorHandler.post(org.iplantc.core.resources.client.messages.I18N.ERROR.addCollabErrorMsg(), caught);
+            ErrorHandler.post(I18N.ERROR.addCollabErrorMsg(), caught);
             if (callback != null) {
                 callback.onFailure(caught);
             }
@@ -302,7 +302,7 @@ public class CollaboratorsUtil {
 
         @Override
         public void onFailure(Throwable caught) {
-            ErrorHandler.post(org.iplantc.core.resources.client.messages.I18N.ERROR.removeCollabErrorMsg(), caught);
+            ErrorHandler.post(I18N.ERROR.removeCollabErrorMsg(), caught);
             if (callback != null) {
                 callback.onFailure(caught);
             }
