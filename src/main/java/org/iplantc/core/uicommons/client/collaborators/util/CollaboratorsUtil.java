@@ -13,6 +13,7 @@ import org.iplantc.core.uicommons.client.collaborators.models.CollaboratorAutoBe
 import org.iplantc.core.uicommons.client.collaborators.models.CollaboratorsList;
 import org.iplantc.core.uicommons.client.events.CollaboratorsLoadedEvent;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.services.CollaboratorsServiceFacade;
 
@@ -25,7 +26,6 @@ import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.sencha.gxt.core.shared.FastMap;
 import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
-import com.sencha.gxt.widget.core.client.info.Info;
 
 /**
  * @author sriram
@@ -245,8 +245,7 @@ public class CollaboratorsUtil {
                 builder.deleteCharAt(builder.length() - 1);
             }
 
-            Info.display(I18N.DISPLAY.collaboratorAdded(),
-            		I18N.DISPLAY.collaboratorAddConfirm(builder.toString()));
+            IplantAnnouncer.schedule(I18N.DISPLAY.collaboratorAddConfirm(builder.toString()));
             if (callback != null) {
                 callback.onSuccess(null);
             }
@@ -323,8 +322,7 @@ public class CollaboratorsUtil {
                 builder.deleteCharAt(builder.length() - 1);
             }
 
-            Info.display(I18N.DISPLAY.collaboratorRemoved(),
-            		I18N.DISPLAY.collaboratorRemoveConfirm(builder.toString()));
+            IplantAnnouncer.schedule(I18N.DISPLAY.collaboratorRemoveConfirm(builder.toString()));
             if (callback != null) {
                 callback.onSuccess(null);
             }
