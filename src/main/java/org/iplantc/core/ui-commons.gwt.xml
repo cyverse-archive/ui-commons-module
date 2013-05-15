@@ -6,4 +6,10 @@
     <inherits name='com.extjs.gxt.ui.GXT'/>
     <source path="client"/>
     <source path="uicommons"/>
+    
+    <!-- Default Appearances -->
+    <replace-with 
+    		class="org.iplantc.core.uicommons.client.appearance.widgets.InternalAnchorDefaultAppearance">
+    	<when-type-is class="org.iplantc.core.uicommons.client.widgets.InternalAnchor.Appearance"/>
+    </replace-with>
 </module>
