@@ -4,10 +4,9 @@
 package org.iplantc.core.uicommons.client.widgets;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.dom.XElement;
 
@@ -17,33 +16,32 @@ import com.sencha.gxt.core.client.dom.XElement;
  */
 public class IPlantAnchorDefaultAppearance implements IPlantAnchorAppearance {
 
+    /**
+     * @deprecated Use AnchorDefaultResources.Style directly
+     * TODO replace all usages of this interface with AnchorDefaultResources.Style
+     */
+    @Deprecated
+    public interface Style extends IPlantAnchorDefaultResources.Style {	
+    }
+    
+    /**
+     * @deprecated Use AnchorDefaultResources instead.
+     * TODO replace all usages of this interface with AnchorDefaultResources
+     */
+    @Deprecated
+    public interface Resources extends IPlantAnchorDefaultResources {	
+    }
+    
     public interface Template extends XTemplates {
         @XTemplate(source = "IPlantAnchorDefaultAppearance.html")
-        SafeHtml template(Style style);
+        SafeHtml template(IPlantAnchorDefaultResources.Style style);
     }
 
-    public interface Style extends CssResource {
-
-        String anchor();
-
-        String anchorText();
-
-        String anchorMouseOver();
-
-        String anchorMouseOut();
-    }
-
-    protected Style style;
+    protected IPlantAnchorDefaultResources.Style style;
     protected Template template;
 
-    public interface Resources extends ClientBundle {
-        @Source("IPlantAnchorDefaultAppearance.css")
-        Style style();
-    }
-
     public IPlantAnchorDefaultAppearance() {
-        Resources resources = ((Resources)GWT.create(Resources.class));
-        this.style = resources.style();
+        this.style = IPlantAnchorDefaultResources.INSTANCE.style();
         this.style.ensureInjected();
 
         this.template = GWT.create(Template.class);
