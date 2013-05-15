@@ -13,9 +13,9 @@ import com.sencha.gxt.widget.core.client.button.IconButton.IconConfig;
  * 
  */
 public class IplantAnnouncementConfig {
-    private static final int DEFAULT_TIMEOUT_ms = 10000;
-    private static final AnnouncerStyle STYLE;
-    private static final IconConfig CLOSER_CFG;
+    protected static final int DEFAULT_TIMEOUT_ms = 10000;
+    protected static final AnnouncerStyle STYLE;
+    protected static final IconConfig CLOSER_CFG;
 
     static {
         STYLE = IplantResources.RESOURCES.getAnnouncerStyle();
