@@ -27,10 +27,7 @@ public interface AnchorDefaultResources extends ClientBundle {
         
         /**
          * The style attached to the link within the anchor
-         * 
-         * @deprecated This is redundant and shouldn't be used.
          */
-        @Deprecated
         String anchorText();
 
         /**

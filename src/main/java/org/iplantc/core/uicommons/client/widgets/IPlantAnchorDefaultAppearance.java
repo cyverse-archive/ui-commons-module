@@ -17,14 +17,6 @@ import com.sencha.gxt.core.client.dom.XElement;
  */
 public class IPlantAnchorDefaultAppearance implements IPlantAnchorAppearance {
 
-    /**
-     * @deprecated Use AnchorDefaultResources.Style directly
-     * TODO replace all usages of this interface with AnchorDefaultResources.Style
-     */
-    @Deprecated
-    public interface Style extends AnchorDefaultResources.Style {	
-    }
-    
     public interface Template extends XTemplates {
         @XTemplate(source = "IPlantAnchorDefaultAppearance.html")
         SafeHtml template(AnchorDefaultResources.Style style);
@@ -45,9 +37,7 @@ public class IPlantAnchorDefaultAppearance implements IPlantAnchorAppearance {
      */
     @Override
     public void onMouseOver(XElement element) {
-        element.selectNode("." + style.anchorText()).removeClassName(style.anchorMouseOut());
-        element.selectNode("." + style.anchorText()).addClassName(style.anchorMouseOver());
-
+        // intentionally left empty.
     }
 
     /* (non-Javadoc)
@@ -55,8 +45,7 @@ public class IPlantAnchorDefaultAppearance implements IPlantAnchorAppearance {
      */
     @Override
     public void onMouseOut(XElement element) {
-        element.selectNode("." + style.anchorText()).removeClassName(style.anchorMouseOver());
-        element.selectNode("." + style.anchorText()).addClassName(style.anchorMouseOut());
+        // intentionally left empty.
     }
 
     /* (non-Javadoc)
