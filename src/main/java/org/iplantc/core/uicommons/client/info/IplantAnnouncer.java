@@ -120,7 +120,7 @@ public class IplantAnnouncer {
      * @param config The announcement configuration.
      */
     public static void schedule(String message, IplantAnnouncementConfig config) {
-        schedule(new HTML(message), new IplantAnnouncementConfig());
+        schedule(new HTML(message), config);
     }
 
     /**
