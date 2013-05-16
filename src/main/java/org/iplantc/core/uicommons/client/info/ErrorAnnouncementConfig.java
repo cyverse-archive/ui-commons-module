@@ -2,6 +2,10 @@ package org.iplantc.core.uicommons.client.info;
 
 public class ErrorAnnouncementConfig extends IplantAnnouncementConfig {
 
+    public ErrorAnnouncementConfig() {
+        super();
+    }
+
     public ErrorAnnouncementConfig(boolean closable) {
         super(closable);
     }
