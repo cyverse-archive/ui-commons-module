@@ -1,7 +1,5 @@
 package org.iplantc.core.uicommons.client.util;
 
-import com.extjs.gxt.ui.client.util.Format;
-
 /**
  * A utility class with methods for regular expressions in Java.
  * 
@@ -20,15 +18,19 @@ public class RegExp {
      */
     public static String escapeCharacterClassSet(String charSet) {
         // Java's replaceAll needs some additional escaping of backslashes and brackets.
-        String backSlash = Format.escape("\\"); //$NON-NLS-1$
-        String regexEscapedBackslash = Format.escape("\\\\"); //$NON-NLS-1$
+        String backSlash = escape("\\"); //$NON-NLS-1$
+        String regexEscapedBackslash = escape("\\\\"); //$NON-NLS-1$
         String openBracket = "\\["; //$NON-NLS-1$
-        String escapedOpenBracket = Format.escape("\\["); //$NON-NLS-1$
+        String escapedOpenBracket = escape("\\["); //$NON-NLS-1$
         String closeBracket = "\\]"; //$NON-NLS-1$
-        String escapedCloseBracket = Format.escape("\\]"); //$NON-NLS-1$
+        String escapedCloseBracket = escape("\\]"); //$NON-NLS-1$
 
         return charSet.replaceAll(backSlash, regexEscapedBackslash)
                 .replaceAll(openBracket, escapedOpenBracket)
                 .replaceAll(closeBracket, escapedCloseBracket);
     }
+    
+    private static native String escape(String s)/*-{
+        return s.replace(/('|\\)/g, "\\$1");
+    }-*/;
 }
