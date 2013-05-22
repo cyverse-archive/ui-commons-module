@@ -1,12 +1,13 @@
 /**
  * 
  */
-package org.iplantc.core.uicommons.client.widgets;
+package org.iplantc.core.uicommons.client.appearance.widgets;
+
+import org.iplantc.core.uicommons.client.widgets.IPlantAnchorAppearance;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.dom.XElement;
 
@@ -15,33 +16,17 @@ import com.sencha.gxt.core.client.dom.XElement;
  *
  */
 public class IPlantAnchorDefaultAppearance implements IPlantAnchorAppearance {
-
-    /**
-     * @deprecated Use AnchorDefaultResources.Style directly
-     * TODO replace all usages of this interface with AnchorDefaultResources.Style
-     */
-    @Deprecated
-    public interface Style extends IPlantAnchorDefaultResources.Style {	
-    }
-    
-    /**
-     * @deprecated Use AnchorDefaultResources instead.
-     * TODO replace all usages of this interface with AnchorDefaultResources
-     */
-    @Deprecated
-    public interface Resources extends IPlantAnchorDefaultResources {	
-    }
     
     public interface Template extends XTemplates {
         @XTemplate(source = "IPlantAnchorDefaultAppearance.html")
-        SafeHtml template(IPlantAnchorDefaultResources.Style style);
+        SafeHtml template(AnchorDefaultResources.Style style);
     }
 
-    protected IPlantAnchorDefaultResources.Style style;
+    protected AnchorDefaultResources.Style style;
     protected Template template;
 
     public IPlantAnchorDefaultAppearance() {
-        this.style = IPlantAnchorDefaultResources.INSTANCE.style();
+        this.style = AnchorDefaultResources.INSTANCE.style();
         this.style.ensureInjected();
 
         this.template = GWT.create(Template.class);
@@ -52,9 +37,7 @@ public class IPlantAnchorDefaultAppearance implements IPlantAnchorAppearance {
      */
     @Override
     public void onMouseOver(XElement element) {
-        element.selectNode("." + style.anchorText()).removeClassName(style.anchorMouseOut());
-        element.selectNode("." + style.anchorText()).addClassName(style.anchorMouseOver());
-
+        // intentionally left empty.
     }
 
     /* (non-Javadoc)
@@ -62,8 +45,7 @@ public class IPlantAnchorDefaultAppearance implements IPlantAnchorAppearance {
      */
     @Override
     public void onMouseOut(XElement element) {
-        element.selectNode("." + style.anchorText()).removeClassName(style.anchorMouseOver());
-        element.selectNode("." + style.anchorText()).addClassName(style.anchorMouseOut());
+        // intentionally left empty.
     }
 
     /* (non-Javadoc)

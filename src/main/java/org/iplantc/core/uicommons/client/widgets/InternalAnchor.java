@@ -1,14 +1,15 @@
 package org.iplantc.core.uicommons.client.widgets;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasOpenHandlers;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.RootPanel;
-
 import com.sencha.gxt.core.client.dom.XElement;
 
 /**
@@ -19,15 +20,40 @@ import com.sencha.gxt.core.client.dom.XElement;
  */
 public final class InternalAnchor<T> extends InlineHTML implements HasOpenHandlers<T> {
 
-	/**
-	 * Creates an InternalAnchor that wraps an existing <div/> or <span/> element. The element must
-	 * already be attached to the document.
-	 * 
-	 * @param target the type the anchor will open
-	 * @param element the DOM element to wrap
-	 *
-	 * @return the InternalAnchor that wraps the DOM element
-	 */
+    /**
+     * This is the interface for any class that defines the appearance of an internal anchor.
+     */
+    public interface Appearance {
+
+        /**
+         * Implementations of this method should retrieve the anchor element from its parent.
+         * 
+         * @param parent The DOM element of the parent of the anchor element
+         */
+        XElement getAnchorElement(XElement parent);
+
+        /**
+         * Implementations of this method should render the anchor in HTML.
+         * 
+         * @param anchorText the text to display in the anchor
+         * 
+         * @return the HTML
+         */
+        SafeHtml render(String anchorText);
+
+    }
+
+    private static final Appearance DEFAULT_APPEARANCE = GWT.create(Appearance.class);
+
+    /**
+     * Creates an InternalAnchor that wraps an existing <div/> or <span/> element. The element must
+     * already be attached to the document.
+     * 
+     * @param target the type the anchor will open
+     * @param element the DOM element to wrap
+     * 
+     * @return the InternalAnchor that wraps the DOM element
+     */
 	public static <T> InternalAnchor<T> wrap(final T target, final XElement element) {
 		final InternalAnchor<T> anchor = new InternalAnchor<T>(target, element);
 		RootPanel.detachOnWindowClose(anchor);
@@ -44,7 +70,7 @@ public final class InternalAnchor<T> extends InlineHTML implements HasOpenHandle
 	 * @param text the text to display in the anchor
 	 */
 	public InternalAnchor(final T target, final String text) {
-		this(target, text, new InternalAnchorDefaultAppearance());
+        this(target, text, DEFAULT_APPEARANCE);
 	}
 
 	/**
@@ -57,7 +83,7 @@ public final class InternalAnchor<T> extends InlineHTML implements HasOpenHandle
 	 * @param handler the open handler 
 	 */
 	public InternalAnchor(final T target, final String text, final OpenHandler<T> handler) {
-		this(target, text, new InternalAnchorDefaultAppearance(), handler);
+        this(target, text, DEFAULT_APPEARANCE, handler);
 	}
 	
 	/**
@@ -67,8 +93,7 @@ public final class InternalAnchor<T> extends InlineHTML implements HasOpenHandle
 	 * @param text the text to display in the anchor
 	 * @param appearance the appearance of the anchor
 	 */
-	public InternalAnchor(final T target, final String text, 
-			final InternalAnchorAppearance appearance) {
+    public InternalAnchor(final T target, final String text, final Appearance appearance) {
 		super(appearance.render(text));
 		this.target = target;
 		initClickHandler();
@@ -83,8 +108,7 @@ public final class InternalAnchor<T> extends InlineHTML implements HasOpenHandle
 	 * @param appearance the appearance of the anchor
 	 * @param handler the open handler 
 	 */
-	public InternalAnchor(final T target, final String text, 
-			final InternalAnchorAppearance appearance, final OpenHandler<T> handler) {
+    public InternalAnchor(final T target, final String text, final Appearance appearance, final OpenHandler<T> handler) {
 		this(target, text, appearance);
 		addOpenHandler(handler);
 	}
