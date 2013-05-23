@@ -88,7 +88,7 @@ public class UserSearchField implements IsWidget {
         combo = new ComboBox<Collaborator>(cell);
         combo.setLoader(loader);
         combo.setMinChars(3);
-        combo.setWidth(300);
+        combo.setWidth(250);
         combo.setHideTrigger(true);
         combo.setEmptyText(I18N.DISPLAY.searchCollab());
         combo.addSelectionHandler(new SelectionHandler<Collaborator>() {
