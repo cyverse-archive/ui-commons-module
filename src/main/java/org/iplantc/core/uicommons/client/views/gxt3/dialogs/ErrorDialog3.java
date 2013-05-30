@@ -1,5 +1,6 @@
 package org.iplantc.core.uicommons.client.views.gxt3.dialogs;
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -35,11 +36,16 @@ public class ErrorDialog3 extends IPlantDialog {
 
     public ErrorDialog3(String errorMsg, String description) {
         super();
+
         this.setMinHeight(200);
         this.setMinWidth(350);
         this.setResizable(true);
+
         add(uiBinder.createAndBindUi(this));
-        this.errorMsg.setHTML(SafeHtmlUtils.fromString(errorMsg));
+
+        if (!Strings.isNullOrEmpty(errorMsg)) {
+            this.errorMsg.setHTML(SafeHtmlUtils.fromString(errorMsg));
+        }
         this.descriptionArea.setText(description);
         detailsPanel.setExpanded(false);
     }

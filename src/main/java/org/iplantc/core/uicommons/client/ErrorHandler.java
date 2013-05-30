@@ -72,12 +72,14 @@ public class ErrorHandler {
 
         // Build a new Exception message for the ErrorHandler details panel.
         String errDetails = ""; //$NON-NLS-1$
-        if (!error.getStatus().isEmpty()) {
+        if (!Strings.isNullOrEmpty(error.getStatus())) {
             errDetails += I18N.ERROR.serviceErrorStatus(error.getStatus());
         }
-        if (!error.getErrorCode().isEmpty()) {
+        if (!Strings.isNullOrEmpty(error.getErrorCode())) {
             errDetails += "\n" + I18N.ERROR.serviceErrorCode(error.getErrorCode()); //$NON-NLS-1$
         }
+
+        String errorMsg = error.generateErrorMsg();
 
         /*
          * JDS - The if block below used to be in DiskResourceServiceCallback in DE-Webapp. The issue is
@@ -87,13 +89,13 @@ public class ErrorHandler {
          */
         if (!Strings.isNullOrEmpty(error.getReason())) {
             errDetails += "\n" + I18N.ERROR.serviceErrorReason(error.getReason()); //$NON-NLS-1$
-        } else if (!Strings.isNullOrEmpty(error.generateErrorMsg())) {
-            errDetails += "\n" + I18N.ERROR.serviceErrorReason(error.generateErrorMsg()); //$NON-NLS-1$
+        } else if (!Strings.isNullOrEmpty(errorMsg)) {
+            errDetails += "\n" + I18N.ERROR.serviceErrorReason(errorMsg); //$NON-NLS-1$
         }
 
 
         Throwable newCaught = new Exception(errDetails, caught);
-        post(error.generateErrorMsg(), newCaught);
+        post(errorMsg, newCaught);
     }
 
     private static String parseExceptionJson(Throwable caught) {
