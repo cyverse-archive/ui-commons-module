@@ -31,6 +31,16 @@ public class DEProperties {
     private static final String DATA_MGMT_BASE_URL = "org.iplantc.services.de-data-mgmt.base";
 
     /**
+     * Properties key of the base URL of the file I/O services.
+     */
+    private static final String FILE_IO_BASE_URL = "org.iplantc.services.file-io.base.secured";
+
+    /**
+     * Properties key of the unprotected base URL of the file I/O services.
+     */
+    private static final String UNPROTECTED_FILE_IO_BASE_URL = "org.iplantc.services.file-io.base.unsecured";
+
+    /**
      * Properties key of the base URL of the Kif-share service.
      */
     private static final String KIFSHARE_TICKET_BASE_URL = "org.iplantc.services.de-data-mgmt.view-tickets";
@@ -107,6 +117,16 @@ public class DEProperties {
      * The base URL of the data management services.
      */
     private String dataMgmtBaseUrl;
+
+    /**
+     * The base URL of the file I/O services.
+     */
+    private String fileIoBaseUrl;
+
+    /**
+     * The base URL of the unprotected file I/O services.
+     */
+    private String unproctedfileIoBaseUrl;
 
     /**
      * The base URL of the Kif-share service.
@@ -221,6 +241,8 @@ public class DEProperties {
      */
     public void initialize(Map<String, String> properties) {
         dataMgmtBaseUrl = properties.get(DATA_MGMT_BASE_URL);
+        fileIoBaseUrl = properties.get(FILE_IO_BASE_URL);
+        unproctedfileIoBaseUrl = properties.get(UNPROTECTED_FILE_IO_BASE_URL);
         kifShareTicketBaseUrl = properties.get(KIFSHARE_TICKET_BASE_URL);
         muleServiceBaseUrl = properties.get(MULE_SERVICE_BASE_URL);
         unproctedMuleServiceBaseUrl = properties.get(UNPROTECTED_MULE_SERVICE_BASE_URL);
@@ -285,6 +307,24 @@ public class DEProperties {
      */
     public String getDataMgmtBaseUrl() {
         return dataMgmtBaseUrl;
+    }
+
+    /**
+     * Gets the base URL of the file I/O services.
+     * 
+     * @return the URL as a string.
+     */
+    public String getFileIoBaseUrl() {
+        return fileIoBaseUrl;
+    }
+
+    /**
+     * Gets the unprotected base URL of the file I/O services.
+     * 
+     * @return the URL as a string.
+     */
+    public String getUnprotectedFileIoBaseUrl() {
+        return unproctedfileIoBaseUrl;
     }
 
     /**
