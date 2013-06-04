@@ -10,6 +10,8 @@ import org.iplantc.core.uicommons.client.views.gxt3.dialogs.ErrorDialog3;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.sencha.gxt.core.client.GXT;
 
@@ -49,10 +51,29 @@ public class ErrorHandler {
      * @param caught
      */
     public static void post(String errorSummary, Throwable caught) {
+        if (Strings.isNullOrEmpty(errorSummary)) {
+            errorSummary = I18N.ERROR.error();
+        }
+
+        post(SafeHtmlUtils.fromString(errorSummary), caught);
+    }
+
+    /**
+     * Post a message box with error styles with the given error message summary and optional caught with
+     * additional error details.
+     * 
+     * @param errorSummary
+     * @param caught
+     */
+    public static void post(SafeHtml errorSummary, Throwable caught) {
         String errorDetails = getSystemDescription();
 
+        if (errorSummary == null) {
+            errorSummary = SafeHtmlUtils.fromString(I18N.ERROR.error());
+        }
+
         if (caught != null) {
-            GWT.log(errorSummary, caught);
+            GWT.log(errorSummary.asString(), caught);
 
             errorDetails = parseExceptionJson(caught) + NEWLINE + NEWLINE + errorDetails;
         }
@@ -72,12 +93,14 @@ public class ErrorHandler {
 
         // Build a new Exception message for the ErrorHandler details panel.
         String errDetails = ""; //$NON-NLS-1$
-        if (!error.getStatus().isEmpty()) {
+        if (!Strings.isNullOrEmpty(error.getStatus())) {
             errDetails += I18N.ERROR.serviceErrorStatus(error.getStatus());
         }
-        if (!error.getErrorCode().isEmpty()) {
+        if (!Strings.isNullOrEmpty(error.getErrorCode())) {
             errDetails += "\n" + I18N.ERROR.serviceErrorCode(error.getErrorCode()); //$NON-NLS-1$
         }
+
+        SafeHtml errorMsg = error.generateErrorMsg();
 
         /*
          * JDS - The if block below used to be in DiskResourceServiceCallback in DE-Webapp. The issue is
@@ -87,13 +110,13 @@ public class ErrorHandler {
          */
         if (!Strings.isNullOrEmpty(error.getReason())) {
             errDetails += "\n" + I18N.ERROR.serviceErrorReason(error.getReason()); //$NON-NLS-1$
-        } else if (!Strings.isNullOrEmpty(error.generateErrorMsg())) {
-            errDetails += "\n" + I18N.ERROR.serviceErrorReason(error.generateErrorMsg()); //$NON-NLS-1$
+        } else if (errorMsg != null && !Strings.isNullOrEmpty(errorMsg.asString())) {
+            errDetails += "\n" + I18N.ERROR.serviceErrorReason(errorMsg.asString()); //$NON-NLS-1$
         }
 
 
         Throwable newCaught = new Exception(errDetails, caught);
-        post(error.generateErrorMsg(), newCaught);
+        post(errorMsg, newCaught);
     }
 
     private static String parseExceptionJson(Throwable caught) {

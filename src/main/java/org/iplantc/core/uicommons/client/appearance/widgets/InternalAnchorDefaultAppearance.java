@@ -1,19 +1,19 @@
-package org.iplantc.core.uicommons.client.widgets;
+package org.iplantc.core.uicommons.client.appearance.widgets;
+
+import org.iplantc.core.uicommons.client.appearance.widgets.AnchorDefaultResources.Style;
+import org.iplantc.core.uicommons.client.widgets.InternalAnchor.Appearance;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.dom.XElement;
-
-import org.iplantc.core.uicommons.client.widgets.IPlantAnchorDefaultResources.Style;
 
 /**
  * This class defines the default appearance for an internal anchor. The anchor may or may not be
  * in-line.
  */
-public final class InternalAnchorDefaultAppearance implements InternalAnchorAppearance {
+public final class InternalAnchorDefaultAppearance implements Appearance {
 
 	interface Templates extends XTemplates {
 		@XTemplate("<div class='{style.anchor}'>{linkTxt}</div>")
@@ -24,11 +24,11 @@ public final class InternalAnchorDefaultAppearance implements InternalAnchorAppe
 	}
 
  	private static final Templates FACTORY;
-	public static final Style STYLE;
+    private static final Style STYLE;
 
  	static {
  		FACTORY = GWT.create(Templates.class);
- 		STYLE = IPlantAnchorDefaultResources.INSTANCE.style();
+ 		STYLE = AnchorDefaultResources.INSTANCE.style();
  		STYLE.ensureInjected();
  	}
 
@@ -51,7 +51,7 @@ public final class InternalAnchorDefaultAppearance implements InternalAnchorAppe
  	}
  	
  	/**
- 	 * @see InternalAnchorAppearance#getAnchorElement(XElement)
+ 	 * @see Appearance#getAnchorElement(XElement)
  	 */
  	@Override
  	public XElement getAnchorElement(final XElement parent) {
@@ -59,7 +59,7 @@ public final class InternalAnchorDefaultAppearance implements InternalAnchorAppe
  	}
  	
  	/**
- 	 * @see InternalAnchorAppearance#render(String)
+ 	 * @see Appearance#render(String)
  	 */
  	@Override
 	public SafeHtml render(final String anchorText) {

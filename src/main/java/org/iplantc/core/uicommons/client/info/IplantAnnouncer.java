@@ -25,11 +25,12 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  */
 public class IplantAnnouncer {
 
-    private static final Queue<IplantAnnouncement> announcements;
-    private static final Timer timer;
+    private static IplantAnnouncer instance;
 
-    static {
-        announcements = new LinkedList<IplantAnnouncement>();
+    protected final Queue<IplantAnnouncement> announcements = new LinkedList<IplantAnnouncement>();
+    private final Timer timer;
+
+    protected IplantAnnouncer() {
         timer = new CloseTimer();
         Window.addResizeHandler(new ResizeHandler() {
             @Override
@@ -39,7 +40,15 @@ public class IplantAnnouncer {
         });
     }
 
-    private static void removeAnnouncement() {
+    public static IplantAnnouncer getInstance() {
+        if (instance == null) {
+            instance = new IplantAnnouncer();
+        }
+
+        return instance;
+    }
+
+    private void removeAnnouncement() {
         if (announcements.isEmpty()) {
             return;
         }
@@ -51,7 +60,7 @@ public class IplantAnnouncer {
         showNextAnnouncement();
     }
 
-    private static void scheduleAnnouncement(final IplantAnnouncement newAnnouncement) {
+    private void scheduleAnnouncement(final IplantAnnouncement newAnnouncement) {
         if (announcements.contains(newAnnouncement)) {
             return;
         }
@@ -59,7 +68,7 @@ public class IplantAnnouncer {
         showNextAnnouncement();
     }
 
-    private static void showNextAnnouncement() {
+    private void showNextAnnouncement() {
         if (announcements.isEmpty()) {
             return;
         }
@@ -78,21 +87,21 @@ public class IplantAnnouncer {
         }
     }
 
-    private static final class CloseHandler implements SelectHandler {
+    private final class CloseHandler implements SelectHandler {
         @Override
         public void onSelect(final SelectEvent event) {
             removeAnnouncement();
         }
     }
 
-    private static final class CloseTimer extends Timer {
+    private final class CloseTimer extends Timer {
         @Override
         public void run() {
             removeAnnouncement();
         };
     }
 
-    protected static void positionAnnouncer() {
+    protected void positionAnnouncer() {
         if (announcements.isEmpty()) {
             return;
         }
@@ -109,7 +118,7 @@ public class IplantAnnouncer {
      * 
      * @param message The plain text announcement message.
      */
-    public static void schedule(String message) {
+    public void schedule(String message) {
         schedule(new HTML(message));
     }
 
@@ -119,7 +128,7 @@ public class IplantAnnouncer {
      * @param message The plain text announcement message.
      * @param config The announcement configuration.
      */
-    public static void schedule(String message, IplantAnnouncementConfig config) {
+    public void schedule(String message, IplantAnnouncementConfig config) {
         schedule(new HTML(message), config);
     }
 
@@ -128,7 +137,7 @@ public class IplantAnnouncer {
      * 
      * @param content A Widget containing the announcement message.
      */
-    public static void schedule(IsWidget content) {
+    public void schedule(IsWidget content) {
         schedule(content, new IplantAnnouncementConfig());
     }
 
@@ -138,7 +147,7 @@ public class IplantAnnouncer {
      * @param content A Widget containing the announcement message.
      * @param config The announcement configuration.
      */
-    public static void schedule(IsWidget content, IplantAnnouncementConfig config) {
+    public void schedule(IsWidget content, IplantAnnouncementConfig config) {
         IplantAnnouncement popup = new IplantAnnouncement(content, config);
         if (config.isClosable()) {
             popup.addCloseButtonHandler(new CloseHandler());

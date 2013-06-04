@@ -245,7 +245,8 @@ public class CollaboratorsUtil {
                 builder.deleteCharAt(builder.length() - 1);
             }
 
-            IplantAnnouncer.schedule(I18N.DISPLAY.collaboratorAddConfirm(builder.toString()));
+            IplantAnnouncer.getInstance().schedule(
+                    I18N.DISPLAY.collaboratorAddConfirm(builder.toString()));
             if (callback != null) {
                 callback.onSuccess(null);
             }
@@ -322,7 +323,8 @@ public class CollaboratorsUtil {
                 builder.deleteCharAt(builder.length() - 1);
             }
 
-            IplantAnnouncer.schedule(I18N.DISPLAY.collaboratorRemoveConfirm(builder.toString()));
+            IplantAnnouncer.getInstance().schedule(
+                    I18N.DISPLAY.collaboratorRemoveConfirm(builder.toString()));
             if (callback != null) {
                 callback.onSuccess(null);
             }

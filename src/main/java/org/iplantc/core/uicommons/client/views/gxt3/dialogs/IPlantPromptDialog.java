@@ -3,6 +3,7 @@ package org.iplantc.core.uicommons.client.views.gxt3.dialogs;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -53,12 +54,14 @@ public class IPlantPromptDialog extends IPlantDialog {
     }
 
     @UiHandler("textField")
-    void onKeyUp(KeyDownEvent event) {
-        if ((event.getNativeKeyCode() == KeyCodes.KEY_ENTER)) {
+    void onKeyUp(KeyUpEvent event) {
+        okButton.setEnabled(textField.isCurrentValid());
+    }
+
+    @UiHandler("textField")
+    void onKeyDown(KeyDownEvent event) {
+        if (textField.isCurrentValid() && (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)) {
             onButtonPressed(okButton);
-            // hide(okButton);
-        } else {
-            okButton.setEnabled(textField.isCurrentValid());
         }
     }
 

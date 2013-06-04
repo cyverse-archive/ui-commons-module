@@ -30,6 +30,7 @@ public class IPlantAnchor extends Component implements HasClickHandlers, HasMous
         HasMouseOutHandlers {
 
     private final IPlantAnchorAppearance appearance;
+
     /**
      * 
      * A widget to create <a> like hyperlinks
