@@ -28,14 +28,17 @@ public final class AnnouncementRemovedEvent extends GwtEvent<Handler> {
     public static final Type<Handler> TYPE = new Type<Handler>();
 
     private final AnnouncementId announcement;
+    private final boolean announced;
 
     /**
      * the constructor
      * 
      * @param announcement the id of the announcement that was removed
+     * @param announced a flag indicating whether or not the announcement was actually announced
      */
-    AnnouncementRemovedEvent(final AnnouncementId announcement) {
+    AnnouncementRemovedEvent(final AnnouncementId announcement, final boolean announced) {
         this.announcement = announcement;
+        this.announced = announced;
     }
 
     /**
@@ -51,6 +54,13 @@ public final class AnnouncementRemovedEvent extends GwtEvent<Handler> {
      */
     public AnnouncementId getAnnouncement() {
         return announcement;
+    }
+
+    /**
+     * indicates whether or not the removed announcement was announced
+     */
+    public boolean wasAnnounced() {
+        return announced;
     }
 
     /**

@@ -60,7 +60,7 @@ public class IplantAnnouncer {
         IplantAnnouncement popup = announcements.poll();
         timer.cancel();
         popup.hide();
-        EventBus.getInstance().fireEvent(new AnnouncementRemovedEvent(popup.getAnnouncementId()));
+        EventBus.getInstance().fireEvent(new AnnouncementRemovedEvent(popup.getAnnouncementId(), true));
         showNextAnnouncement();
     }
 
@@ -182,6 +182,7 @@ public class IplantAnnouncer {
             for (IplantAnnouncement ann : announcements) {
                 if (ann.hasId(announcementId)) {
                     announcements.remove(ann);
+                    EventBus.getInstance().fireEvent(new AnnouncementRemovedEvent(announcementId, false));
                     break;
                 }
             }
