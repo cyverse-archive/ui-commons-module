@@ -19,4 +19,11 @@ public class CommonModelUtils {
         AutoBean<HasId> hasId = AutoBeanCodex.decode(factory, HasId.class, hasIdSplittable);
         return hasId.as();
     }
+
+    public static HasId createHasIdFromSplittable(Splittable value) {
+        if ((value == null) || !(value.isKeyed() && (value.get("id") != null) && (value.get("id").isString())))
+            return null;
+
+        return AutoBeanCodex.decode(factory, HasId.class, value).as();
+    }
 }
