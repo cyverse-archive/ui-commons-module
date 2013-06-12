@@ -19,6 +19,8 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 public class IplantAnnouncement extends Popup {
 
     private final IplantAnnouncementConfig config;
+    private final AnnouncementId id;
+
     private ToolButton closeButton;
 
     /**
@@ -39,6 +41,7 @@ public class IplantAnnouncement extends Popup {
      */
     public IplantAnnouncement(final IsWidget content, final IplantAnnouncementConfig config) {
         this.config = config;
+        id = new AnnouncementId();
         initPanel(content);
     }
 
@@ -79,4 +82,25 @@ public class IplantAnnouncement extends Popup {
     public int getTimeOut() {
         return config.getTimeOut();
     }
+
+    /**
+     * Returns the identifier for this announcement
+     * 
+     * @return the identifier
+     */
+    final AnnouncementId getAnnouncementId() {
+        return id;
+    }
+
+    /**
+     * Indicates whether or not this announcement has a certain id
+     * 
+     * @param id the id in question
+     * 
+     * @return true if the announcement has the id, otherwise false.
+     */
+    final boolean hasId(final AnnouncementId id) {
+        return this.id.equals(id);
+    }
+
 }
