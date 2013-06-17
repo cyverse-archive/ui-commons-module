@@ -323,7 +323,7 @@ public class IPCFileUploadField extends Component implements IsField<String>, Ha
         if (GXT.isIE()) {
             input.setReadOnly(false);
         }
-        input.setValue(getFileInput().getValue());
+        input.setValue(getFileInput().getValue().replace("C:\\fakepath\\", ""));
         if (GXT.isIE()) {
             input.setReadOnly(true);
     }
