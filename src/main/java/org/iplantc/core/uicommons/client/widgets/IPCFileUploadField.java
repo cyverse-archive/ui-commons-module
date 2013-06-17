@@ -42,6 +42,7 @@ import com.sencha.gxt.widget.core.client.form.FormPanel.Encoding;
 import com.sencha.gxt.widget.core.client.form.FormPanel.Method;
 import com.sencha.gxt.widget.core.client.form.IsField;
 import com.sencha.gxt.widget.core.client.form.TextField;
+import com.sencha.gxt.widget.core.client.form.validator.AbstractValidator;
 
 /**
  * This class is a clone-and-own of the GXT 3.0.1 {@link FileUploadField} in order to apply
@@ -327,6 +328,8 @@ public class IPCFileUploadField extends Component implements IsField<String>, Ha
             input.setReadOnly(true);
     }
         input.focus();
+        //validate on change
+        validate(false);
     }
 
     @Override
@@ -359,5 +362,8 @@ public class IPCFileUploadField extends Component implements IsField<String>, Ha
         return input.addKeyUpHandler(handler);
     }
     
+    public void addValidator(AbstractValidator<String> validator) {
+        input.addValidator(validator);
+    }
 
 }
