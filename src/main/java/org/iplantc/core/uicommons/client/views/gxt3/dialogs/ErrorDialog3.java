@@ -1,5 +1,7 @@
 package org.iplantc.core.uicommons.client.views.gxt3.dialogs;
 
+import org.iplantc.core.resources.client.messages.I18N;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -7,8 +9,11 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.CollapseEvent;
 import com.sencha.gxt.widget.core.client.event.ExpandEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -24,29 +29,37 @@ public class ErrorDialog3 extends IPlantDialog {
     @UiField
     HTML errorMsg;
 
-    @UiField
-    TextButton expandDetailsButton;
+//    @UiField
+//    TextButton expandDetailsButton;
 
     @UiField
-    ContentPanel detailsPanel;
+    FramedPanel detailsPanel;
 
     @UiField
     TextArea descriptionArea;
+    
+    @UiField
+    VerticalLayoutContainer detailsContainer;
 
     public ErrorDialog3(SafeHtml errorMsg, String description) {
-        super();
-
-        this.setMinHeight(200);
+        
+        setHeadingText(I18N.DISPLAY.error());
+        this.setMinHeight(300);
         this.setMinWidth(350);
-        this.setResizable(true);
+        this.setResizable(false);
 
         add(uiBinder.createAndBindUi(this));
+        detailsPanel.setHeadingText(I18N.DISPLAY.details());
+        detailsPanel.setSize("330","150");
 
         if (errorMsg != null) {
             this.errorMsg.setHTML(errorMsg);
         }
-        this.descriptionArea.setText(description);
-        detailsPanel.setExpanded(false);
+   
+        detailsContainer.setScrollMode(ScrollMode.AUTO);
+        descriptionArea.setText(description);
+        detailsPanel.setCollapsible(true);
+        detailsPanel.expand();
     }
 
     @Override
@@ -55,10 +68,10 @@ public class ErrorDialog3 extends IPlantDialog {
         setPredefinedButtons(PredefinedButton.OK);
     }
 
-    @UiHandler("expandDetailsButton")
-    void onExpandDetailsClick(SelectEvent event) {
-        detailsPanel.setExpanded(!detailsPanel.isExpanded());
-    }
+//    @UiHandler("expandDetailsButton")
+//    void onExpandDetailsClick(SelectEvent event) {
+//        detailsPanel.setExpanded(!detailsPanel.isExpanded());
+//    }
 
     @UiHandler("detailsPanel")
     void onExpand(ExpandEvent event) {
