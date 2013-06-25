@@ -74,7 +74,12 @@
 			<version>2.5.1</version>
 			<scope>test</scope>
 		</dependency>
-		</dependencies>
+  	    <dependency>
+  	    	<groupId>com.google.gwt.inject</groupId>
+  	    	<artifactId>gin</artifactId>
+  	    	<version>2.0.0</version>
+  	    </dependency>
+	</dependencies>
 	<build>
 		<finalName>ui-commons</finalName>
 		<outputDirectory>${basedir}/war/WEB-INF/classes</outputDirectory>

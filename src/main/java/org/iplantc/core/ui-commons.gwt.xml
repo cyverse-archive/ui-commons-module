@@ -11,6 +11,7 @@
     <inherits name="com.google.gwt.json.JSON" />
     <inherits name="com.google.common.collect.Collect"/>
     <inherits name="com.google.gwt.i18n.I18N" />
+    <inherits name="com.google.gwt.inject.Inject"/>
     
     <!-- GXT Dependencies -->
     <inherits name='com.sencha.gxt.ui.GXT' />
@@ -24,6 +25,11 @@
     <inherits name='org.iplantc.de.DiscoveryEnvironmentCommon' />
     <source path="client"/>
     <source path="uicommons"/>
+    
+    <!-- Default Services -->
+    <replace-with class="org.iplantc.core.uicommons.client.services.DiskResourceServiceFacadeImpl">
+    	<when-type-is class="org.iplantc.core.uicommons.client.services.DiskResourceServiceFacade"/>
+    </replace-with>
     
     <!-- Default Appearances -->
     <replace-with 
