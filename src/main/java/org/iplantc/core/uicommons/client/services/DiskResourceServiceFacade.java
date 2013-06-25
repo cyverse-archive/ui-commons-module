@@ -7,6 +7,7 @@ import java.util.Set;
 import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.HasPaths;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceExistMap;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceMetadata;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
@@ -66,15 +67,25 @@ public interface DiskResourceServiceFacade {
 
     /**
      * Check if a list of files or folders exist.
-     *
+     * 
+     * @param diskResourcePaths paths to desired resources.
+     * @param callback callback executed when RPC call completes. On success, a map that maps
+     *            resource paths to whether or not they exist.
+     */
+    void diskResourcesExist(HasPaths diskResourcePaths, AsyncCallback<DiskResourceExistMap> callback);
+
+    /**
+     * Check if a list of files or folders exist.
+     * 
      * @param diskResourceIds paths to desired resources.
      * @param callback callback executed when RPC call completes.
      */
+    @Deprecated
     void diskResourcesExist(List<String> diskResourceIds, AsyncCallback<String> callback);
 
     /**
      * Fetch preview data for a file.
-     *
+     * 
      * @param path path to desired file.
      * @param callback callback executed when RPC call completes.
      */

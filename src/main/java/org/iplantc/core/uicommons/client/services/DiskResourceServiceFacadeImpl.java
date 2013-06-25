@@ -12,6 +12,8 @@ import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.HasPaths;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceExistMap;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceMetadata;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
@@ -38,6 +40,17 @@ import com.sencha.gxt.core.client.util.Format;
  *
  */
 public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade {
+
+    private static final class DiskResourceExistMapConverter extends AsyncCallbackConverter<String, DiskResourceExistMap> {
+        DiskResourceExistMapConverter(final AsyncCallback<DiskResourceExistMap> callback) {
+            super(callback);
+        }
+
+        @Override
+        protected DiskResourceExistMap convertFrom(final String json) {
+            return AutoBeanCodex.decode(DiskResourceAutoBeanFactory.INSTANCE, DiskResourceExistMap.class, json).as();
+        }
+    }
 
     @Override
     public void getHomeFolder(AsyncCallback<String> callback) {
@@ -91,6 +104,14 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 obj.toString());
         callService(callback, wrapper);
+    }
+
+    @Override
+    public final void diskResourcesExist(final HasPaths diskResourcePaths, final AsyncCallback<DiskResourceExistMap> callback) {
+        String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "exists"; //$NON-NLS-1$
+        final String body = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(diskResourcePaths)).getPayload();
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address, body);
+        callService(new DiskResourceExistMapConverter(callback), wrapper);
     }
 
     @Override
