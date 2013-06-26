@@ -115,18 +115,6 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
     }
 
     @Override
-    public void diskResourcesExist(List<String> diskResourceIds, AsyncCallback<String> callback) {
-        String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "exists"; //$NON-NLS-1$
-
-        JSONObject json = new JSONObject();
-        json.put("paths", JsonUtil.buildArrayFromStrings(diskResourceIds)); //$NON-NLS-1$
-        String body = json.toString();
-
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address, body);
-        callService(callback, wrapper);
-    }
-
-    @Override
     public void previewFile(final String path, AsyncCallback<String> callback) {
         String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "file/preview"; //$NON-NLS-1$
         JSONObject body = new JSONObject();

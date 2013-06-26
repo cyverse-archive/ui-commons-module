@@ -75,15 +75,6 @@ public interface DiskResourceServiceFacade {
     void diskResourcesExist(HasPaths diskResourcePaths, AsyncCallback<DiskResourceExistMap> callback);
 
     /**
-     * Check if a list of files or folders exist.
-     * 
-     * @param diskResourceIds paths to desired resources.
-     * @param callback callback executed when RPC call completes.
-     */
-    @Deprecated
-    void diskResourcesExist(List<String> diskResourceIds, AsyncCallback<String> callback);
-
-    /**
      * Fetch preview data for a file.
      * 
      * @param path path to desired file.
