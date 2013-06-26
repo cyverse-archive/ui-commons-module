@@ -6,6 +6,13 @@ package org.iplantc.core.uicommons.client;
  */
 public interface DEClientConstants extends CommonUiConstants {
     /**
+     * The Servlet path (relative URL) for tool requests.
+     * 
+     * @return the requested URL.
+     */
+    String toolRequestServlet();
+
+    /**
      * The Servlet path (relative URL) for file upload.
      * 
      * @return the requested URL.

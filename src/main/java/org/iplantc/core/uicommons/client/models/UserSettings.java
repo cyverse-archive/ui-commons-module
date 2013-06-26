@@ -27,6 +27,7 @@ public class UserSettings {
     private String analysesShortCut;
     private String notifyShortCut;
     private String closeShortCut;
+    private String systemDefaultOutputFolder;
 
     public static final String EMAIL_NOTIFCATOIN = "enableEmailNotification";
     public static final String DEFAULT_FIFLE_SELECTOR_APTH = "defaultFileSelectorPath";
@@ -38,6 +39,7 @@ public class UserSettings {
     public static final String ANALYSIS_KB_SHORTCUT = "analysisKBShortcut";
     public static final String NOTIFICATION_KB_SHORTCUT = "notificationKBShortcut";
     public static final String CLOSE_KB_SHORTCU_STRING = "closeKBShortcut";
+    public static final String SYSTEM_DEFAULT_OUTPUT_DIR = "systemDefaultOutputDir";
 
 
     private static UserSettings instance;
@@ -65,6 +67,7 @@ public class UserSettings {
             setRememberLastPath(JsonUtil.getBoolean(obj, REMEMBER_LAST_PATH, true));
             setSaveSession(JsonUtil.getBoolean(obj, SAVE_SESSION, true));
             setDefaultOutputFolder(JsonUtil.getString(obj, DEFAULT_OUTPUT_FOLDER));
+            setSystemDefaultOutputFolder(JsonUtil.getString(obj,SYSTEM_DEFAULT_OUTPUT_DIR));
             parseDataShortCut(obj);
             parseAnalysisShortCut(obj);
             parseAppsShortCut(obj);
@@ -281,5 +284,19 @@ public class UserSettings {
      */
     public void setCloseShortCut(String closeShortCut) {
         this.closeShortCut = closeShortCut;
+    }
+
+    /**
+     * @return the systemDefaultOutputFolder
+     */
+    public String getSystemDefaultOutputFolder() {
+        return systemDefaultOutputFolder;
+    }
+
+    /**
+     * @param systemDefaultOutputFolder the systemDefaultOutputFolder to set
+     */
+    public void setSystemDefaultOutputFolder(String systemDefaultOutputFolder) {
+        this.systemDefaultOutputFolder = systemDefaultOutputFolder;
     }
 }

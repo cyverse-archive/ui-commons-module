@@ -93,6 +93,7 @@ public class ErrorHandler {
 
         // Build a new Exception message for the ErrorHandler details panel.
         String errDetails = ""; //$NON-NLS-1$
+        SafeHtml errorMsg = SafeHtmlUtils.fromString("");
         if (!Strings.isNullOrEmpty(error.getStatus())) {
             errDetails += I18N.ERROR.serviceErrorStatus(error.getStatus());
         }
@@ -100,7 +101,9 @@ public class ErrorHandler {
             errDetails += "\n" + I18N.ERROR.serviceErrorCode(error.getErrorCode()); //$NON-NLS-1$
         }
 
-        SafeHtml errorMsg = error.generateErrorMsg();
+        if(error != null) {
+            errorMsg= error.generateErrorMsg();
+        }
 
         /*
          * JDS - The if block below used to be in DiskResourceServiceCallback in DE-Webapp. The issue is
@@ -149,9 +152,8 @@ public class ErrorHandler {
     private static String getSystemDescription() {
         String gwtVersion = I18N.DISPLAY.gwtVersion() + " " + GWT.getVersion(); //$NON-NLS-1$
 
-        String gxtVersion = I18N.DISPLAY.gxtVersion() + " " + I18N.DISPLAY.majorVersion() //$NON-NLS-1$
-                + ": " + GXT.getVersion() + " " + I18N.DISPLAY.minorVersion() + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + GXT.getVersion().getRelease();
+        String gxtVersion = I18N.DISPLAY.gxtVersion() + 
+                 ": " + GXT.getVersion().getRelease();
 
         String userAgent = I18N.DISPLAY.userAgent() + " " + Window.Navigator.getUserAgent(); //$NON-NLS-1$
 

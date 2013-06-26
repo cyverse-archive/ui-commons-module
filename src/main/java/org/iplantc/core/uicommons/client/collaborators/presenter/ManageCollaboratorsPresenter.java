@@ -6,6 +6,7 @@ package org.iplantc.core.uicommons.client.collaborators.presenter;
 import java.util.Arrays;
 import java.util.List;
 
+import org.iplantc.core.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.collaborators.events.UserSearchResultSelected;
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
@@ -13,6 +14,9 @@ import org.iplantc.core.uicommons.client.collaborators.util.CollaboratorsUtil;
 import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsView;
 import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsView.Presenter;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.info.ErrorAnnouncementConfig;
+import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
+import org.iplantc.core.uicommons.client.models.UserInfo;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
@@ -43,7 +47,12 @@ public class ManageCollaboratorsPresenter implements Presenter {
             public void onUserSearchResultSelected(UserSearchResultSelected userSearchResultSelected) {
                         if (userSearchResultSelected.getTag().equalsIgnoreCase(
                                 UserSearchResultSelected.USER_SEARCH_EVENT_TAG.MANAGE.toString())) {
-                            addAsCollaborators(Arrays.asList(userSearchResultSelected.getCollaborator()));
+                            Collaborator collaborator = userSearchResultSelected.getCollaborator();
+                            if(!UserInfo.getInstance().getUsername().equals(collaborator.getUserName())) {
+                                addAsCollaborators(Arrays.asList(collaborator));
+                            } else {
+                                IplantAnnouncer.getInstance().schedule(I18N.DISPLAY.collaboratorSelfAdd(), new ErrorAnnouncementConfig());
+                            }
                         }
                 
             }

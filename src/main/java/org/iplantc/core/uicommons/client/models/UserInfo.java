@@ -38,6 +38,11 @@ public class UserInfo {
      * Defines an attribute for the User's Last Name.
      */
     public static String ATTR_LASTNAME = "lastName";
+    
+    /**
+     * Defines an attribute for new user identification
+     */
+    public static String NEW_USER ="newWorkspace";
 
 
     private static UserInfo instance;
@@ -49,6 +54,7 @@ public class UserInfo {
     private String firstName;
     private String lastName;
     private String trashPath;
+    private Boolean newUser;
 
     /**
      * Constructs a default instance of the object with all fields being set to null.
@@ -111,6 +117,7 @@ public class UserInfo {
         if (userInfoJson != null && !userInfoJson.equals("")) {
             JSONObject obj = JsonUtil.getObject(userInfoJson);
             workspaceId = JsonUtil.getString(obj, "workspaceId");
+            newUser = JsonUtil.getBoolean(obj, NEW_USER, false);
         }
     }
 
@@ -190,5 +197,19 @@ public class UserInfo {
      */
     public void setTrashPath(String trashPath) {
         this.trashPath = trashPath;
+    }
+
+    /**
+     * @return the newUser
+     */
+    public Boolean isNewUser() {
+        return newUser;
+    }
+
+    /**
+     * @param newUser the newUser to set
+     */
+    public void setNewUser(Boolean newUser) {
+        this.newUser = newUser;
     }
 }
