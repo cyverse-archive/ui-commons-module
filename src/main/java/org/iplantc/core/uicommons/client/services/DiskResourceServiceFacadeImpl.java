@@ -42,13 +42,15 @@ import com.sencha.gxt.core.client.util.Format;
 public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade {
 
     private static final class DiskResourceExistMapConverter extends AsyncCallbackConverter<String, DiskResourceExistMap> {
+        private static final DiskResourceAutoBeanFactory FACTORY = GWT.create(DiskResourceAutoBeanFactory.class);
+
         DiskResourceExistMapConverter(final AsyncCallback<DiskResourceExistMap> callback) {
             super(callback);
         }
 
         @Override
         protected DiskResourceExistMap convertFrom(final String json) {
-            return AutoBeanCodex.decode(DiskResourceAutoBeanFactory.INSTANCE, DiskResourceExistMap.class, json).as();
+            return AutoBeanCodex.decode(FACTORY, DiskResourceExistMap.class, json).as();
         }
     }
 

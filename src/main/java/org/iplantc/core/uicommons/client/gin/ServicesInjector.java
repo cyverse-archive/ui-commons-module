@@ -9,7 +9,7 @@ import com.google.gwt.inject.client.Ginjector;
 @GinModules(ServicesModule.class)
 public interface ServicesInjector extends Ginjector {
 
-    static final ServicesInjector INSTANCE = GWT.create(ServicesInjector.class);
+    final ServicesInjector INSTANCE = GWT.create(ServicesInjector.class);
 
     DiskResourceServiceFacade getDiskResourceServiceFacade();
 
