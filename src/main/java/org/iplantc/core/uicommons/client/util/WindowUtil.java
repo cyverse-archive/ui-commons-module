@@ -2,14 +2,7 @@ package org.iplantc.core.uicommons.client.util;
 
 
 import org.iplantc.core.resources.client.messages.I18N;
-
-import com.google.gwt.user.client.ui.Label;
-import com.sencha.gxt.widget.core.client.Window;
-import com.sencha.gxt.widget.core.client.button.ButtonBar;
-import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IplantInfoBox;
 
 /**
  * A util class for opening pop-ups .If pop-up is blocked by the client, Call showDialogOnPopUpBlock
@@ -74,30 +67,8 @@ public class WindowUtil {
      */
     public static void showDialogOnPopUpBlock(final String url, final String window_name,
             final String options) {
-        final Window win = new Window();
-        win.setHeadingText(I18N.DISPLAY.popUpWarning());
-        win.setSize("370", "100");
-        win.setClosable(false);
-
-        VerticalLayoutContainer vlc = new VerticalLayoutContainer();
-        Label label = new Label(I18N.DISPLAY.popWarningMsg());
-        vlc.add(label);
-
-        ButtonBar bar = new ButtonBar();
-        TextButton tb = new TextButton("Ok");
-        tb.setWidth(50);
-        tb.addSelectHandler(new SelectHandler() {
-
-            @Override
-            public void onSelect(SelectEvent event) {
-                com.google.gwt.user.client.Window.open(url, window_name, options);
-                win.hide();
-            }
-        });
-        bar.add(tb);
-        vlc.add(bar);
-        win.add(vlc);
-        win.show();
+        IplantInfoBox iib = new IplantInfoBox(I18N.DISPLAY.popUpWarning(), I18N.DISPLAY.popWarningMsg());
+        iib.show();
     }
 
 }
