@@ -1,8 +1,6 @@
 package org.iplantc.core.uicommons.client.util;
 
 
-import org.iplantc.core.resources.client.messages.I18N;
-import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IplantInfoBox;
 
 /**
  * A util class for opening pop-ups .If pop-up is blocked by the client, Call showDialogOnPopUpBlock
@@ -32,9 +30,7 @@ public class WindowUtil {
      * @param options
      */
     public static void open(final String url, final String options) {
-        if (!open(url, "", options)) {
-            showDialogOnPopUpBlock(url, "", options);
-        }
+      open(url, "", options);
     }
 
     /**
@@ -56,19 +52,4 @@ public class WindowUtil {
         popup.focus();
         return true;
     }-*/;
-
-    /**
-     * Displays a "popup warning" dialog with an OK button that will open a new window when clicked for
-     * the given URL and window options.
-     * 
-     * @param url
-     * @param window_name
-     * @param options
-     */
-    public static void showDialogOnPopUpBlock(final String url, final String window_name,
-            final String options) {
-        IplantInfoBox iib = new IplantInfoBox(I18N.DISPLAY.popUpWarning(), I18N.DISPLAY.popWarningMsg());
-        iib.show();
-    }
-
 }
