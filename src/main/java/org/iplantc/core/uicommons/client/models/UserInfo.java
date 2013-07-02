@@ -5,6 +5,7 @@ import java.util.List;
 import org.iplantc.core.jsonutil.JsonUtil;
 
 import com.google.gwt.json.client.JSONObject;
+import  org.iplantc.core.uicommons.client.models.WindowState;
 
 /**
  * Holds all the information about an user.
