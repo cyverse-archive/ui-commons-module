@@ -362,6 +362,18 @@ public class IPCFileUploadField extends Component implements IsField<String>, Ha
         return input.addKeyUpHandler(handler);
     }
     
+    /**
+     * Set the enabled state of the children as well as itself.
+     * 
+     * @see Component#setEnabled(boolean)
+     */
+    @Override
+    public final void setEnabled(final boolean enabled) {
+        super.setEnabled(enabled);
+        button.setEnabled(enabled);
+        input.setEnabled(enabled);
+    }
+
     public void addValidator(AbstractValidator<String> validator) {
         input.addValidator(validator);
     }
