@@ -16,6 +16,7 @@ import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBe
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceExistMap;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceMetadata;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
+import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
 import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uicommons.client.util.WindowUtil;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
@@ -41,25 +42,19 @@ import com.sencha.gxt.core.client.util.Format;
  */
 public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade {
 
-    private static final class DiskResourceExistMapConverter extends AsyncCallbackConverter<String, DiskResourceExistMap> {
-        private static final DiskResourceAutoBeanFactory FACTORY = GWT.create(DiskResourceAutoBeanFactory.class);
-
-        DiskResourceExistMapConverter(final AsyncCallback<DiskResourceExistMap> callback) {
-            super(callback);
-        }
-
-        @Override
-        protected DiskResourceExistMap convertFrom(final String json) {
-            return AutoBeanCodex.decode(FACTORY, DiskResourceExistMap.class, json).as();
-        }
-    }
+    private static final DiskResourceAutoBeanFactory FACTORY = GWT.create(DiskResourceAutoBeanFactory.class);
 
     @Override
-    public void getHomeFolder(AsyncCallback<String> callback) {
+    public final void getRootFolders(final AsyncCallback<RootFolders> callback) {
         String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "root"; //$NON-NLS-1$
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
-        callService(callback, wrapper);
+        callService(wrapper, new AsyncCallbackConverter<String, RootFolders>(callback) {
+            @Override
+            protected RootFolders convertFrom(final String json) {
+                return AutoBeanCodex.decode(FACTORY, RootFolders.class, json).as();
+            }
+        });
     }
 
     @Override
@@ -94,7 +89,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         }
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(fullAddress);
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
     @Override
@@ -105,7 +100,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 obj.toString());
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
     @Override
@@ -113,7 +108,12 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "exists"; //$NON-NLS-1$
         final String body = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(diskResourcePaths)).getPayload();
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address, body);
-        callService(new DiskResourceExistMapConverter(callback), wrapper);
+        callService(wrapper, new AsyncCallbackConverter<String, DiskResourceExistMap>(callback) {
+            @Override
+            protected DiskResourceExistMap convertFrom(final String json) {
+                return AutoBeanCodex.decode(FACTORY, DiskResourceExistMap.class, json).as();
+            }
+        });
     }
 
     @Override
@@ -124,7 +124,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
                 body.toString());
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
                 body.toString());
 
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 body.toString());
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
     /**
@@ -185,7 +185,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 body.toString());
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
     @Override
@@ -193,7 +193,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "upload"; //$NON-NLS-1$
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
     @Override
@@ -202,7 +202,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
                 AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(paths)).getPayload());
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
     private final DEClientConstants constants = GWT.create(DEClientConstants.class);
@@ -225,7 +225,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         String body = "{\"paths\": " + JsonUtil.buildJsonArrayString(drIds) + "}"; //$NON-NLS-1$ //$NON-NLS-2$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 body);
-        callService(callback, wrapper);
+        callService(wrapper, callback);
 
     }
 
@@ -234,7 +234,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "metadata" + "?path=" //$NON-NLS-1$ //$NON-NLS-2$
                 + URL.encodePathSegment(resource.getId());
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
-        callService(callback, wrapper);
+        callService(wrapper, callback);
 
     }
 
@@ -251,7 +251,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 obj.toString());
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
     private JSONValue buildMetadataToAddJsonArray(Set<DiskResourceMetadata> metadata) {
@@ -317,7 +317,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "user-permissions"; //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 body.toString());
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
     @Override
@@ -325,16 +325,15 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "stat"; //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 body.toString());
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
     /**
      * Performs the actual service call.
-     *
-     * @param callback executed when RPC call completes.
      * @param wrapper the wrapper used to get to the actual service via the service proxy.
+     * @param callback executed when RPC call completes.
      */
-    private void callService(AsyncCallback<String> callback, ServiceCallWrapper wrapper) {
+    private void callService(ServiceCallWrapper wrapper, AsyncCallback<String> callback) {
         DEServiceFacade.getInstance().getServiceData(wrapper, callback);
     }
 
@@ -361,7 +360,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "restore"; //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(request)).getPayload());
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
     /**
@@ -374,7 +373,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
     public void emptyTrash(String user, AsyncCallback<String> callback) {
         String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "trash"; //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.DELETE, address);
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
     /**
@@ -388,7 +387,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "user-trash-dir" //$NON-NLS-1$
                 + "?path=" + URL.encodePathSegment(userName); //$NON-NLS-1$
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
     /**
@@ -421,7 +420,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 body.toString());
         wrapper.setArguments(args);
-        callService(callback, wrapper);
+        callService(wrapper, callback);
 
     }
 
@@ -440,7 +439,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 body.toString());
-        callService(callback, wrapper);
+        callService(wrapper, callback);
 
     }
 
@@ -459,7 +458,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 body.toString());
-        callService(callback, wrapper);
+        callService(wrapper, callback);
     }
 
 	@Override
