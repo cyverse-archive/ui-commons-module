@@ -1,5 +1,7 @@
 package org.iplantc.core.uicommons.client.models;
 
+import java.util.List;
+
 import org.iplantc.core.jsonutil.JsonUtil;
 
 import com.google.gwt.json.client.JSONObject;
@@ -211,5 +213,15 @@ public class UserInfo {
      */
     public void setNewUser(Boolean newUser) {
         this.newUser = newUser;
+    }
+
+    public List<WindowState> getSavedOrderedWindowStates() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void setSavedOrderedWindowStates(List<WindowState> orderedWindowStates) {
+        // TODO Auto-generated method stub
+
     }
 }
