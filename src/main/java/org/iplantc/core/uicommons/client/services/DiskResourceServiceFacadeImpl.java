@@ -45,6 +45,14 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
     private static final DiskResourceAutoBeanFactory FACTORY = GWT.create(DiskResourceAutoBeanFactory.class);
 
     @Override
+    public void getHomeFolder(AsyncCallback<String> callback) {
+        String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "home"; //$NON-NLS-1$
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
+        callService(wrapper, callback);
+    }
+
+    @Override
     public final void getRootFolders(final AsyncCallback<RootFolders> callback) {
         String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "root"; //$NON-NLS-1$
 

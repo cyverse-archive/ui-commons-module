@@ -18,6 +18,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface DiskResourceServiceFacade {
 
+    void getHomeFolder(AsyncCallback<String> callback);
+
     /**
      * Call service to retrieve the root folder info for the current user
      *
@@ -301,3 +303,4 @@ public interface DiskResourceServiceFacade {
 	void setFileType(String filePath, String type,
 			AsyncCallback<String> callback);
 }
+

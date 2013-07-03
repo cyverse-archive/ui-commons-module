@@ -56,6 +56,7 @@ public class UserInfo {
     private String fullUsername;
     private String firstName;
     private String lastName;
+    private String homePath;
     private String trashPath;
     private Boolean newUser;
     private List<WindowState> savedOrderedWindowStates;
@@ -230,4 +231,19 @@ public class UserInfo {
     public void setSavedOrderedWindowStates(List<WindowState> savedOrderedWindowStates) {
         this.savedOrderedWindowStates = savedOrderedWindowStates;
     }
+
+    /**
+     * @return the path to the user's home directory.
+     */
+    public String getHomePath() {
+        return homePath;
+    }
+
+    /**
+     * @param homePath the path to the user's home directory.
+     */
+    public void setHomePath(String homePath) {
+        this.homePath = homePath;
+    }
 }
+
