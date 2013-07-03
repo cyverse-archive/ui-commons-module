@@ -11,6 +11,7 @@ import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceExistM
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceMetadata;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
+import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
 
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -22,7 +23,7 @@ public interface DiskResourceServiceFacade {
      *
      * @param callback executed when RPC call completes.
      */
-    void getHomeFolder(AsyncCallback<String> callback);
+    void getRootFolders(AsyncCallback<RootFolders> callback);
 
     /**
      * get user's default analyses output folder
