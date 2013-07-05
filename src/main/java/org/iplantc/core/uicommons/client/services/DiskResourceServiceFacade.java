@@ -139,7 +139,15 @@ public interface DiskResourceServiceFacade {
      * @param diskResources a set of <code>DiskResource</code>s to be deleted
      * @param callback callback executed when service call completes.
      */
-    <T extends DiskResource> void deleteDiskResources(Set<T> diskResources, AsyncCallback<String> callback);
+    <T extends DiskResource> void deleteDiskResources(Set<T> diskResources, AsyncCallback<HasPaths> callback);
+
+    /**
+     * Call service to delete disk resources (i.e. {@link File}s and {@link Folder}s)
+     * 
+     * @param diskResources a set of <code>DiskResource</code>s to be deleted
+     * @param callback callback executed when service call completes.
+     */
+    void deleteDiskResources(HasPaths diskResources, AsyncCallback<HasPaths> callback);
 
     /**
      * @param resource the <code>DiskResource</code> for which metadata will be retrieved.
