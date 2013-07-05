@@ -30,6 +30,9 @@
     <replace-with class="org.iplantc.core.uicommons.client.services.DiskResourceServiceFacadeImpl">
     	<when-type-is class="org.iplantc.core.uicommons.client.services.DiskResourceServiceFacade"/>
     </replace-with>
+    <replace-with class="org.iplantc.core.uicommons.client.services.DefaultToolRequestProvider">
+    	<when-type-is class="org.iplantc.core.uicommons.client.services.ToolRequestProvider"/>
+    </replace-with>
     
     <!-- Default Appearances -->
     <replace-with 
