@@ -3,11 +3,15 @@ package org.iplantc.core.uicommons.client.info;
 import org.iplantc.core.resources.client.AnnouncerStyle;
 import org.iplantc.core.resources.client.IplantResources;
 
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.widget.core.client.button.IconButton.IconConfig;
 
 /**
- * A default config for an IplantAnnouncement that defines attributes such as style and timeout. By
- * default, the message is closable by the user and will close automatically after 10 seconds.
+ * A default config for an IplantAnnouncement that defines attributes such as style and timeout, with a
+ * text message to be displayed by the Announcement. By default, the message is closable by the user and
+ * will close automatically after 10 seconds.
  * 
  * @author psarando
  * 
@@ -25,13 +29,25 @@ public class IplantAnnouncementConfig {
 
     private final boolean closable;
     private final int timeout_ms;
+    protected final String message;
 
-    public IplantAnnouncementConfig() {
-        this(true, DEFAULT_TIMEOUT_ms);
+    /**
+     * Constructs a closable announcement config that will automatically close after 10 seconds.
+     * 
+     * @param message
+     */
+    public IplantAnnouncementConfig(final String message) {
+        this(message, true, DEFAULT_TIMEOUT_ms);
     }
 
-    public IplantAnnouncementConfig(boolean closable) {
-        this(closable, DEFAULT_TIMEOUT_ms);
+    /**
+     * Constructs an announcement config that will automatically close after 10 seconds.
+     * 
+     * @param message
+     * @param closable
+     */
+    public IplantAnnouncementConfig(final String message, boolean closable) {
+        this(message, closable, DEFAULT_TIMEOUT_ms);
     }
 
     /**
@@ -41,12 +57,14 @@ public class IplantAnnouncementConfig {
      * If the closable flag is set to false, the message must close automatically. In this case, if the
      * provided timeout is 0 or less, the message will close automatically after 10 seconds.
      * 
+     * @param message
      * @param closable
      * @param timeout_ms
      */
-    public IplantAnnouncementConfig(boolean closable, int timeout_ms) {
+    public IplantAnnouncementConfig(final String message, boolean closable, int timeout_ms) {
         this.closable = closable;
         this.timeout_ms = timeout_ms;
+        this.message = message;
     }
 
     public boolean isClosable() {
@@ -71,5 +89,12 @@ public class IplantAnnouncementConfig {
 
     public IconConfig getCloseIconConfig() {
         return CLOSER_CFG;
+    }
+
+    /**
+     * @return The given message as an HTML widget, for display by an IplantAnnouncement.
+     */
+    public IsWidget getWidget() {
+        return new HTML(SafeHtmlUtils.fromString(message));
     }
 }

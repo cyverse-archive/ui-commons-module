@@ -51,7 +51,8 @@ public class ManageCollaboratorsPresenter implements Presenter {
                             if(!UserInfo.getInstance().getUsername().equals(collaborator.getUserName())) {
                                 addAsCollaborators(Arrays.asList(collaborator));
                             } else {
-                                IplantAnnouncer.getInstance().schedule(I18N.DISPLAY.collaboratorSelfAdd(), new ErrorAnnouncementConfig());
+                                IplantAnnouncer.getInstance().schedule(
+                                        new ErrorAnnouncementConfig(I18N.DISPLAY.collaboratorSelfAdd()));
                             }
                         }
                 
