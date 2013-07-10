@@ -1,7 +1,6 @@
 package org.iplantc.core.uicommons.client.info;
 
 import com.google.gwt.dom.client.Style.Float;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.widget.core.client.Popup;
 import com.sencha.gxt.widget.core.client.button.ToolButton;
 import com.sencha.gxt.widget.core.client.container.CssFloatLayoutContainer;
@@ -24,30 +23,21 @@ public class IplantAnnouncement extends Popup {
     private ToolButton closeButton;
 
     /**
-     * Constructs a user closable announcement that will close automatically after 10 seconds.
+     * Constructs an announcement with message content and styling from the given config.
      * 
-     * @param content the message widget
-     */
-    public IplantAnnouncement(final IsWidget content) {
-        this(content, new IplantAnnouncementConfig());
-    }
-
-    /**
-     * Constructs an announcement with a message content and a config.
-     * 
-     * @param content the message widget
-     * @param config an IplantAnnouncementConfig that configures the style and behavior of this
+     * @see org.iplantc.core.uicommons.client.info.IplantAnnouncementConfig#getWidget()
+     * @param config an IplantAnnouncementConfig that configures the style and message content of this
      *            announcement.
      */
-    public IplantAnnouncement(final IsWidget content, final IplantAnnouncementConfig config) {
+    public IplantAnnouncement(final IplantAnnouncementConfig config) {
         this.config = config;
         id = new AnnouncementId();
-        initPanel(content);
+        initPanel();
     }
 
-    private void initPanel(final IsWidget content) {
+    private void initPanel() {
         final SimpleContainer contentContainer = new SimpleContainer();
-        contentContainer.setWidget(content);
+        contentContainer.setWidget(config.getWidget());
         contentContainer.addStyleName(config.getContentStyle());
 
         final CssFloatLayoutContainer layout = new CssFloatLayoutContainer();

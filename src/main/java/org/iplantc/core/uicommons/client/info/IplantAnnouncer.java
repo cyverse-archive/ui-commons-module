@@ -9,8 +9,6 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -125,42 +123,18 @@ public class IplantAnnouncer {
      * @returns the id of the scheduled announcement
      */
     public AnnouncementId schedule(final String message) {
-        return schedule(new HTML(message));
+        return schedule(new IplantAnnouncementConfig(message));
     }
 
     /**
      * Schedules an announcement using the given IplantAnnouncementConfig.
      * 
-     * @param message The plain text announcement message.
-     * @param config The announcement configuration.
+     * @param config The announcement configuration containing the announcement message.
      * 
      * @returns the id of the scheduled announcement
      */
-    public AnnouncementId schedule(final String message, final IplantAnnouncementConfig config) {
-        return schedule(new HTML(message), config);
-    }
-
-    /**
-     * Schedules a user closable announcement that will close automatically after 10 seconds.
-     * 
-     * @param content A Widget containing the announcement message.
-     * 
-     * @returns the id of the scheduled announcement
-     */
-    public AnnouncementId schedule(final IsWidget content) {
-        return schedule(content, new IplantAnnouncementConfig());
-    }
-
-    /**
-     * Schedules an announcement using the given IplantAnnouncementConfig.
-     * 
-     * @param content A Widget containing the announcement message.
-     * @param config The announcement configuration.
-     * 
-     * @returns the id of the scheduled announcement
-     */
-    public AnnouncementId schedule(final IsWidget content, final IplantAnnouncementConfig config) {
-        IplantAnnouncement popup = new IplantAnnouncement(content, config);
+    public AnnouncementId schedule(final IplantAnnouncementConfig config) {
+        IplantAnnouncement popup = new IplantAnnouncement(config);
         if (config.isClosable()) {
             popup.addCloseButtonHandler(new CloseHandler());
         }

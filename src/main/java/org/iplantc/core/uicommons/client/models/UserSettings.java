@@ -28,7 +28,9 @@ public class UserSettings {
     private String notifyShortCut;
     private String closeShortCut;
     private String systemDefaultOutputFolder;
-
+    private String lastPathId;
+    
+    
     public static final String EMAIL_NOTIFCATOIN = "enableEmailNotification";
     public static final String DEFAULT_FIFLE_SELECTOR_APTH = "defaultFileSelectorPath";
     public static final String REMEMBER_LAST_PATH = "rememberLastPath";
@@ -298,5 +300,19 @@ public class UserSettings {
      */
     public void setSystemDefaultOutputFolder(String systemDefaultOutputFolder) {
         this.systemDefaultOutputFolder = systemDefaultOutputFolder;
+    }
+
+    /**
+     * @return the lastPathId
+     */
+    public String getLastPathId() {
+        return lastPathId;
+    }
+
+    /**
+     * @param lastPathId the lastPathId to set
+     */
+    public void setLastPathId(String lastPathId) {
+        this.lastPathId = lastPathId;
     }
 }

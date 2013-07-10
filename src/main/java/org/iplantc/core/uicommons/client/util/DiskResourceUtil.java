@@ -73,6 +73,18 @@ public class DiskResourceUtil {
         return nameList;
     }
 
+    /**
+     * Appends a folder or file name to an existing folder path.
+     * 
+     * @param basePath the folder path to extend
+     * @param name the member folder or file name
+     * 
+     * @return the member folder or file path
+     */
+    public static final String appendNameToPath(final String basePath, final String name) {
+        return basePath + "/" + name;
+    }
+
     public static String asCommaSeperatedNameList(Iterable<String> idList) {
         if (idList == null) {
             return null;

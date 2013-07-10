@@ -9,41 +9,37 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public class ErrorAnnouncementConfig extends IplantAnnouncementConfig {
+public class SuccessAnnouncementConfig extends IplantAnnouncementConfig {
 
-    private final ImageResource errIcon = IplantResources.RESOURCES.exclamation();
+    private final ImageResource okIcon = IplantResources.RESOURCES.tick();
 
-    public ErrorAnnouncementConfig(String message) {
+    public SuccessAnnouncementConfig(String message) {
         super(message);
     }
 
-    public ErrorAnnouncementConfig(String message, boolean closable) {
+    public SuccessAnnouncementConfig(String message, boolean closable) {
         super(message, closable);
     }
 
-    public ErrorAnnouncementConfig(String message, boolean closable, int timeout_ms) {
+    public SuccessAnnouncementConfig(String message, boolean closable, int timeout_ms) {
         super(message, closable, timeout_ms);
     }
 
-    @Override
-    public String getPanelStyle() {
-        return STYLE.panelError();
-    }
-
     /**
-     * @return The given message as an HTML widget, for display by an IplantAnnouncement, proceeded by an
-     *         error icon.
+     * @return The given message as an HTML widget, for display by an IplantAnnouncement, proceeded by a
+     *         success icon.
      */
     @Override
     public IsWidget getWidget() {
         ImageElement imgEl = Document.get().createImageElement();
-        imgEl.setSrc(errIcon.getSafeUri().asString());
+        imgEl.setSrc(okIcon.getSafeUri().asString());
 
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
         sb.appendHtmlConstant(imgEl.getString());
-        sb.appendHtmlConstant("&nbsp;"); //$NON-NLS-1$
+        sb.appendHtmlConstant("&nbsp;");
         sb.appendEscaped(message);
 
         return new HTML(sb.toSafeHtml());
     }
+
 }

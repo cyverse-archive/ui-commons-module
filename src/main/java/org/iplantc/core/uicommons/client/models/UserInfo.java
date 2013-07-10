@@ -1,8 +1,11 @@
 package org.iplantc.core.uicommons.client.models;
 
+import java.util.List;
+
 import org.iplantc.core.jsonutil.JsonUtil;
 
 import com.google.gwt.json.client.JSONObject;
+import  org.iplantc.core.uicommons.client.models.WindowState;
 
 /**
  * Holds all the information about an user.
@@ -53,8 +56,10 @@ public class UserInfo {
     private String fullUsername;
     private String firstName;
     private String lastName;
+    private String homePath;
     private String trashPath;
     private Boolean newUser;
+    private List<WindowState> savedOrderedWindowStates;
 
     /**
      * Constructs a default instance of the object with all fields being set to null.
@@ -212,4 +217,33 @@ public class UserInfo {
     public void setNewUser(Boolean newUser) {
         this.newUser = newUser;
     }
+
+    /**
+     * @return the savedOrderedWindowStates
+     */
+    public List<WindowState> getSavedOrderedWindowStates() {
+        return savedOrderedWindowStates;
+    }
+
+    /**
+     * @param savedOrderedWindowStates the savedOrderedWindowStates to set
+     */
+    public void setSavedOrderedWindowStates(List<WindowState> savedOrderedWindowStates) {
+        this.savedOrderedWindowStates = savedOrderedWindowStates;
+    }
+
+    /**
+     * @return the path to the user's home directory.
+     */
+    public String getHomePath() {
+        return homePath;
+    }
+
+    /**
+     * @param homePath the path to the user's home directory.
+     */
+    public void setHomePath(String homePath) {
+        this.homePath = homePath;
+    }
 }
+

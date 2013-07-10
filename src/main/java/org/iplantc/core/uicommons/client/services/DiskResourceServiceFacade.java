@@ -7,21 +7,25 @@ import java.util.Set;
 import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.HasPaths;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceExistMap;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceMetadata;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
+import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
 
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface DiskResourceServiceFacade {
 
+    void getHomeFolder(AsyncCallback<String> callback);
+
     /**
      * Call service to retrieve the root folder info for the current user
      *
      * @param callback executed when RPC call completes.
      */
-    void getHomeFolder(AsyncCallback<String> callback);
+    void getRootFolders(AsyncCallback<RootFolders> callback);
 
     /**
      * get user's default analyses output folder
@@ -66,15 +70,16 @@ public interface DiskResourceServiceFacade {
 
     /**
      * Check if a list of files or folders exist.
-     *
-     * @param diskResourceIds paths to desired resources.
-     * @param callback callback executed when RPC call completes.
+     * 
+     * @param diskResourcePaths paths to desired resources.
+     * @param callback callback executed when RPC call completes. On success, a map that maps
+     *            resource paths to whether or not they exist.
      */
-    void diskResourcesExist(List<String> diskResourceIds, AsyncCallback<String> callback);
+    void diskResourcesExist(HasPaths diskResourcePaths, AsyncCallback<DiskResourceExistMap> callback);
 
     /**
      * Fetch preview data for a file.
-     *
+     * 
      * @param path path to desired file.
      * @param callback callback executed when RPC call completes.
      */
@@ -134,7 +139,15 @@ public interface DiskResourceServiceFacade {
      * @param diskResources a set of <code>DiskResource</code>s to be deleted
      * @param callback callback executed when service call completes.
      */
-    <T extends DiskResource> void deleteDiskResources(Set<T> diskResources, AsyncCallback<String> callback);
+    <T extends DiskResource> void deleteDiskResources(Set<T> diskResources, AsyncCallback<HasPaths> callback);
+
+    /**
+     * Call service to delete disk resources (i.e. {@link File}s and {@link Folder}s)
+     * 
+     * @param diskResources a set of <code>DiskResource</code>s to be deleted
+     * @param callback callback executed when service call completes.
+     */
+    void deleteDiskResources(HasPaths diskResources, AsyncCallback<HasPaths> callback);
 
     /**
      * @param resource the <code>DiskResource</code> for which metadata will be retrieved.
@@ -298,3 +311,4 @@ public interface DiskResourceServiceFacade {
 	void setFileType(String filePath, String type,
 			AsyncCallback<String> callback);
 }
+
