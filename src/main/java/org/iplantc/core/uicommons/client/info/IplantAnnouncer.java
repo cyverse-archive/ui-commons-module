@@ -7,6 +7,7 @@ import org.iplantc.core.uicommons.client.events.EventBus;
 
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
@@ -125,6 +126,17 @@ public class IplantAnnouncer {
      * @returns the id of the scheduled announcement
      */
     public AnnouncementId schedule(final String message) {
+        return schedule(new HTML(message));
+    }
+
+    /**
+     * Schedules a user closable announcement that will close automatically after 10 seconds.
+     * 
+     * @param message The plain text announcement message.
+     * 
+     * @returns the id of the scheduled announcement
+     */
+    public AnnouncementId schedule(final SafeHtml message) {
         return schedule(new HTML(message));
     }
 

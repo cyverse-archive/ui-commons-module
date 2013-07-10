@@ -17,12 +17,12 @@ public class NumberRangeValidator<N extends Number> extends AbstractValidator<N>
     }
 
 
-    public Number getMinNumber() {
+    public N getMinNumber() {
         return minNumber;
     }
 
-    public void setMinNumber(N minNumber) {
-        this.minNumber = minNumber;
+    public N getMaxNumber() {
+        return maxNumber;
     }
 
     @Override
