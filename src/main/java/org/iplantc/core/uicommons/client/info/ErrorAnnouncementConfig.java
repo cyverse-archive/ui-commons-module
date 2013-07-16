@@ -5,7 +5,9 @@ import org.iplantc.core.resources.client.IplantResources;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -13,15 +15,19 @@ public class ErrorAnnouncementConfig extends IplantAnnouncementConfig {
 
     private final ImageResource errIcon = IplantResources.RESOURCES.exclamation();
 
-    public ErrorAnnouncementConfig(String message) {
+    public ErrorAnnouncementConfig(final String message) {
+        this(SafeHtmlUtils.fromString(message));
+    }
+
+    public ErrorAnnouncementConfig(final SafeHtml message) {
         super(message);
     }
 
-    public ErrorAnnouncementConfig(String message, boolean closable) {
+    public ErrorAnnouncementConfig(final SafeHtml message, boolean closable) {
         super(message, closable);
     }
 
-    public ErrorAnnouncementConfig(String message, boolean closable, int timeout_ms) {
+    public ErrorAnnouncementConfig(final SafeHtml message, boolean closable, int timeout_ms) {
         super(message, closable, timeout_ms);
     }
 
@@ -42,7 +48,7 @@ public class ErrorAnnouncementConfig extends IplantAnnouncementConfig {
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
         sb.appendHtmlConstant(imgEl.getString());
         sb.appendHtmlConstant("&nbsp;"); //$NON-NLS-1$
-        sb.appendEscaped(message);
+        sb.appendHtmlConstant(message.asString());
 
         return new HTML(sb.toSafeHtml());
     }

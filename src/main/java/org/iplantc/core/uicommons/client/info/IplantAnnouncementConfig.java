@@ -3,6 +3,7 @@ package org.iplantc.core.uicommons.client.info;
 import org.iplantc.core.resources.client.AnnouncerStyle;
 import org.iplantc.core.resources.client.IplantResources;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -27,9 +28,9 @@ public class IplantAnnouncementConfig {
         CLOSER_CFG = new IconConfig(STYLE.closeButton(), STYLE.closeButtonOver());
     }
 
+    protected final SafeHtml message;
     private final boolean closable;
     private final int timeout_ms;
-    protected final String message;
 
     /**
      * Constructs a closable announcement config that will automatically close after 10 seconds.
@@ -37,6 +38,15 @@ public class IplantAnnouncementConfig {
      * @param message
      */
     public IplantAnnouncementConfig(final String message) {
+        this(SafeHtmlUtils.fromString(message));
+    }
+
+    /**
+     * Constructs a closable announcement config that will automatically close after 10 seconds.
+     * 
+     * @param message
+     */
+    public IplantAnnouncementConfig(final SafeHtml message) {
         this(message, true, DEFAULT_TIMEOUT_ms);
     }
 
@@ -46,7 +56,7 @@ public class IplantAnnouncementConfig {
      * @param message
      * @param closable
      */
-    public IplantAnnouncementConfig(final String message, boolean closable) {
+    public IplantAnnouncementConfig(final SafeHtml message, boolean closable) {
         this(message, closable, DEFAULT_TIMEOUT_ms);
     }
 
@@ -61,7 +71,7 @@ public class IplantAnnouncementConfig {
      * @param closable
      * @param timeout_ms
      */
-    public IplantAnnouncementConfig(final String message, boolean closable, int timeout_ms) {
+    public IplantAnnouncementConfig(final SafeHtml message, boolean closable, int timeout_ms) {
         this.closable = closable;
         this.timeout_ms = timeout_ms;
         this.message = message;
@@ -95,6 +105,6 @@ public class IplantAnnouncementConfig {
      * @return The given message as an HTML widget, for display by an IplantAnnouncement.
      */
     public IsWidget getWidget() {
-        return new HTML(SafeHtmlUtils.fromString(message));
+        return new HTML(message);
     }
 }
