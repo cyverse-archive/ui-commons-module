@@ -32,7 +32,7 @@ public class UserSettings {
     
     
     public static final String EMAIL_NOTIFCATOIN = "enableEmailNotification";
-    public static final String DEFAULT_FIFLE_SELECTOR_APTH = "defaultFileSelectorPath";
+    public static final String DEFAULT_FILE_SELECTOR_APTH = "defaultFileSelectorPath";
     public static final String REMEMBER_LAST_PATH = "rememberLastPath";
     public static final String SAVE_SESSION = "saveSession";
     public static final String DEFAULT_OUTPUT_FOLDER = "defaultOutputFolder";
@@ -42,6 +42,7 @@ public class UserSettings {
     public static final String NOTIFICATION_KB_SHORTCUT = "notificationKBShortcut";
     public static final String CLOSE_KB_SHORTCU_STRING = "closeKBShortcut";
     public static final String SYSTEM_DEFAULT_OUTPUT_DIR = "systemDefaultOutputDir";
+    public static final String LAST_PATH_ID = "lastPathId";
 
 
     private static UserSettings instance;
@@ -65,11 +66,12 @@ public class UserSettings {
     public void setValues(JSONObject obj) {
         if (obj != null) {
             setEnableEmailNotification(JsonUtil.getBoolean(obj, EMAIL_NOTIFCATOIN, true));
-            setDefaultFileSelectorPath(JsonUtil.getString(obj, DEFAULT_FIFLE_SELECTOR_APTH));
+            setDefaultFileSelectorPath(JsonUtil.getString(obj, DEFAULT_FILE_SELECTOR_APTH));
             setRememberLastPath(JsonUtil.getBoolean(obj, REMEMBER_LAST_PATH, true));
             setSaveSession(JsonUtil.getBoolean(obj, SAVE_SESSION, true));
             setDefaultOutputFolder(JsonUtil.getString(obj, DEFAULT_OUTPUT_FOLDER));
             setSystemDefaultOutputFolder(JsonUtil.getString(obj,SYSTEM_DEFAULT_OUTPUT_DIR));
+            setLastPathId(JsonUtil.getString(obj, LAST_PATH_ID));
             parseDataShortCut(obj);
             parseAnalysisShortCut(obj);
             parseAppsShortCut(obj);
@@ -221,7 +223,7 @@ public class UserSettings {
     public JSONObject toJson() {
         JSONObject obj = new JSONObject();
         obj.put(EMAIL_NOTIFCATOIN, JSONBoolean.getInstance(isEnableEmailNotification()));
-        obj.put(DEFAULT_FIFLE_SELECTOR_APTH, new JSONString(getDefaultFileSelectorPath()));
+        obj.put(DEFAULT_FILE_SELECTOR_APTH, new JSONString(getDefaultFileSelectorPath()));
         obj.put(REMEMBER_LAST_PATH, JSONBoolean.getInstance(isRememberLastPath()));
         obj.put(SAVE_SESSION, JSONBoolean.getInstance(isSaveSession()));
         obj.put(DEFAULT_OUTPUT_FOLDER, new JSONString(getDefaultOutputFolder()));
@@ -230,6 +232,7 @@ public class UserSettings {
         obj.put(DATA_KB_SHORTCUT, new JSONString(getDataShortCut()));
         obj.put(NOTIFICATION_KB_SHORTCUT, new JSONString(getNotifiShortCut()));
         obj.put(CLOSE_KB_SHORTCU_STRING, new JSONString(getCloseShortCut()));
+        obj.put(LAST_PATH_ID, new JSONString(getLastPathId()));
         return obj;
     }
 
