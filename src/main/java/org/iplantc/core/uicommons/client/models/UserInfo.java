@@ -9,11 +9,11 @@ import  org.iplantc.core.uicommons.client.models.WindowState;
 
 /**
  * Holds all the information about an user.
- * 
+ *
  * Note: init() must be called when using this class for the first time in the application.
- * 
+ *
  * @author sriram
- * 
+ *
  */
 @SuppressWarnings("nls")
 public class UserInfo {
@@ -41,11 +41,17 @@ public class UserInfo {
      * Defines an attribute for the User's Last Name.
      */
     public static String ATTR_LASTNAME = "lastName";
-    
+
     /**
      * Defines an attribute for new user identification
      */
     public static String NEW_USER ="newWorkspace";
+
+    /**
+     * Defines an attribute for a users login Time
+     *
+     */
+    public static String LOGIN_TIME = "loginTime";
 
 
     private static UserInfo instance;
@@ -58,6 +64,7 @@ public class UserInfo {
     private String lastName;
     private String homePath;
     private String trashPath;
+    private String loginTime;
     private Boolean newUser;
     private List<WindowState> savedOrderedWindowStates;
 
@@ -71,9 +78,9 @@ public class UserInfo {
 
     /**
      * Gets the username for the user.
-     * 
+     *
      * This value corresponds to an entry in LDAP.
-     * 
+     *
      * @return a string representing the username for the user.
      */
     public String getUsername() {
@@ -82,7 +89,7 @@ public class UserInfo {
 
     /**
      * Sets the username for the user.
-     * 
+     *
      * @param usr a string representing the username
      */
     public void setUsername(String usr) {
@@ -91,7 +98,7 @@ public class UserInfo {
 
     /**
      * Gets the workspace id for the user.
-     * 
+     *
      * @return a string representing the identifier for workspace.
      */
     public String getWorkspaceId() {
@@ -100,7 +107,7 @@ public class UserInfo {
 
     /**
      * Get an instance of UserInfo.
-     * 
+     *
      * @return a singleton instance of the object.
      */
     public static UserInfo getInstance() {
@@ -113,9 +120,9 @@ public class UserInfo {
 
     /**
      * Initializes UserInfo object.
-     * 
+     *
      * This method must be called before using any other member functions of this class
-     * 
+     *
      * @param userInfoJson json to initialize user info.
      */
     public void init(String userInfoJson) {
@@ -123,12 +130,13 @@ public class UserInfo {
             JSONObject obj = JsonUtil.getObject(userInfoJson);
             workspaceId = JsonUtil.getString(obj, "workspaceId");
             newUser = JsonUtil.getBoolean(obj, NEW_USER, false);
+            loginTime	= JsonUtil.getString(obj,LOGIN_TIME);
         }
     }
 
     /**
      * Get user's email address.
-     * 
+     *
      * @return email address.
      */
     public String getEmail() {
@@ -137,7 +145,7 @@ public class UserInfo {
 
     /**
      * Set user's email address.
-     * 
+     *
      * @param email email address.
      */
     public void setEmail(String email) {
@@ -146,7 +154,7 @@ public class UserInfo {
 
     /**
      * Gets the full username.
-     * 
+     *
      * @return the fully qualified username.
      */
     public String getFullUsername() {
@@ -155,7 +163,7 @@ public class UserInfo {
 
     /**
      * Sets the full username.
-     * 
+     *
      * @param fullUsername the fully qualified username.
      */
     public void setFullUsername(String fullUsername) {
@@ -245,5 +253,13 @@ public class UserInfo {
     public void setHomePath(String homePath) {
         this.homePath = homePath;
     }
+
+	public String getLoginTime() {
+		return loginTime;
+	}
+
+	public void setLoginTime(String loginTime) {
+		this.loginTime = loginTime;
+	}
 }
 

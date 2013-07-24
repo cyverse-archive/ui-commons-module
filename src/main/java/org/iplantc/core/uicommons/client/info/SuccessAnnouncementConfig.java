@@ -5,7 +5,9 @@ import org.iplantc.core.resources.client.IplantResources;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -13,15 +15,19 @@ public class SuccessAnnouncementConfig extends IplantAnnouncementConfig {
 
     private final ImageResource okIcon = IplantResources.RESOURCES.tick();
 
-    public SuccessAnnouncementConfig(String message) {
+    public SuccessAnnouncementConfig(final String message) {
+        this(SafeHtmlUtils.fromString(message));
+    }
+
+    public SuccessAnnouncementConfig(final SafeHtml message) {
         super(message);
     }
 
-    public SuccessAnnouncementConfig(String message, boolean closable) {
+    public SuccessAnnouncementConfig(final SafeHtml message, boolean closable) {
         super(message, closable);
     }
 
-    public SuccessAnnouncementConfig(String message, boolean closable, int timeout_ms) {
+    public SuccessAnnouncementConfig(final SafeHtml message, boolean closable, int timeout_ms) {
         super(message, closable, timeout_ms);
     }
 
@@ -37,7 +43,7 @@ public class SuccessAnnouncementConfig extends IplantAnnouncementConfig {
         SafeHtmlBuilder sb = new SafeHtmlBuilder();
         sb.appendHtmlConstant(imgEl.getString());
         sb.appendHtmlConstant("&nbsp;");
-        sb.appendEscaped(message);
+        sb.appendHtmlConstant(message.asString());
 
         return new HTML(sb.toSafeHtml());
     }

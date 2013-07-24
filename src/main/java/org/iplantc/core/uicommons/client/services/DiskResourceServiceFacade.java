@@ -7,8 +7,10 @@ import java.util.Set;
 import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.HasPaths;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceExistMap;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceMetadata;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceStatMap;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
@@ -222,11 +224,21 @@ public interface DiskResourceServiceFacade {
 
     /**
      * Get info about a selected file or folder
-     *
+     * 
      * @param body request body
      * @param callback callback object
+     * @deprecated User {@link #getStat(HasPaths, AsyncCallback)}
      */
+    @Deprecated
     void getStat(String body, AsyncCallback<String> callback);
+
+    /**
+     * Get info about a selected file or folder
+     * 
+     * @param diskResourcePaths the paths to query
+     * @param callback callback object
+     */
+    void getStat(final HasPaths diskResourcePaths, final AsyncCallback<DiskResourceStatMap> callback);
 
     /**
      * get data search history
@@ -310,5 +322,13 @@ public interface DiskResourceServiceFacade {
 	 */
 	void setFileType(String filePath, String type,
 			AsyncCallback<String> callback);
+
+    /**
+     * Convenience method which returns a valid {@link DiskResourceAutoBeanFactory} instance.
+     * 
+     * @return a ready to use <code>DiskResourceAutoBeanFactory</code>
+     */
+    DiskResourceAutoBeanFactory getDiskResourceFactory();
+
 }
 

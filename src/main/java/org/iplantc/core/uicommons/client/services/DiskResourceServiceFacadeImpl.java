@@ -15,6 +15,7 @@ import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceExistMap;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceMetadata;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceStatMap;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
 import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
@@ -349,6 +350,19 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         callService(wrapper, callback);
     }
 
+    @Override
+    public final void getStat(final HasPaths diskResourcePaths, final AsyncCallback<DiskResourceStatMap> callback) {
+        String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "stat"; //$NON-NLS-1$
+        final String body = encode(diskResourcePaths);
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address, body);
+        callService(wrapper, new AsyncCallbackConverter<String, DiskResourceStatMap>(callback) {
+            @Override
+            protected DiskResourceStatMap convertFrom(final String json) {
+                return AutoBeanCodex.decode(FACTORY, DiskResourceStatMap.class, json).as();
+            }
+        });
+    }
+
     /**
      * Performs the actual service call.
      * @param wrapper the wrapper used to get to the actual service via the service proxy.
@@ -505,5 +519,10 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
 				ServiceCallWrapper.Type.POST, address, obj.toString());
 		DEServiceFacade.getInstance().getServiceData(wrapper, callback);
 	}
+
+    @Override
+    public DiskResourceAutoBeanFactory getDiskResourceFactory() {
+        return FACTORY;
+    }
 
 }
