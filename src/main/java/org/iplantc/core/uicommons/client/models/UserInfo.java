@@ -17,20 +17,16 @@ import  org.iplantc.core.uicommons.client.models.WindowState;
  */
 @SuppressWarnings("nls")
 public class UserInfo {
-    /**
-     * Defines an attribute for User ID.
-     */
-    public static String ATTR_UID = "shibbolethUid";
-
+   
     /**
      * Defines an attribute for User Email
      */
-    public static String ATTR_EMAIL = "shibbolethMail";
+    public static String ATTR_EMAIL = "email";
 
     /**
      * Defines an attribute for the fully qualified username.
      */
-    public static String ATTR_USERNAME = "shibbolethEppn";
+    public static String ATTR_USERNAME = "username";
 
     /**
      * Defines an attribute for the User's First Name.
@@ -131,6 +127,11 @@ public class UserInfo {
             workspaceId = JsonUtil.getString(obj, "workspaceId");
             newUser = JsonUtil.getBoolean(obj, NEW_USER, false);
             loginTime	= JsonUtil.getString(obj,LOGIN_TIME);
+            setUsername(JsonUtil.getString(obj, UserInfo.ATTR_USERNAME));
+            setEmail(JsonUtil.getString(obj, UserInfo.ATTR_EMAIL));
+            setFullUsername(JsonUtil.getString(obj, UserInfo.ATTR_USERNAME));
+            setFirstName(JsonUtil.getString(obj, UserInfo.ATTR_FIRSTNAME));
+            setLastName(JsonUtil.getString(obj, UserInfo.ATTR_LASTNAME));
         }
     }
 
