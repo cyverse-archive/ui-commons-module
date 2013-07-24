@@ -1,5 +1,6 @@
 package org.iplantc.core.uicommons.client.models.diskresources;
 
+import org.iplantc.core.uicommons.client.errorHandling.models.SimpleServiceError;
 import org.iplantc.core.uicommons.client.models.HasPaths;
 import org.iplantc.core.uicommons.client.models.diskresources.RestoreResponse.RestoredResource;
 
@@ -7,7 +8,7 @@ import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory.Category;
 
-@Category(DiskResourceExistMap.Category.class)
+@Category({DiskResourceExistMap.Category.class, DiskResourceStatMap.Category.class})
 public interface DiskResourceAutoBeanFactory extends AutoBeanFactory {
 
     AutoBean<Folder> folder();
@@ -35,5 +36,9 @@ public interface DiskResourceAutoBeanFactory extends AutoBeanFactory {
     AutoBean<RestoredResource> partialRestoreResponse();
 
     AutoBean<DiskResourceExistMap> diskResourceExistMap();
+
+    AutoBean<DiskResourceStatMap> diskResourceStatMap();
+
+    AutoBean<SimpleServiceError> simpleServiceError();
 
 }

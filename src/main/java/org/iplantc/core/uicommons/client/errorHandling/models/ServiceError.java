@@ -1,7 +1,6 @@
 package org.iplantc.core.uicommons.client.errorHandling.models;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory.Category;
 
 /**
@@ -13,16 +12,7 @@ import com.google.web.bindery.autobean.shared.AutoBeanFactory.Category;
  * @author jstroot
  * 
  */
-public interface ServiceError {
-
-    @PropertyName("action")
-    String getServiceName();
-
-    @PropertyName("error_code")
-    String getErrorCode();
-
-    @PropertyName("status")
-    String getStatus();
+public interface ServiceError extends SimpleServiceError {
 
     /**
      * A Non-property method which must be implemented with a {@link Category} method.
@@ -31,10 +21,4 @@ public interface ServiceError {
      */
     SafeHtml generateErrorMsg();
 
-    /**
-     * XXX JDS This key is only used in one or two error codes and should not be relied upon.
-     * TODO JDS Request consistent error message JSON response format from backend services.
-     * @return
-     */
-    String getReason();
 }
