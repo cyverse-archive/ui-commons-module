@@ -51,16 +51,15 @@ public interface DiskResourceServiceFacade {
      * @param path path to requested folder.
      * @param callback executed when RPC call completes.
      */
-    void getFolderContents(String path, AsyncCallback<String> callback);
+    void getFolderContents(final String path, final AsyncCallback<Set<DiskResource>> callback);
 
     /**
-     * Called to retrieve the contents of a folder, with or without its file listing.
-     *
+     * Called to retrieve the contents of a folder without its file contents.
+     * 
      * @param path path to requested folder.
-     * @param includeFiles whether or not to include the file listing of the given folder
      * @param callback executed when RPC call completes.
      */
-    void getFolderContents(String path, boolean includeFiles, AsyncCallback<String> callback);
+    void getSubFolders(final String path, final AsyncCallback<List<Folder>> callback);
 
     /**
      * Call service to create a new folder

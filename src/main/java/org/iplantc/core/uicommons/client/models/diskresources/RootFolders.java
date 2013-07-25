@@ -7,4 +7,5 @@ public interface RootFolders {
 
     List<Folder> getRoots();
 
+    void setRoots(List<Folder> roots);
 }

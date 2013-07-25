@@ -22,7 +22,9 @@ import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uicommons.client.util.WindowUtil;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
@@ -33,7 +35,11 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+import com.google.web.bindery.autobean.shared.Splittable;
+import com.google.web.bindery.autobean.shared.impl.StringQuoter;
 import com.sencha.gxt.core.client.util.Format;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.TreeStore;
 
 /**
  * Provides access to remote services for folder operations.
@@ -41,7 +47,18 @@ import com.sencha.gxt.core.client.util.Format;
  * @author amuir
  *
  */
-public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade {
+public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
+        DiskResourceServiceFacade {
+
+    public DiskResourceServiceFacadeImpl() {
+        super(new ModelKeyProvider<Folder>() {
+
+            @Override
+            public String getKey(Folder item) {
+                return item.getId();
+            }
+        });
+    }
 
     private static final DiskResourceAutoBeanFactory FACTORY = GWT.create(DiskResourceAutoBeanFactory.class);
 
@@ -59,15 +76,29 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
 
     @Override
     public final void getRootFolders(final AsyncCallback<RootFolders> callback) {
-        String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "root"; //$NON-NLS-1$
+        if (getRootCount() > 0) {
+            RootFolders result = FACTORY.rootFolders().as();
+            result.setRoots(getRootItems());
+            callback.onSuccess(result);
+        } else {
+            String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "root"; //$NON-NLS-1$
+            ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
 
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
-        callService(wrapper, new AsyncCallbackConverter<String, RootFolders>(callback) {
-            @Override
-            protected RootFolders convertFrom(final String json) {
-                return AutoBeanCodex.decode(FACTORY, RootFolders.class, json).as();
-            }
-        });
+            callService(wrapper, new AsyncCallbackConverter<String, RootFolders>(callback) {
+                @Override
+                protected RootFolders convertFrom(final String json) {
+                    RootFolders result = AutoBeanCodex.decode(FACTORY, RootFolders.class, json).as();
+                    setRootFolders(result.getRoots());
+
+                    return result;
+                }
+            });
+        }
+    }
+
+    private void setRootFolders(List<Folder> rootNodes) {
+        clear();
+        add(rootNodes);
     }
 
     @Override
@@ -88,21 +119,113 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
     }
 
     @Override
-    public void getFolderContents(final String path, AsyncCallback<String> callback) {
-        getFolderContents(path, true, callback);
+    public void getFolderContents(final String path, final AsyncCallback<Set<DiskResource>> callback) {
+        Folder folder = findModelWithKey(path);
+
+        if (hasFoldersLoaded(folder) && hasFilesLoaded(folder)) {
+            callback.onSuccess(getFolderContents(folder));
+        } else {
+            String address = getDirectoryListingEndpoint(path, true);
+            ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
+            callService(wrapper, new AsyncCallbackConverter<String, Set<DiskResource>>(callback) {
+
+                @Override
+                protected Set<DiskResource> convertFrom(String result) {
+                    Folder folder = findModelWithKey(path);
+                    if (folder != null) {
+                        boolean foldersLoaded = hasFoldersLoaded(folder);
+
+                        // Turn json result into a Splittable and wrap the loaded folder
+                        Splittable split = StringQuoter.split(result);
+                        AutoBeanCodex.decodeInto(split,
+                                AutoBeanUtils.<Folder, Folder> getAutoBean(folder));
+
+                        if (!foldersLoaded) {
+                            saveSubFolders(folder);
+                        }
+                    }
+
+                    return getFolderContents(folder);
+                }
+            });
+        }
+    }
+
+    private Set<DiskResource> getFolderContents(final Folder folder) {
+        Set<DiskResource> children = Sets.newHashSet();
+
+        if (folder != null) {
+            if (folder.getFolders() != null) {
+                children.addAll(folder.getFolders());
+            }
+            if (folder.getFiles() != null) {
+                children.addAll(folder.getFiles());
+            }
+        }
+
+        return children;
     }
 
     @Override
-    public void getFolderContents(final String path, boolean includeFiles, AsyncCallback<String> callback) {
-        String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "directory?includefiles=" //$NON-NLS-1$
-                + (includeFiles ? "1" : "0"); //$NON-NLS-1$ //$NON-NLS-2$
+    public void getSubFolders(final String path, final AsyncCallback<List<Folder>> callback) {
+        Folder folder = findModelWithKey(path);
 
-        if (path != null && !path.isEmpty()) {
-            fullAddress += "&path=" + URL.encodePathSegment(path); //$NON-NLS-1$
+        if (hasFoldersLoaded(folder)) {
+            callback.onSuccess(getSubFolders(folder));
+        } else {
+            String address = getDirectoryListingEndpoint(path, false);
+            ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
+            callService(wrapper, new AsyncCallbackConverter<String, List<Folder>>(callback) {
+
+                @Override
+                protected List<Folder> convertFrom(String result) {
+                    Folder folder = findModelWithKey(path);
+                    if (folder != null) {
+                        // Turn json result into a Splittable and wrap the loaded folder
+                        Splittable split = StringQuoter.split(result);
+                        AutoBeanCodex.decodeInto(split,
+                                AutoBeanUtils.<Folder, Folder> getAutoBean(folder));
+
+                        saveSubFolders(folder);
+                    }
+
+                    return getSubFolders(folder);
+                }
+            });
+        }
+    }
+
+    private void saveSubFolders(final Folder parent) {
+        if (parent != null && parent.getFolders() != null) {
+            add(parent, parent.getFolders());
+        }
+    }
+
+    private List<Folder> getSubFolders(final Folder folder) {
+        if (folder != null && folder.getFolders() != null) {
+            return folder.getFolders();
         }
 
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(fullAddress);
-        callService(wrapper, callback);
+        return Lists.newArrayList();
+    }
+
+    private boolean hasFoldersLoaded(final Folder folder) {
+        return folder != null && folder.getFolders() != null;
+    }
+
+    private boolean hasFilesLoaded(final Folder folder) {
+        return folder != null && folder.getFiles() != null;
+    }
+
+    private String getDirectoryListingEndpoint(final String path, boolean includeFiles) {
+        String address = DEProperties.getInstance().getDataMgmtBaseUrl()
+                + "directory?includefiles=" + (includeFiles ? "1" : "0"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        if (!Strings.isNullOrEmpty(path)) {
+            address += "&path=" + URL.encodePathSegment(path); //$NON-NLS-1$
+        }
+
+        return address;
     }
 
     @Override
