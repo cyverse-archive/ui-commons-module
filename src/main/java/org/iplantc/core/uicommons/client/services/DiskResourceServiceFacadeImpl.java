@@ -243,8 +243,6 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
             @Override
             protected Folder convertFrom(String result) {
-                Splittable splittable = StringQuoter.split(result);
-
                 Folder folder = AutoBeanCodex.decode(FACTORY, Folder.class, result).as();
 
                 // Set the new folder name since the create folder service call result does not contain
@@ -253,7 +251,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
                 // Use the service call result to set the ID of the new folder. Otherwise, calls to
                 // getId() on this new folder instance will return null.
-                folder.setId(splittable.get("path").asString()); //$NON-NLS-1$
+                folder.setId(folder.getPath());
 
                 addFolder(parentId, folder);
 
