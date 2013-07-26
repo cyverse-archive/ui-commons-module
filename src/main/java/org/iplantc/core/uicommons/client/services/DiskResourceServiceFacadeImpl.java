@@ -35,8 +35,6 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-import com.google.web.bindery.autobean.shared.Splittable;
-import com.google.web.bindery.autobean.shared.impl.StringQuoter;
 import com.sencha.gxt.core.client.util.Format;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.TreeStore;
@@ -120,35 +118,21 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
     @Override
     public void getFolderContents(final String path, final AsyncCallback<Set<DiskResource>> callback) {
-        Folder folder = findModelWithKey(path);
+        String address = getDirectoryListingEndpoint(path, true);
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
+        callService(wrapper, new AsyncCallbackConverter<String, Set<DiskResource>>(callback) {
 
-        if (hasFoldersLoaded(folder) && hasFilesLoaded(folder)) {
-            callback.onSuccess(getFolderContents(folder));
-        } else {
-            String address = getDirectoryListingEndpoint(path, true);
-            ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
-            callService(wrapper, new AsyncCallbackConverter<String, Set<DiskResource>>(callback) {
+            @Override
+            protected Set<DiskResource> convertFrom(String result) {
+                // Decode JSON result into a folder
+                Folder folder = AutoBeanCodex.decode(FACTORY, Folder.class, result).as();
 
-                @Override
-                protected Set<DiskResource> convertFrom(String result) {
-                    Folder folder = findModelWithKey(path);
-                    if (folder != null) {
-                        boolean foldersLoaded = hasFoldersLoaded(folder);
+                // Store or update the folder's subfolders.
+                saveSubFolders(folder);
 
-                        // Turn json result into a Splittable and wrap the loaded folder
-                        Splittable split = StringQuoter.split(result);
-                        AutoBeanCodex.decodeInto(split,
-                                AutoBeanUtils.<Folder, Folder> getAutoBean(folder));
-
-                        if (!foldersLoaded) {
-                            saveSubFolders(folder);
-                        }
-                    }
-
-                    return getFolderContents(folder);
-                }
-            });
-        }
+                return getFolderContents(folder);
+            }
+        });
     }
 
     private Set<DiskResource> getFolderContents(final Folder folder) {
@@ -179,15 +163,11 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
                 @Override
                 protected List<Folder> convertFrom(String result) {
-                    Folder folder = findModelWithKey(path);
-                    if (folder != null) {
-                        // Turn json result into a Splittable and wrap the loaded folder
-                        Splittable split = StringQuoter.split(result);
-                        AutoBeanCodex.decodeInto(split,
-                                AutoBeanUtils.<Folder, Folder> getAutoBean(folder));
+                    // Decode JSON result into a folder
+                    Folder folder = AutoBeanCodex.decode(FACTORY, Folder.class, result).as();
 
-                        saveSubFolders(folder);
-                    }
+                    // Store or update the folder's subfolders.
+                    saveSubFolders(folder);
 
                     return getSubFolders(folder);
                 }
@@ -227,10 +207,6 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
     private boolean hasFoldersLoaded(final Folder folder) {
         return folder != null && folder.getFolders() != null;
-    }
-
-    private boolean hasFilesLoaded(final Folder folder) {
-        return folder != null && folder.getFiles() != null;
     }
 
     private String getDirectoryListingEndpoint(final String path, boolean includeFiles) {
