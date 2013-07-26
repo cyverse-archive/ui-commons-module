@@ -195,9 +195,25 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         }
     }
 
-    private void saveSubFolders(final Folder parent) {
-        if (parent != null && parent.getFolders() != null) {
-            add(parent, parent.getFolders());
+    private void saveSubFolders(final Folder folder) {
+        if (folder == null) {
+            return;
+        }
+
+        List<Folder> subfolders = folder.getFolders();
+        Folder parent = findModel(folder);
+        if (parent != null && subfolders != null) {
+            parent.setFolders(subfolders);
+
+            for (Folder child : subfolders) {
+                Folder current = findModel(child);
+                if (current == null) {
+                    add(parent, child);
+                } else {
+                    child.setFolders(current.getFolders());
+                    update(child);
+                }
+            }
         }
     }
 
