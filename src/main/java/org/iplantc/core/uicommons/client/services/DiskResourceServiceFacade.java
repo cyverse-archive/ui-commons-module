@@ -67,7 +67,7 @@ public interface DiskResourceServiceFacade {
      * @param parentFolder parent folder where the new folder will be created
      * @param callback executed when RPC call completes.
      */
-    void createFolder(Folder parentFolder, String newFolderName, AsyncCallback<String> callback);
+    void createFolder(Folder parentFolder, final String newFolderName, AsyncCallback<Folder> callback);
 
     /**
      * Check if a list of files or folders exist.

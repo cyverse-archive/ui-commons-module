@@ -229,14 +229,48 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
     }
 
     @Override
-    public void createFolder(Folder parentFolder, String newFolderName, AsyncCallback<String> callback) {
+    public void createFolder(Folder parentFolder, final String newFolderName,
+            AsyncCallback<Folder> callback) {
+        final String parentId = parentFolder.getId();
+
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "directory/create"; //$NON-NLS-1$
         JSONObject obj = new JSONObject();
-        obj.put("path", new JSONString(parentFolder.getId() + "/" + newFolderName)); //$NON-NLS-1$
+        obj.put("path", new JSONString(parentId + "/" + newFolderName)); //$NON-NLS-1$
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 obj.toString());
-        callService(wrapper, callback);
+        callService(wrapper, new AsyncCallbackConverter<String, Folder>(callback) {
+
+            @Override
+            protected Folder convertFrom(String result) {
+                Splittable splittable = StringQuoter.split(result);
+
+                Folder folder = AutoBeanCodex.decode(FACTORY, Folder.class, result).as();
+
+                // Set the new folder name since the create folder service call result does not contain
+                // the name of the new folder
+                folder.setName(newFolderName);
+
+                // Use the service call result to set the ID of the new folder. Otherwise, calls to
+                // getId() on this new folder instance will return null.
+                folder.setId(splittable.get("path").asString()); //$NON-NLS-1$
+
+                addFolder(parentId, folder);
+
+                return folder;
+            }
+        });
+    }
+
+    private void addFolder(String parentId, Folder child) {
+        Folder parent = findModelWithKey(parentId);
+        if (parent != null) {
+            if (parent.getFolders() != null) {
+                parent.getFolders().add(child);
+            }
+
+            add(parent, child);
+        }
     }
 
     @Override
