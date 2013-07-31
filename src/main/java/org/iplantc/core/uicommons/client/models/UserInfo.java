@@ -5,7 +5,6 @@ import java.util.List;
 import org.iplantc.core.jsonutil.JsonUtil;
 
 import com.google.gwt.json.client.JSONObject;
-import  org.iplantc.core.uicommons.client.models.WindowState;
 
 /**
  * Holds all the information about an user.
@@ -129,7 +128,7 @@ public class UserInfo {
             loginTime	= JsonUtil.getString(obj,LOGIN_TIME);
             setUsername(JsonUtil.getString(obj, UserInfo.ATTR_USERNAME));
             setEmail(JsonUtil.getString(obj, UserInfo.ATTR_EMAIL));
-            setFullUsername(JsonUtil.getString(obj, UserInfo.ATTR_USERNAME));
+            setFullUsername(JsonUtil.getString(obj, UserInfo.ATTR_EMAIL));
             setFirstName(JsonUtil.getString(obj, UserInfo.ATTR_FIRSTNAME));
             setLastName(JsonUtil.getString(obj, UserInfo.ATTR_LASTNAME));
         }
