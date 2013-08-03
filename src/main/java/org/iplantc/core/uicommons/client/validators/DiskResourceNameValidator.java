@@ -15,7 +15,7 @@ import com.sencha.gxt.widget.core.client.form.validator.AbstractValidator;
  * @author psarando
  * 
  */
-public class NameValidator3 extends AbstractValidator<String> {
+public class DiskResourceNameValidator extends AbstractValidator<String> {
 
     @Override
     public List<EditorError> validate(Editor<String> editor, String value) {
