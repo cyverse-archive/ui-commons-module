@@ -19,6 +19,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.gwt.json.client.JSONArray;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
@@ -260,4 +261,45 @@ public class DiskResourceUtil {
         }
     }
 
+    /**
+     * Returns a Set containing all Files found in the given DiskResource Set.
+     * 
+     * @param diskResources
+     * @return A Set containing all Files found in the given DiskResource Set, or an empty Set if the
+     *         given Set is null or empty.
+     */
+    public static Set<File> filterFiles(Set<DiskResource> diskResources) {
+        Set<File> files = Sets.newHashSet();
+
+        if (diskResources != null) {
+            for (DiskResource resource : diskResources) {
+                if (resource instanceof File) {
+                    files.add((File)resource);
+                }
+            }
+        }
+
+        return files;
+    }
+
+    /**
+     * Returns a Set containing all Folders found in the given DiskResource Set.
+     * 
+     * @param diskResources
+     * @return A Set containing all Folders found in the given DiskResource Set, or an empty Set if the
+     *         given Set is null or empty.
+     */
+    public static Set<Folder> filterFolders(Set<DiskResource> diskResources) {
+        Set<Folder> folders = Sets.newHashSet();
+
+        if (diskResources != null) {
+            for (DiskResource resource : diskResources) {
+                if (resource instanceof Folder) {
+                    folders.add((Folder)resource);
+                }
+            }
+        }
+
+        return folders;
+    }
 }
