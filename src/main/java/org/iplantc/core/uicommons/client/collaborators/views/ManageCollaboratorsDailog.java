@@ -11,7 +11,6 @@ import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollabora
 import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
 import org.iplantc.core.uicommons.client.collaborators.views.ManageCollaboratorsView.Presenter;
 import org.iplantc.core.uicommons.client.views.gxt3.dialogs.IPlantDialog;
-import org.iplantc.core.uicommons.client.widgets.ContextualHelpPopup;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
@@ -51,15 +50,7 @@ public class ManageCollaboratorsDailog extends IPlantDialog {
         properties = GWT.create(CollaboratorProperties.class);
         setPredefinedButtons(PredefinedButton.OK);
         setHeadingText(I18N.DISPLAY.collaborators());
-        help_tool.addSelectHandler(new SelectHandler() {
-            
-            @Override
-            public void onSelect(SelectEvent event) {
-                ContextualHelpPopup popup = new ContextualHelpPopup();
-                popup.add(new HTML(I18N.HELP.collaboratorsHelp()));
-                popup.showAt(help_tool.getAbsoluteLeft(), help_tool.getAbsoluteTop() + 15);
-            }
-        });
+        addHelp(new HTML(I18N.HELP.collaboratorsHelp()));
         setPixelSize(450, 400);
         addOkButtonHandler();
         setHideOnButtonClick(true);
