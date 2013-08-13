@@ -130,4 +130,18 @@ public interface DEClientConstants extends CommonUiConstants {
      * @return
      */
     String newAppTemplate();
+    
+    /**
+     * A constant for DE header height
+     * 
+     * @return
+     */
+    int deHeaderHeight();
+     
+    /**
+     * A constant for DE taskbar height
+     * 
+     * @return
+     */
+    int deTaskBarHeight();
 }

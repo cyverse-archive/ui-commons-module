@@ -7,6 +7,7 @@
  */
 package org.iplantc.core.uicommons.client.widgets;
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
@@ -154,7 +155,12 @@ public class IPCFileUploadField extends Component implements IsField<String>, Ha
 
     @Override
     public String getValue() {
-        return getFileInput().getValue();
+        String value = getFileInput().getValue();
+        if( !Strings.isNullOrEmpty(value)) {
+            return value.replace("C:\\fakepath\\", "");
+        } else {
+            return value;
+        }
     }
 
     /**
