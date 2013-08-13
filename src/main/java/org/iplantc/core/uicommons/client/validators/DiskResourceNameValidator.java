@@ -1,5 +1,6 @@
 package org.iplantc.core.uicommons.client.validators;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.iplantc.core.resources.client.messages.I18N;
@@ -15,12 +16,12 @@ import com.sencha.gxt.widget.core.client.form.validator.AbstractValidator;
  * @author psarando
  * 
  */
-public class NameValidator3 extends AbstractValidator<String> {
+public class DiskResourceNameValidator extends AbstractValidator<String> {
 
     @Override
     public List<EditorError> validate(Editor<String> editor, String value) {
         if (value == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         // check for spaces at the beginning and at the end of the file name
@@ -47,6 +48,6 @@ public class NameValidator3 extends AbstractValidator<String> {
             return createError(new DefaultEditorError(editor, errorMsg, value));
         }
 
-        return null;
+        return Collections.emptyList();
     }
 }

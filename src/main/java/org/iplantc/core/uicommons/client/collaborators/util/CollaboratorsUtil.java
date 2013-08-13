@@ -13,6 +13,7 @@ import org.iplantc.core.uicommons.client.collaborators.models.CollaboratorAutoBe
 import org.iplantc.core.uicommons.client.collaborators.models.CollaboratorsList;
 import org.iplantc.core.uicommons.client.events.CollaboratorsLoadedEvent;
 import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.info.ErrorAnnouncementConfig;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.services.CollaboratorsServiceFacade;
@@ -25,7 +26,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.sencha.gxt.core.shared.FastMap;
-import com.sencha.gxt.widget.core.client.box.AlertMessageBox;
 
 /**
  * @author sriram
@@ -44,10 +44,8 @@ public class CollaboratorsUtil {
         JSONObject obj = JsonUtil.getObject(result);
         boolean truncated = JsonUtil.getBoolean(obj, "truncated", false);
         if (truncated) {
-            AlertMessageBox amb = new AlertMessageBox(I18N.DISPLAY.searchCollab(),
-            		I18N.DISPLAY.collaboratorSearchTruncated());
-            amb.setModal(true);
-            amb.show();
+            IplantAnnouncer.getInstance().schedule(
+                    new ErrorAnnouncementConfig(I18N.DISPLAY.collaboratorSearchTruncated()));
         }
         return bean.as().getCollaborators();
     }
