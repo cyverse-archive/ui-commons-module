@@ -18,6 +18,7 @@ import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceMetada
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceStatMap;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
+import org.iplantc.core.uicommons.client.models.services.DiskResourceMove;
 import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uicommons.client.util.WindowUtil;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
@@ -293,21 +294,76 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
     }
 
     @Override
-    public void moveDiskResources(
-            final Set<org.iplantc.core.uicommons.client.models.diskresources.DiskResource> diskResources,
-            final Folder idDestFolder, AsyncCallback<String> callback) {
+    public void moveDiskResources(final Set<DiskResource> diskResources, final Folder destFolder,
+            AsyncCallback<DiskResourceMove> callback) {
 
         String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "move"; //$NON-NLS-1$
 
-        List<String> idSrcFiles = DiskResourceUtil.asStringIdList(diskResources);
-        JSONObject body = new JSONObject();
-        body.put("dest", new JSONString(idDestFolder.getId())); //$NON-NLS-1$
-        body.put("sources", JsonUtil.buildArrayFromStrings(idSrcFiles)); //$NON-NLS-1$
+        DiskResourceMove request = FACTORY.diskResourceMove().as();
+        request.setDest(destFolder.getId());
+        request.setSources(DiskResourceUtil.asStringIdList(diskResources));
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
-                body.toString());
+                encode(request));
 
-        callService(wrapper, callback);
+        callService(wrapper, new AsyncCallbackConverter<String, DiskResourceMove>(callback) {
+
+            @Override
+            protected DiskResourceMove convertFrom(String result) {
+                DiskResourceMove resourcesMoved = decode(DiskResourceMove.class, result);
+                moveFolders(resourcesMoved);
+
+                return resourcesMoved;
+            }
+        });
+    }
+
+    private void moveFolders(DiskResourceMove resourcesMoved) {
+        if (resourcesMoved == null || resourcesMoved.getSources() == null) {
+            return;
+        }
+
+        Folder dest = findModelWithKey(resourcesMoved.getDest());
+        for (String path : resourcesMoved.getSources()) {
+            Folder folder = findModelWithKey(path);
+            if (folder != null) {
+                // Remove the folder and its children from the cache.
+                remove(folder);
+
+                // Remove the folder from its original parent.
+                Folder parent = findModelWithKey(DiskResourceUtil.parseParent(path));
+                if (parent != null && parent.getFolders() != null) {
+                    parent.getFolders().remove(folder);
+                }
+
+                // Move the folder and its children to dest in the cache, updating their paths first.
+                if (hasFoldersLoaded(dest)) {
+                    // Clone moved folder, so other views can still manage the folder in their stores.
+                    folder = decode(Folder.class, encode(folder));
+
+                    dest.getFolders().add(folder);
+                    moveFolder(folder, dest);
+                }
+            }
+        }
+    }
+
+    private void moveFolder(Folder folder, Folder dest) {
+        if (folder == null || dest == null) {
+            return;
+        }
+
+        // Update the folder's path to its new location, then cache it in the TreeStore.
+        folder.setId(DiskResourceUtil.appendNameToPath(dest.getId(), folder.getName()));
+        add(dest, folder);
+
+        // Move the folder's children to the new location in the cache, updating their paths first.
+        List<Folder> children = folder.getFolders();
+        if (children != null) {
+            for (Folder child : children) {
+                moveFolder(child, folder);
+            }
+        }
     }
 
     @Override

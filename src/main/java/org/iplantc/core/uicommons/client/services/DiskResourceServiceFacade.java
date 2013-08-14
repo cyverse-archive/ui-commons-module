@@ -14,6 +14,7 @@ import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceStatMa
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
+import org.iplantc.core.uicommons.client.models.services.DiskResourceMove;
 
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -92,7 +93,8 @@ public interface DiskResourceServiceFacade {
      * @param diskResources list of file and folder ids to move.
      * @param destFolder the destination folder where the disk resources will be moved.
      */
-    void moveDiskResources(Set<DiskResource> diskResources, Folder destFolder, AsyncCallback<String> callback);
+    void moveDiskResources(final Set<DiskResource> diskResources, final Folder destFolder,
+            AsyncCallback<DiskResourceMove> callback);
 
     /**
      * Call service rename a file or folder.
