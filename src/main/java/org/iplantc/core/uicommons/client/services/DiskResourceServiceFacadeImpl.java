@@ -64,6 +64,10 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         return AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(entity)).getPayload();
     }
 
+    private static <T> T decode(Class<T> clazz, String playload) {
+        return AutoBeanCodex.decode(FACTORY, clazz, playload).as();
+    }
+
     @Override
     public void getHomeFolder(AsyncCallback<String> callback) {
         String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "home"; //$NON-NLS-1$
@@ -85,7 +89,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
             callService(wrapper, new AsyncCallbackConverter<String, RootFolders>(callback) {
                 @Override
                 protected RootFolders convertFrom(final String json) {
-                    RootFolders result = AutoBeanCodex.decode(FACTORY, RootFolders.class, json).as();
+                    RootFolders result = decode(RootFolders.class, json);
                     setRootFolders(result.getRoots());
 
                     return result;
@@ -125,7 +129,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
             @Override
             protected Set<DiskResource> convertFrom(String result) {
                 // Decode JSON result into a folder
-                Folder folder = AutoBeanCodex.decode(FACTORY, Folder.class, result).as();
+                Folder folder = decode(Folder.class, result);
 
                 // Store or update the folder's subfolders.
                 saveSubFolders(folder);
@@ -164,7 +168,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
                 @Override
                 protected List<Folder> convertFrom(String result) {
                     // Decode JSON result into a folder
-                    Folder folder = AutoBeanCodex.decode(FACTORY, Folder.class, result).as();
+                    Folder folder = decode(Folder.class, result);
 
                     // Store or update the folder's subfolders.
                     saveSubFolders(folder);
@@ -235,7 +239,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
             @Override
             protected Folder convertFrom(String result) {
-                Folder folder = AutoBeanCodex.decode(FACTORY, Folder.class, result).as();
+                Folder folder = decode(Folder.class, result);
 
                 // Set the new folder name since the create folder service call result does not contain
                 // the name of the new folder
@@ -271,7 +275,8 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         callService(wrapper, new AsyncCallbackConverter<String, DiskResourceExistMap>(callback) {
             @Override
             protected DiskResourceExistMap convertFrom(final String json) {
-                return AutoBeanCodex.decode(FACTORY, DiskResourceExistMap.class, json).as();
+                // TODO Verify this facade's store against these results?
+                return decode(DiskResourceExistMap.class, json);
             }
         });
     }
@@ -395,7 +400,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         callService(wrapper, new AsyncCallbackConverter<String, HasPaths>(callback) {
             @Override
             protected HasPaths convertFrom(final String json) {
-                return AutoBeanCodex.decode(FACTORY, HasPaths.class, json).as();
+                return decode(HasPaths.class, json);
             }});
     }
 
@@ -505,7 +510,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         callService(wrapper, new AsyncCallbackConverter<String, DiskResourceStatMap>(callback) {
             @Override
             protected DiskResourceStatMap convertFrom(final String json) {
-                return AutoBeanCodex.decode(FACTORY, DiskResourceStatMap.class, json).as();
+                return decode(DiskResourceStatMap.class, json);
             }
         });
     }
