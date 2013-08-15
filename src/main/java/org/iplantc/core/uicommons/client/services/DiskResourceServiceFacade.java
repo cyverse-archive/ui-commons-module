@@ -103,8 +103,7 @@ public interface DiskResourceServiceFacade {
      * @param destName
      * @param callback service success/failure callback
      */
-    void renameDiskResource(org.iplantc.core.uicommons.client.models.diskresources.DiskResource src,
-            String destName, AsyncCallback<String> callback);
+    void renameDiskResource(DiskResource src, String destName, AsyncCallback<DiskResource> callback);
 
     /**
      * Call service to upload a file from a given URL.

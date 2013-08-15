@@ -16,9 +16,11 @@ import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBe
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceExistMap;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceMetadata;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceStatMap;
+import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
 import org.iplantc.core.uicommons.client.models.services.DiskResourceMove;
+import org.iplantc.core.uicommons.client.models.services.DiskResourceRename;
 import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uicommons.client.util.WindowUtil;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
@@ -342,13 +344,13 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
                     folder = decode(Folder.class, encode(folder));
 
                     dest.getFolders().add(folder);
-                    moveFolder(folder, dest);
+                    moveFolderTree(folder, dest);
                 }
             }
         }
     }
 
-    private void moveFolder(Folder folder, Folder dest) {
+    private void moveFolderTree(Folder folder, Folder dest) {
         if (folder == null || dest == null) {
             return;
         }
@@ -361,21 +363,70 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         List<Folder> children = folder.getFolders();
         if (children != null) {
             for (Folder child : children) {
-                moveFolder(child, folder);
+                moveFolderTree(child, folder);
             }
         }
     }
 
     @Override
-    public void renameDiskResource(DiskResource src, String destName, AsyncCallback<String> callback) {
+    public void renameDiskResource(final DiskResource src, String destName,
+            AsyncCallback<DiskResource> callback) {
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "rename"; //$NON-NLS-1$
-        JSONObject body = new JSONObject();
-        body.put("source", new JSONString(src.getId())); //$NON-NLS-1$
-        body.put("dest", new JSONString(DiskResourceUtil.parseParent(src.getId()) + "/" + destName)); //$NON-NLS-1$
+
+        DiskResourceRename request = FACTORY.diskResourceRename().as();
+        String srcId = src.getId();
+        request.setSource(srcId);
+        request.setDest(DiskResourceUtil.appendNameToPath(DiskResourceUtil.parseParent(srcId), destName));
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
-                body.toString());
-        callService(wrapper, callback);
+                encode(request));
+        callService(wrapper, new AsyncCallbackConverter<String, DiskResource>(callback) {
+
+            @Override
+            protected DiskResource convertFrom(String result) {
+                DiskResourceRename response = decode(DiskResourceRename.class, result);
+
+                DiskResource newDr = null;
+                if (src instanceof Folder) {
+                    newDr = decode(Folder.class, encode(src));
+                } else {
+                    newDr = decode(File.class, encode(src));
+                }
+
+                String newId = response.getDest();
+                newDr.setId(newId);
+                newDr.setName(DiskResourceUtil.parseNameFromPath(newId));
+
+                if (newDr instanceof Folder) {
+                    renameFolder((Folder)src, (Folder)newDr);
+                }
+
+                return newDr;
+            }
+        });
+    }
+
+    private void renameFolder(Folder src, Folder renamed) {
+        if (src == null || renamed == null) {
+            return;
+        }
+
+        Folder folder = findModel(src);
+        if (folder != null) {
+            // Remove the folder and its children from the cache.
+            remove(folder);
+
+            Folder parent = findModelWithKey(DiskResourceUtil.parseParent(src.getId()));
+            if (hasFoldersLoaded(parent)) {
+                // Replace the folder and its children with the renamed folder, by adding the children to
+                // the renamed folder and resetting their paths.
+                parent.getFolders().remove(folder);
+                renamed.setFolders(folder.getFolders());
+                parent.getFolders().add(renamed);
+
+                moveFolderTree(renamed, parent);
+            }
+        }
     }
 
     /**
