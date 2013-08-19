@@ -22,6 +22,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
@@ -45,7 +46,7 @@ public class CollaboratorsUtil {
         boolean truncated = JsonUtil.getBoolean(obj, "truncated", false);
         if (truncated) {
             IplantAnnouncer.getInstance().schedule(
-                    new ErrorAnnouncementConfig(I18N.DISPLAY.collaboratorSearchTruncated()));
+                    new ErrorAnnouncementConfig(SafeHtmlUtils.fromString(I18N.DISPLAY.collaboratorSearchTruncated()), false));
         }
         return bean.as().getCollaborators();
     }
