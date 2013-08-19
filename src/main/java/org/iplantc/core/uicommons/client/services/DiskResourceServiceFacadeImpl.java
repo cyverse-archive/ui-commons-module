@@ -7,6 +7,9 @@ import java.util.Set;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.DEClientConstants;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
+import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.events.diskresources.DiskResourceRefreshEvent;
+import org.iplantc.core.uicommons.client.events.diskresources.DiskResourceRefreshEvent.DiskResourceRefreshEventHandler;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.HasPaths;
@@ -49,7 +52,7 @@ import com.sencha.gxt.data.shared.TreeStore;
  *
  */
 public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
-        DiskResourceServiceFacade {
+        DiskResourceServiceFacade, DiskResourceRefreshEventHandler {
 
     public DiskResourceServiceFacadeImpl() {
         super(new ModelKeyProvider<Folder>() {
@@ -59,6 +62,8 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
                 return item.getId();
             }
         });
+
+        EventBus.getInstance().addHandler(DiskResourceRefreshEvent.TYPE, this);
     }
 
     private static final DiskResourceAutoBeanFactory FACTORY = GWT.create(DiskResourceAutoBeanFactory.class);
@@ -426,6 +431,35 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
                 moveFolderTree(renamed, parent);
             }
+        }
+    }
+
+    @Override
+    public void onRefresh(DiskResourceRefreshEvent event) {
+        Folder folder = findModelWithKey(event.getCurrentFolderId());
+        if (folder == null) {
+            return;
+        }
+
+        // KLUDGE TreeStore#removeChildren doesn't actually remove the children from their parent's
+        // TreeModel wrapper, so remove the parent as well, then re-add it without children.
+        Folder parent = null;
+        int index = getRootItems().indexOf(folder);
+        if (index < 0) {
+            parent = getParent(folder);
+
+            if (parent != null) {
+                index = indexOf(folder);
+            }
+        }
+
+        remove(folder);
+        folder.setFolders(null);
+
+        if (parent == null) {
+            insert(index, folder);
+        } else {
+            insert(parent, index, folder);
         }
     }
 
