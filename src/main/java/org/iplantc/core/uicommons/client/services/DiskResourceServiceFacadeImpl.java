@@ -490,12 +490,8 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
     @Override
     public <T extends DiskResource> void deleteDiskResources(final Set<T> diskResources, final AsyncCallback<HasPaths> callback) {
-        final List<String> paths = Lists.newArrayList();
-        for (DiskResource res : diskResources) {
-            paths.add(res.getId());
-        }
         final HasPaths dto = FACTORY.pathsList().as();
-        dto.setPaths(paths);
+        dto.setPaths(DiskResourceUtil.asStringIdList(diskResources));
         deleteDiskResources(dto, callback);
     }
 
@@ -507,7 +503,19 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         callService(wrapper, new AsyncCallbackConverter<String, HasPaths>(callback) {
             @Override
             protected HasPaths convertFrom(final String json) {
-                return decode(HasPaths.class, json);
+                HasPaths deletedIds = decode(HasPaths.class, json);
+
+                // Remove any folders found in the response from the TreeStore.
+                if (deletedIds != null && deletedIds.getPaths() != null) {
+                    for (String path : deletedIds.getPaths()) {
+                        Folder deleted = findModelWithKey(path);
+                        if (deleted != null) {
+                            remove(deleted);
+                        }
+                    }
+                }
+
+                return deletedIds;
             }});
     }
 
