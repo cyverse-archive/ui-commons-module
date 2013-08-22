@@ -6,6 +6,12 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.form.error.SideErrorHandler;
 
+/**
+ * KLUDGE CORE-4671
+ * 
+ * @author jstroot
+ * 
+ */
 public class IPlantSideErrorHandler extends SideErrorHandler implements ResizeHandler {
 
     public IPlantSideErrorHandler(Widget target) {
