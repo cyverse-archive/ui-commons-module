@@ -10,6 +10,7 @@ public class IPlantSideErrorHandler extends SideErrorHandler implements ResizeHa
 
     public IPlantSideErrorHandler(Widget target) {
         super(target);
+        setAdjustTargetWidth(false);
         if (target instanceof HasResizeHandlers) {
             ((HasResizeHandlers)target).addResizeHandler(this);
         }
