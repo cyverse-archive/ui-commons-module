@@ -2,21 +2,15 @@ package org.iplantc.core.uicommons.client.views.gxt3.dialogs;
 
 import java.util.ArrayList;
 
-import org.iplantc.core.resources.client.IplantContextualHelpAccessStyle;
-import org.iplantc.core.resources.client.IplantResources;
-import org.iplantc.core.uicommons.client.widgets.ContextualHelpPopup;
+import org.iplantc.core.uicommons.client.widgets.ContextualHelpToolButton;
 
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.button.ToolButton;
-import com.sencha.gxt.widget.core.client.event.HideEvent;
-import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.event.ShowEvent;
-import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
 
 /**
  * A base class for GXT 3.x IPlant dialogs. All IPlant dialogs will be modal windows.
@@ -26,14 +20,11 @@ import com.sencha.gxt.widget.core.client.event.ShowEvent.ShowHandler;
  */
 public class IPlantDialog extends Dialog implements IsHideable {
 
-    protected ToolButton help_tool;
+    protected ContextualHelpToolButton helpTool;
 
     private final ArrayList<SelectHandler> okButtonSelectHandlers = new ArrayList<SelectHandler>();
     private final ArrayList<SelectHandler> cancelButtonSelectHandlers = new ArrayList<SelectHandler>();
     
-    protected ContextualHelpPopup help_popup;
-    private boolean isHelpVisible;
-
     public IPlantDialog() {
         // no contextual help tool icon by default
         this(false);
@@ -41,42 +32,10 @@ public class IPlantDialog extends Dialog implements IsHideable {
 
     public IPlantDialog(boolean contextualHelpTool) {
         if (contextualHelpTool) {
-            initHelpButton();
-            initHelpPopup();
-            
+            helpTool = new ContextualHelpToolButton();
+            getHeader().addTool(helpTool);
         }
         init();
-    }
-
-    private void initHelpPopup() {
-        help_popup = new ContextualHelpPopup();
-        help_tool.addSelectHandler(new SelectHandler() {
-            
-            @Override
-            public void onSelect(SelectEvent event) {
-                if(!isHelpVisible) {
-                    help_popup.showAt(help_tool.getAbsoluteLeft(), help_tool.getAbsoluteTop() + 15);
-                } else {
-                    help_popup.hide();
-                }
-            }
-        });
-        
-        help_popup.addShowHandler(new ShowHandler() {
-            
-            @Override
-            public void onShow(ShowEvent event) {
-                isHelpVisible = true;
-            }
-        });
-        
-        help_popup.addHideHandler(new HideHandler() {
-            
-            @Override
-            public void onHide(HideEvent event) {
-                isHelpVisible = false;
-            }
-        });
     }
     
     /**
@@ -86,15 +45,7 @@ public class IPlantDialog extends Dialog implements IsHideable {
      * 
      */
     public void addHelp(Widget c) {
-        help_popup.add(c);
-    }
-
-    private void initHelpButton() {
-        IplantContextualHelpAccessStyle style = IplantResources.RESOURCES.getContxtualHelpStyle();
-        style.ensureInjected();
-      
-        help_tool = new ToolButton(style.contextualHelp());
-        getHeader().addTool(help_tool);
+        helpTool.setHelp(c);
     }
 
     protected void init() {
@@ -122,7 +73,7 @@ public class IPlantDialog extends Dialog implements IsHideable {
     }
 
     public ToolButton gelHelpToolButton() {
-        return help_tool;
+        return helpTool;
     }
 
     protected TextButton getOkButton() {
