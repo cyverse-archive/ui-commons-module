@@ -265,4 +265,6 @@ public interface CommonUiValidationMessages extends Messages {
     String invalidEmail();
 
     String invalidUrl();
+
+    String invalidImportUrl();
 }
