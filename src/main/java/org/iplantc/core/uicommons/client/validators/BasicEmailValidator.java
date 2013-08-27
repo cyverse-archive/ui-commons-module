@@ -1,6 +1,6 @@
 package org.iplantc.core.uicommons.client.validators;
 
-import org.iplantc.core.uicommons.client.I18N;
+import org.iplantc.core.resources.client.messages.I18N;
 
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.Validator;

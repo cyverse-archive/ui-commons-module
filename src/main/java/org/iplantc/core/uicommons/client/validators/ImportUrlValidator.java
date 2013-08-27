@@ -1,6 +1,6 @@
 package org.iplantc.core.uicommons.client.validators;
 
-import org.iplantc.core.uicommons.client.I18N;
+import org.iplantc.core.resources.client.messages.I18N;
 
 import com.sencha.gxt.widget.core.client.form.validator.RegExValidator;
 

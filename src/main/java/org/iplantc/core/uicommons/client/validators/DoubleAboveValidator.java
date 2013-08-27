@@ -2,7 +2,7 @@ package org.iplantc.core.uicommons.client.validators;
 
 import java.util.List;
 
-import org.iplantc.core.uicommons.client.I18N;
+import org.iplantc.core.resources.client.messages.I18N;
 
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.EditorError;
