@@ -41,7 +41,7 @@ public final class LengthRangeValidator extends AbstractValidator<String> {
         final String testVal = (value == null) ? "" : value;
 
         if (testVal.length() < minLength || testVal.length() > maxLength) {
-            final String msg = I18N.RULES.lengthViolationMsg(field, minLength, maxLength);
+            final String msg = I18N.VALIDATION.lengthViolationMsg(field, minLength, maxLength);
             return createError(new DefaultEditorError(editor, msg, testVal));
         }
 

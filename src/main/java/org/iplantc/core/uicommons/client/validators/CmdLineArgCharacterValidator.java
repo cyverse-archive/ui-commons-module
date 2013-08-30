@@ -45,7 +45,7 @@ public class CmdLineArgCharacterValidator extends AbstractValidator<String> {
         }
 
         if (restrictedFound.length() > 0) {
-            String errorMsg = I18N.RULES.unsupportedChars(restrictedChars) + " " + I18N.RULES.invalidChars(restrictedFound.toString());
+            String errorMsg = I18N.VALIDATION.unsupportedChars(restrictedChars) + " " + I18N.VALIDATION.invalidChars(restrictedFound.toString());
             return createError(new DefaultEditorError(editor, errorMsg, value));
         }
 
