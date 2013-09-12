@@ -16,14 +16,19 @@ import com.google.gwt.json.client.JSONObject;
  */
 @SuppressWarnings("nls")
 public class UserInfo {
-   
+
+    /**
+     * Defines an attribute for the fully qualified username.
+     */
+    private static final String ATTR_FULL_USERNAME = "full_username";
+
     /**
      * Defines an attribute for User Email
      */
     public static String ATTR_EMAIL = "email";
 
     /**
-     * Defines an attribute for the fully qualified username.
+     * Defines an attribute for the short username.
      */
     public static String ATTR_USERNAME = "username";
 
@@ -128,7 +133,7 @@ public class UserInfo {
             loginTime	= JsonUtil.getString(obj,LOGIN_TIME);
             setUsername(JsonUtil.getString(obj, UserInfo.ATTR_USERNAME));
             setEmail(JsonUtil.getString(obj, UserInfo.ATTR_EMAIL));
-            setFullUsername(JsonUtil.getString(obj, UserInfo.ATTR_EMAIL));
+            setFullUsername(JsonUtil.getString(obj, UserInfo.ATTR_FULL_USERNAME));
             setFirstName(JsonUtil.getString(obj, UserInfo.ATTR_FIRSTNAME));
             setLastName(JsonUtil.getString(obj, UserInfo.ATTR_LASTNAME));
         }
