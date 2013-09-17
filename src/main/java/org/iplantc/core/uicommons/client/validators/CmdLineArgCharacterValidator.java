@@ -14,7 +14,7 @@ public class CmdLineArgCharacterValidator extends AbstractValidator<String> {
 
     private final String restrictedChars;
 
-    protected CmdLineArgCharacterValidator(String restrictedChars) {
+    public CmdLineArgCharacterValidator(String restrictedChars) {
         this.restrictedChars = restrictedChars;
     }
 
