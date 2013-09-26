@@ -20,6 +20,8 @@ public interface MessageProperties extends PropertyAccess<Message> {
 
     ValueProvider<Message, String> type();
 
+    ValueProvider<Message, Boolean> dismissible();
+
     @Path("type")
     LabelProvider<Message> typeLabel();
 }

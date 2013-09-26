@@ -76,7 +76,7 @@ public class IPlantDialog extends Dialog implements IsHideable {
         return helpTool;
     }
 
-    protected TextButton getOkButton() {
+    public TextButton getOkButton() {
         Widget okButton = getButtonBar().getItemByItemId(PredefinedButton.OK.name());
         if ((okButton != null) && (okButton instanceof TextButton)) {
             return (TextButton)okButton;
