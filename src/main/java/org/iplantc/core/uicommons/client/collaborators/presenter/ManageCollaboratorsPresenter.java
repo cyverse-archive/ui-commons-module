@@ -18,6 +18,7 @@ import org.iplantc.core.uicommons.client.info.ErrorAnnouncementConfig;
 import org.iplantc.core.uicommons.client.info.IplantAnnouncer;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
 
@@ -28,6 +29,7 @@ import com.google.gwt.user.client.ui.HasOneWidget;
 public class ManageCollaboratorsPresenter implements Presenter {
 
     private final ManageCollaboratorsView view;
+    private HandlerRegistration addCollabHandlerRegistration;
 
     public static enum MODE {
         MANAGE, SELECT
@@ -41,22 +43,23 @@ public class ManageCollaboratorsPresenter implements Presenter {
     }
 
     private void addEventHandlers() {
-        EventBus.getInstance().addHandler(UserSearchResultSelected.TYPE, new UserSearchResultSelected.UserSearchResultSelectedEventHandler() {
-            
-            @Override
-            public void onUserSearchResultSelected(UserSearchResultSelected userSearchResultSelected) {
+        addCollabHandlerRegistration = EventBus.getInstance().addHandler(UserSearchResultSelected.TYPE,
+                new UserSearchResultSelected.UserSearchResultSelectedEventHandler() {
+
+                    @Override
+                    public void onUserSearchResultSelected(
+                            UserSearchResultSelected userSearchResultSelected) {
                         if (userSearchResultSelected.getTag().equalsIgnoreCase(
                                 UserSearchResultSelected.USER_SEARCH_EVENT_TAG.MANAGE.toString())) {
                             Collaborator collaborator = userSearchResultSelected.getCollaborator();
-                            if(!UserInfo.getInstance().getUsername().equals(collaborator.getUserName())) {
+                            if (!UserInfo.getInstance().getUsername().equals(collaborator.getUserName())) {
                                 addAsCollaborators(Arrays.asList(collaborator));
                             } else {
                                 IplantAnnouncer.getInstance().schedule(
                                         new ErrorAnnouncementConfig(I18N.DISPLAY.collaboratorSelfAdd()));
                             }
                         }
-                
-            }
+                    }
                 });
     }
 
@@ -163,6 +166,13 @@ public class ManageCollaboratorsPresenter implements Presenter {
     @Override
     public List<Collaborator> getSelectedCollaborators() {
         return view.getSelectedCollaborators();
+    }
+
+    @Override
+    public void cleanup() {
+        if (addCollabHandlerRegistration != null) {
+            addCollabHandlerRegistration.removeHandler();
+        }
     }
 
 }

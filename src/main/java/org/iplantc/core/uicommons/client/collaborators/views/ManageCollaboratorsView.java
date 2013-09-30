@@ -30,6 +30,7 @@ public interface ManageCollaboratorsView extends IsWidget {
 
         List<Collaborator> getSelectedCollaborators();
 
+        void cleanup();
     }
 
     void setPresenter(Presenter p);
