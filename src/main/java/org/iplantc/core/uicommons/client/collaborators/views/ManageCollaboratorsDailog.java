@@ -32,7 +32,7 @@ public class ManageCollaboratorsDailog extends IPlantDialog {
 
     private CheckBoxSelectionModel<Collaborator> checkBoxModel;
     private CollaboratorProperties properties;
-    private Presenter p;
+    private final Presenter p;
 
     public ManageCollaboratorsDailog(MODE mode) {
         super(true);
@@ -64,6 +64,12 @@ public class ManageCollaboratorsDailog extends IPlantDialog {
                 hide();
             }
         });
+    }
+
+    @Override
+    protected void onHide() {
+        p.cleanup();
+        super.onHide();
     }
 
     private ColumnModel<Collaborator> buildColumnModel() {
