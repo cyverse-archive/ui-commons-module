@@ -98,6 +98,10 @@ public class DiskResourceUtil {
         return resource.getPermissions().isOwner();
     }
 
+    public static boolean isWritable(DiskResource resource) {
+        return resource.getPermissions().isWritable();
+    }
+    
     public static boolean isOwner(Iterable<DiskResource> resources) {
         if (resources == null) {
             return false;
@@ -162,7 +166,7 @@ public class DiskResourceUtil {
     }
 
     public static boolean canUploadTo(DiskResource resource) {
-        return isOwner(resource) && (resource instanceof Folder) && !inTrash(resource);
+        return (isOwner(resource)|| isWritable(resource)) && (resource instanceof Folder) && !inTrash(resource);
     }
 
     public static boolean inTrash(DiskResource resource) {

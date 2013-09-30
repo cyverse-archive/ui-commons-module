@@ -14,7 +14,7 @@ public class CmdLineArgCharacterValidator extends AbstractValidator<String> {
 
     private final String restrictedChars;
 
-    protected CmdLineArgCharacterValidator(String restrictedChars) {
+    public CmdLineArgCharacterValidator(String restrictedChars) {
         this.restrictedChars = restrictedChars;
     }
 
@@ -32,7 +32,7 @@ public class CmdLineArgCharacterValidator extends AbstractValidator<String> {
             return Collections.emptyList();
         }
         // We have an error
-        char[] restrictedCharsArr = (restrictedChars + "=").toCharArray(); //$NON-NLS-1$
+        char[] restrictedCharsArr = restrictedChars.toCharArray(); //$NON-NLS-1$
         StringBuilder restrictedFound = new StringBuilder();
 
         for (char restricted : restrictedCharsArr) {
