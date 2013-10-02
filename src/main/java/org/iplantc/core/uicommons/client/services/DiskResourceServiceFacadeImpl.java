@@ -137,12 +137,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
             @Override
             protected Set<DiskResource> convertFrom(String result) {
                 // Decode JSON result into a folder
-                Folder folder = decode(Folder.class, result);
-
-                // Store or update the folder's subfolders.
-                saveSubFolders(folder);
-
-                return getFolderContents(folder);
+                return getFolderContents(decode(Folder.class, result));
             }
         });
     }
