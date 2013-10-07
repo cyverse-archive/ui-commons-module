@@ -14,4 +14,12 @@ public interface Folder extends DiskResource {
     void setFolders(List<Folder> folders);
 
     List<File> getFiles();
+    
+    void setFiles(List<File> files);
+    
+    @PropertyName("total")
+    void setTotal(int total);
+    
+    int getTotal();
+    
 }

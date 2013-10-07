@@ -50,9 +50,13 @@ public interface DiskResourceServiceFacade {
      * Called to retrieve the entire contents of a folder.
      *
      * @param path path to requested folder.
+     * @param pageSize limit the no.of records to fetch
+     * @param offset to start from
+     * @param sortCol column name to sort on
+     * @param sortOder asc or desc direction
      * @param callback executed when RPC call completes.
      */
-    void getFolderContents(final String path, final AsyncCallback<Set<DiskResource>> callback);
+    void getFolderContents(final String path, int pageSize, int offset, String sortCol, String sortOrder, final AsyncCallback<Folder> callback);
 
     /**
      * Called to retrieve the contents of a folder without its file contents.

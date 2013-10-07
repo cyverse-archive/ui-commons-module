@@ -46,4 +46,6 @@ public interface DiskResourceAutoBeanFactory extends AutoBeanFactory {
     AutoBean<DiskResourceMove> diskResourceMove();
 
     AutoBean<DiskResourceRename> diskResourceRename();
+    
+    AutoBean<Folder> folderContents();
 }

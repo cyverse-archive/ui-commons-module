@@ -30,7 +30,6 @@ import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
@@ -129,32 +128,17 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
     }
 
     @Override
-    public void getFolderContents(final String path, final AsyncCallback<Set<DiskResource>> callback) {
-        String address = getDirectoryListingEndpoint(path, true);
+    public void getFolderContents(final String path,int pageSize,int offset,String sortCol, String sortOrder, final AsyncCallback<Folder> callback) {
+        String address = getDirectoryListingEndpoint(path,pageSize,offset, sortCol, sortOrder);
         ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
-        callService(wrapper, new AsyncCallbackConverter<String, Set<DiskResource>>(callback) {
+        callService(wrapper, new AsyncCallbackConverter<String, Folder>(callback) {
 
             @Override
-            protected Set<DiskResource> convertFrom(String result) {
+            protected Folder convertFrom(String result) {
                 // Decode JSON result into a folder
-                return getFolderContents(decode(Folder.class, result));
+                return decode(Folder.class, result);
             }
         });
-    }
-
-    private Set<DiskResource> getFolderContents(final Folder folder) {
-        Set<DiskResource> children = Sets.newHashSet();
-
-        if (folder != null) {
-            if (folder.getFolders() != null) {
-                children.addAll(folder.getFolders());
-            }
-            if (folder.getFiles() != null) {
-                children.addAll(folder.getFiles());
-            }
-        }
-
-        return children;
     }
 
     @Override
@@ -222,6 +206,17 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
         if (!Strings.isNullOrEmpty(path)) {
             address += "&path=" + URL.encodePathSegment(path); //$NON-NLS-1$
+        }
+
+        return address;
+    }
+    
+    private String getDirectoryListingEndpoint(final String path,int pageSize,int offset,String sortCol, String sortOrder ) {
+        String address = DEProperties.getInstance().getDataMgmtBaseUrl()
+                + "paged-directory?"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        if (!Strings.isNullOrEmpty(path)) {
+            address += "path=" + URL.encodePathSegment(path) + "&sort-col="+ sortCol + "&limit=" + pageSize + "" + "&offset=" + offset + "&sort-order=" + sortOrder; //$NON-NLS-1$
         }
 
         return address;
