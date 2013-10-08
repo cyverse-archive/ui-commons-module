@@ -14,6 +14,7 @@ import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceStatMa
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
+import org.iplantc.core.uicommons.client.models.services.DiskResourceMove;
 
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -49,18 +50,21 @@ public interface DiskResourceServiceFacade {
      * Called to retrieve the entire contents of a folder.
      *
      * @param path path to requested folder.
+     * @param pageSize limit the no.of records to fetch
+     * @param offset to start from
+     * @param sortCol column name to sort on
+     * @param sortOder asc or desc direction
      * @param callback executed when RPC call completes.
      */
-    void getFolderContents(String path, AsyncCallback<String> callback);
+    void getFolderContents(final String path, int pageSize, int offset, String sortCol, String sortOrder, final AsyncCallback<Folder> callback);
 
     /**
-     * Called to retrieve the contents of a folder, with or without its file listing.
-     *
+     * Called to retrieve the contents of a folder without its file contents.
+     * 
      * @param path path to requested folder.
-     * @param includeFiles whether or not to include the file listing of the given folder
      * @param callback executed when RPC call completes.
      */
-    void getFolderContents(String path, boolean includeFiles, AsyncCallback<String> callback);
+    void getSubFolders(final String path, final AsyncCallback<List<Folder>> callback);
 
     /**
      * Call service to create a new folder
@@ -68,7 +72,7 @@ public interface DiskResourceServiceFacade {
      * @param parentFolder parent folder where the new folder will be created
      * @param callback executed when RPC call completes.
      */
-    void createFolder(Folder parentFolder, String newFolderName, AsyncCallback<String> callback);
+    void createFolder(Folder parentFolder, final String newFolderName, AsyncCallback<Folder> callback);
 
     /**
      * Check if a list of files or folders exist.
@@ -93,7 +97,8 @@ public interface DiskResourceServiceFacade {
      * @param diskResources list of file and folder ids to move.
      * @param destFolder the destination folder where the disk resources will be moved.
      */
-    void moveDiskResources(Set<DiskResource> diskResources, Folder destFolder, AsyncCallback<String> callback);
+    void moveDiskResources(final Set<DiskResource> diskResources, final Folder destFolder,
+            AsyncCallback<DiskResourceMove> callback);
 
     /**
      * Call service rename a file or folder.
@@ -102,8 +107,7 @@ public interface DiskResourceServiceFacade {
      * @param destName
      * @param callback service success/failure callback
      */
-    void renameDiskResource(org.iplantc.core.uicommons.client.models.diskresources.DiskResource src,
-            String destName, AsyncCallback<String> callback);
+    void renameDiskResource(DiskResource src, String destName, AsyncCallback<DiskResource> callback);
 
     /**
      * Call service to upload a file from a given URL.
