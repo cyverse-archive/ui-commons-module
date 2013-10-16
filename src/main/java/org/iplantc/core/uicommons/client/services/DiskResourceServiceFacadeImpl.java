@@ -7,6 +7,9 @@ import java.util.Set;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.DEClientConstants;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
+import org.iplantc.core.uicommons.client.events.EventBus;
+import org.iplantc.core.uicommons.client.events.diskresources.DiskResourceRefreshEvent;
+import org.iplantc.core.uicommons.client.events.diskresources.DiskResourceRefreshEvent.DiskResourceRefreshEventHandler;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.HasPaths;
@@ -16,12 +19,16 @@ import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBe
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceExistMap;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceMetadata;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceStatMap;
+import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
+import org.iplantc.core.uicommons.client.models.services.DiskResourceMove;
+import org.iplantc.core.uicommons.client.models.services.DiskResourceRename;
 import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uicommons.client.util.WindowUtil;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
@@ -34,6 +41,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.sencha.gxt.core.client.util.Format;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.TreeStore;
 
 /**
  * Provides access to remote services for folder operations.
@@ -41,12 +50,29 @@ import com.sencha.gxt.core.client.util.Format;
  * @author amuir
  *
  */
-public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade {
+public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
+        DiskResourceServiceFacade, DiskResourceRefreshEventHandler {
+
+    public DiskResourceServiceFacadeImpl() {
+        super(new ModelKeyProvider<Folder>() {
+
+            @Override
+            public String getKey(Folder item) {
+                return item.getId();
+            }
+        });
+
+        EventBus.getInstance().addHandler(DiskResourceRefreshEvent.TYPE, this);
+    }
 
     private static final DiskResourceAutoBeanFactory FACTORY = GWT.create(DiskResourceAutoBeanFactory.class);
 
     private static <T> String encode(final T entity) {
         return AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(entity)).getPayload();
+    }
+
+    private static <T> T decode(Class<T> clazz, String playload) {
+        return AutoBeanCodex.decode(FACTORY, clazz, playload).as();
     }
 
     @Override
@@ -59,15 +85,29 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
 
     @Override
     public final void getRootFolders(final AsyncCallback<RootFolders> callback) {
-        String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "root"; //$NON-NLS-1$
+        if (getRootCount() > 0) {
+            RootFolders result = FACTORY.rootFolders().as();
+            result.setRoots(getRootItems());
+            callback.onSuccess(result);
+        } else {
+            String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "root"; //$NON-NLS-1$
+            ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
 
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
-        callService(wrapper, new AsyncCallbackConverter<String, RootFolders>(callback) {
-            @Override
-            protected RootFolders convertFrom(final String json) {
-                return AutoBeanCodex.decode(FACTORY, RootFolders.class, json).as();
-            }
-        });
+            callService(wrapper, new AsyncCallbackConverter<String, RootFolders>(callback) {
+                @Override
+                protected RootFolders convertFrom(final String json) {
+                    RootFolders result = decode(RootFolders.class, json);
+                    setRootFolders(result.getRoots());
+
+                    return result;
+                }
+            });
+        }
+    }
+
+    private void setRootFolders(List<Folder> rootNodes) {
+        clear();
+        add(rootNodes);
     }
 
     @Override
@@ -88,32 +128,141 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
     }
 
     @Override
-    public void getFolderContents(final String path, AsyncCallback<String> callback) {
-        getFolderContents(path, true, callback);
+    public void getFolderContents(final String path,int pageSize,int offset,String sortCol, String sortOrder, final AsyncCallback<Folder> callback) {
+        String address = getDirectoryListingEndpoint(path,pageSize,offset, sortCol, sortOrder);
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
+        callService(wrapper, new AsyncCallbackConverter<String, Folder>(callback) {
+
+            @Override
+            protected Folder convertFrom(String result) {
+                // Decode JSON result into a folder
+                return decode(Folder.class, result);
+            }
+        });
     }
 
     @Override
-    public void getFolderContents(final String path, boolean includeFiles, AsyncCallback<String> callback) {
-        String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "directory?includefiles=" //$NON-NLS-1$
-                + (includeFiles ? "1" : "0"); //$NON-NLS-1$ //$NON-NLS-2$
+    public void getSubFolders(final String path, final AsyncCallback<List<Folder>> callback) {
+        Folder folder = findModelWithKey(path);
 
-        if (path != null && !path.isEmpty()) {
-            fullAddress += "&path=" + URL.encodePathSegment(path); //$NON-NLS-1$
+        if (hasFoldersLoaded(folder)) {
+            callback.onSuccess(getSubFolders(folder));
+        } else {
+            String address = getDirectoryListingEndpoint(path, false);
+            ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
+            callService(wrapper, new AsyncCallbackConverter<String, List<Folder>>(callback) {
+
+                @Override
+                protected List<Folder> convertFrom(String result) {
+                    // Decode JSON result into a folder
+                    Folder folder = decode(Folder.class, result);
+
+                    // Store or update the folder's subfolders.
+                    saveSubFolders(folder);
+
+                    return getSubFolders(folder);
+                }
+            });
+        }
+    }
+
+    private void saveSubFolders(final Folder folder) {
+        if (folder == null) {
+            return;
         }
 
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(fullAddress);
-        callService(wrapper, callback);
+        List<Folder> subfolders = folder.getFolders();
+        Folder parent = findModel(folder);
+        if (parent != null && subfolders != null) {
+            parent.setFolders(subfolders);
+
+            for (Folder child : subfolders) {
+                Folder current = findModel(child);
+                if (current == null) {
+                    add(parent, child);
+                } else {
+                    child.setFolders(current.getFolders());
+                    update(child);
+                }
+            }
+        }
+    }
+
+    private List<Folder> getSubFolders(final Folder folder) {
+        if (folder != null && folder.getFolders() != null) {
+            return folder.getFolders();
+        }
+
+        return Lists.newArrayList();
+    }
+
+    private boolean hasFoldersLoaded(final Folder folder) {
+        return folder != null && folder.getFolders() != null;
+    }
+
+    private String getDirectoryListingEndpoint(final String path, boolean includeFiles) {
+        String address = DEProperties.getInstance().getDataMgmtBaseUrl()
+                + "directory?includefiles=" + (includeFiles ? "1" : "0"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        if (!Strings.isNullOrEmpty(path)) {
+            address += "&path=" + URL.encodePathSegment(path); //$NON-NLS-1$
+        }
+
+        return address;
+    }
+    
+    private String getDirectoryListingEndpoint(final String path,int pageSize,int offset,String sortCol, String sortOrder ) {
+        String address = DEProperties.getInstance().getDataMgmtBaseUrl()
+                + "paged-directory?"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        if (!Strings.isNullOrEmpty(path)) {
+            address += "path=" + URL.encodePathSegment(path) + "&sort-col="+ sortCol + "&limit=" + pageSize + "" + "&offset=" + offset + "&sort-order=" + sortOrder; //$NON-NLS-1$
+        }
+
+        return address;
     }
 
     @Override
-    public void createFolder(Folder parentFolder, String newFolderName, AsyncCallback<String> callback) {
+    public void createFolder(Folder parentFolder, final String newFolderName,
+            AsyncCallback<Folder> callback) {
+        final String parentId = parentFolder.getId();
+
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "directory/create"; //$NON-NLS-1$
         JSONObject obj = new JSONObject();
-        obj.put("path", new JSONString(parentFolder.getId() + "/" + newFolderName)); //$NON-NLS-1$
+        obj.put("path", new JSONString(parentId + "/" + newFolderName)); //$NON-NLS-1$
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 obj.toString());
-        callService(wrapper, callback);
+        callService(wrapper, new AsyncCallbackConverter<String, Folder>(callback) {
+
+            @Override
+            protected Folder convertFrom(String result) {
+                Folder folder = decode(Folder.class, result);
+
+                // Set the new folder name since the create folder service call result does not contain
+                // the name of the new folder
+                folder.setName(newFolderName);
+
+                // Use the service call result to set the ID of the new folder. Otherwise, calls to
+                // getId() on this new folder instance will return null.
+                folder.setId(folder.getPath());
+
+                addFolder(parentId, folder);
+
+                return folder;
+            }
+        });
+    }
+
+    private void addFolder(String parentId, Folder child) {
+        Folder parent = findModelWithKey(parentId);
+        if (parent != null) {
+            if (parent.getFolders() != null) {
+                parent.getFolders().add(child);
+            }
+
+            add(parent, child);
+        }
     }
 
     @Override
@@ -124,7 +273,8 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         callService(wrapper, new AsyncCallbackConverter<String, DiskResourceExistMap>(callback) {
             @Override
             protected DiskResourceExistMap convertFrom(final String json) {
-                return AutoBeanCodex.decode(FACTORY, DiskResourceExistMap.class, json).as();
+                // TODO Verify this facade's store against these results?
+                return decode(DiskResourceExistMap.class, json);
             }
         });
     }
@@ -141,33 +291,166 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
     }
 
     @Override
-    public void moveDiskResources(
-            final Set<org.iplantc.core.uicommons.client.models.diskresources.DiskResource> diskResources,
-            final Folder idDestFolder, AsyncCallback<String> callback) {
+    public void moveDiskResources(final Set<DiskResource> diskResources, final Folder destFolder,
+            AsyncCallback<DiskResourceMove> callback) {
 
         String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "move"; //$NON-NLS-1$
 
-        List<String> idSrcFiles = DiskResourceUtil.asStringIdList(diskResources);
-        JSONObject body = new JSONObject();
-        body.put("dest", new JSONString(idDestFolder.getId())); //$NON-NLS-1$
-        body.put("sources", JsonUtil.buildArrayFromStrings(idSrcFiles)); //$NON-NLS-1$
+        DiskResourceMove request = FACTORY.diskResourceMove().as();
+        request.setDest(destFolder.getId());
+        request.setSources(DiskResourceUtil.asStringIdList(diskResources));
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
-                body.toString());
+                encode(request));
 
-        callService(wrapper, callback);
+        callService(wrapper, new AsyncCallbackConverter<String, DiskResourceMove>(callback) {
+
+            @Override
+            protected DiskResourceMove convertFrom(String result) {
+                DiskResourceMove resourcesMoved = decode(DiskResourceMove.class, result);
+                moveFolders(resourcesMoved);
+
+                return resourcesMoved;
+            }
+        });
+    }
+
+    private void moveFolders(DiskResourceMove resourcesMoved) {
+        if (resourcesMoved == null || resourcesMoved.getSources() == null) {
+            return;
+        }
+
+        Folder dest = findModelWithKey(resourcesMoved.getDest());
+        for (String path : resourcesMoved.getSources()) {
+            Folder folder = findModelWithKey(path);
+            if (folder != null) {
+                // Remove the folder and its children from the cache.
+                remove(folder);
+
+                // Remove the folder from its original parent.
+                Folder parent = findModelWithKey(DiskResourceUtil.parseParent(path));
+                if (parent != null && parent.getFolders() != null) {
+                    parent.getFolders().remove(folder);
+                }
+
+                // Move the folder and its children to dest in the cache, updating their paths first.
+                if (hasFoldersLoaded(dest)) {
+                    // Clone moved folder, so other views can still manage the folder in their stores.
+                    folder = decode(Folder.class, encode(folder));
+
+                    dest.getFolders().add(folder);
+                    moveFolderTree(folder, dest);
+                }
+            }
+        }
+    }
+
+    private void moveFolderTree(Folder folder, Folder dest) {
+        if (folder == null || dest == null) {
+            return;
+        }
+
+        // Update the folder's path to its new location, then cache it in the TreeStore.
+        folder.setId(DiskResourceUtil.appendNameToPath(dest.getId(), folder.getName()));
+        add(dest, folder);
+
+        // Move the folder's children to the new location in the cache, updating their paths first.
+        List<Folder> children = folder.getFolders();
+        if (children != null) {
+            for (Folder child : children) {
+                moveFolderTree(child, folder);
+            }
+        }
     }
 
     @Override
-    public void renameDiskResource(DiskResource src, String destName, AsyncCallback<String> callback) {
+    public void renameDiskResource(final DiskResource src, String destName,
+            AsyncCallback<DiskResource> callback) {
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "rename"; //$NON-NLS-1$
-        JSONObject body = new JSONObject();
-        body.put("source", new JSONString(src.getId())); //$NON-NLS-1$
-        body.put("dest", new JSONString(DiskResourceUtil.parseParent(src.getId()) + "/" + destName)); //$NON-NLS-1$
+
+        DiskResourceRename request = FACTORY.diskResourceRename().as();
+        String srcId = src.getId();
+        request.setSource(srcId);
+        request.setDest(DiskResourceUtil.appendNameToPath(DiskResourceUtil.parseParent(srcId), destName));
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
-                body.toString());
-        callService(wrapper, callback);
+                encode(request));
+        callService(wrapper, new AsyncCallbackConverter<String, DiskResource>(callback) {
+
+            @Override
+            protected DiskResource convertFrom(String result) {
+                DiskResourceRename response = decode(DiskResourceRename.class, result);
+
+                DiskResource newDr = null;
+                if (src instanceof Folder) {
+                    newDr = decode(Folder.class, encode(src));
+                } else {
+                    newDr = decode(File.class, encode(src));
+                }
+
+                String newId = response.getDest();
+                newDr.setId(newId);
+                newDr.setName(DiskResourceUtil.parseNameFromPath(newId));
+
+                if (newDr instanceof Folder) {
+                    renameFolder((Folder)src, (Folder)newDr);
+                }
+
+                return newDr;
+            }
+        });
+    }
+
+    private void renameFolder(Folder src, Folder renamed) {
+        if (src == null || renamed == null) {
+            return;
+        }
+
+        Folder folder = findModel(src);
+        if (folder != null) {
+            // Remove the folder and its children from the cache.
+            remove(folder);
+
+            Folder parent = findModelWithKey(DiskResourceUtil.parseParent(src.getId()));
+            if (hasFoldersLoaded(parent)) {
+                // Replace the folder and its children with the renamed folder, by adding the children to
+                // the renamed folder and resetting their paths.
+                parent.getFolders().remove(folder);
+                renamed.setFolders(folder.getFolders());
+                parent.getFolders().add(renamed);
+
+                moveFolderTree(renamed, parent);
+            }
+        }
+    }
+
+    @Override
+    public void onRefresh(DiskResourceRefreshEvent event) {
+        Folder folder = findModelWithKey(event.getCurrentFolderId());
+        if (folder == null) {
+            return;
+        }
+
+        // KLUDGE TreeStore#removeChildren doesn't actually remove the children from their parent's
+        // TreeModel wrapper, so remove the parent as well, then re-add it without children.
+        Folder parent = null;
+        int index = getRootItems().indexOf(folder);
+        if (index < 0) {
+            parent = getParent(folder);
+
+            if (parent != null) {
+                index = indexOf(folder);
+            }
+        }
+
+        remove(folder);
+        folder.setFolders(null);
+
+        if (parent == null) {
+            insert(index, folder);
+        } else {
+            insert(parent, index, folder);
+        }
     }
 
     /**
@@ -231,12 +514,8 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
 
     @Override
     public <T extends DiskResource> void deleteDiskResources(final Set<T> diskResources, final AsyncCallback<HasPaths> callback) {
-        final List<String> paths = Lists.newArrayList();
-        for (DiskResource res : diskResources) {
-            paths.add(res.getId());
-        }
         final HasPaths dto = FACTORY.pathsList().as();
-        dto.setPaths(paths);
+        dto.setPaths(DiskResourceUtil.asStringIdList(diskResources));
         deleteDiskResources(dto, callback);
     }
 
@@ -248,7 +527,19 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         callService(wrapper, new AsyncCallbackConverter<String, HasPaths>(callback) {
             @Override
             protected HasPaths convertFrom(final String json) {
-                return AutoBeanCodex.decode(FACTORY, HasPaths.class, json).as();
+                HasPaths deletedIds = decode(HasPaths.class, json);
+
+                // Remove any folders found in the response from the TreeStore.
+                if (deletedIds != null && deletedIds.getPaths() != null) {
+                    for (String path : deletedIds.getPaths()) {
+                        Folder deleted = findModelWithKey(path);
+                        if (deleted != null) {
+                            remove(deleted);
+                        }
+                    }
+                }
+
+                return deletedIds;
             }});
     }
 
@@ -358,7 +649,7 @@ public class DiskResourceServiceFacadeImpl implements DiskResourceServiceFacade 
         callService(wrapper, new AsyncCallbackConverter<String, DiskResourceStatMap>(callback) {
             @Override
             protected DiskResourceStatMap convertFrom(final String json) {
-                return AutoBeanCodex.decode(FACTORY, DiskResourceStatMap.class, json).as();
+                return decode(DiskResourceStatMap.class, json);
             }
         });
     }
