@@ -1,7 +1,6 @@
 package org.iplantc.core.uicommons.client.services;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.iplantc.core.uicommons.client.models.HasId;
@@ -287,11 +286,10 @@ public interface DiskResourceServiceFacade {
     /**
      * Creates a set of public data links for the given disk resources.
      *
-     * @param ticketIdToResourceIdMap the id of the disk resource for which the ticket will be created.
-     * @param isPublicTicket
+     * @param ticketIdList the id of the disk resource for which the ticket will be created.
      * @param callback
      */
-    public void createDataLinks(Map<String, String> ticketIdToResourceIdMap,
+    public void createDataLinks(List <String> ticketIdList,
             AsyncCallback<String> callback);
 
     /**
@@ -333,6 +331,5 @@ public interface DiskResourceServiceFacade {
      * @return a ready to use <code>DiskResourceAutoBeanFactory</code>
      */
     DiskResourceAutoBeanFactory getDiskResourceFactory();
-
 }
 

@@ -1,7 +1,6 @@
 package org.iplantc.core.uicommons.client.services;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.iplantc.core.jsonutil.JsonUtil;
@@ -719,12 +718,12 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
     /**
      * Creates a set of public data links for the given disk resources.
      *
-     * @param ticketIdToResourceIdMap the id of the disk resource for which the ticket will be created.
+     * @param ticketIdList the id of the disk resource for which the ticket will be created.
      * @param isPublicTicket
      * @param callback
      */
     @Override
-    public void createDataLinks(Map<String, String> ticketIdToResourceIdMap,
+    public void createDataLinks(List<String> ticketIdList,
             AsyncCallback<String> callback) {
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "tickets"; //$NON-NLS-1$
         String args = "public=1";
@@ -732,16 +731,11 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         JSONObject body = new JSONObject();
         JSONArray tickets = new JSONArray();
         int index = 0;
-        for (String ticketId : ticketIdToResourceIdMap.keySet()) {
-            String resourceId = ticketIdToResourceIdMap.get(ticketId);
-
-            JSONObject subBody = new JSONObject();
-            subBody.put("path", new JSONString(resourceId));
-            subBody.put("ticket-id", new JSONString(ticketId));
-            tickets.set(index, subBody);
+        for (String id : ticketIdList) {
+            tickets.set(index, new JSONString(id));
             index++;
         }
-        body.put("tickets", tickets);
+        body.put("paths", tickets);
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
                 body.toString());
