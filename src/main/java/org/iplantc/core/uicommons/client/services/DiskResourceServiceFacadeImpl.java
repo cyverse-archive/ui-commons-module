@@ -222,9 +222,9 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
     }
 
     @Override
-    public void createFolder(Folder parentFolder, final String newFolderName,
+    public void createFolder(final Folder parentFolder, final String newFolderName,
             AsyncCallback<Folder> callback) {
-        final String parentId = parentFolder.getId();
+        final String parentId = parentFolder.getPath();
 
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "directory/create"; //$NON-NLS-1$
         JSONObject obj = new JSONObject();
@@ -246,7 +246,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
                 // getId() on this new folder instance will return null.
                 folder.setId(folder.getPath());
 
-                addFolder(parentId, folder);
+                addFolder(parentFolder.getId(), folder);
 
                 return folder;
             }
@@ -296,7 +296,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "move"; //$NON-NLS-1$
 
         DiskResourceMove request = FACTORY.diskResourceMove().as();
-        request.setDest(destFolder.getId());
+        request.setDest(destFolder.getPath());
         request.setSources(DiskResourceUtil.asStringIdList(diskResources));
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
@@ -368,7 +368,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "rename"; //$NON-NLS-1$
 
         DiskResourceRename request = FACTORY.diskResourceRename().as();
-        String srcId = src.getId();
+        String srcId = src.getPath();
         request.setSource(srcId);
         request.setDest(DiskResourceUtil.appendNameToPath(DiskResourceUtil.parseParent(srcId), destName));
 
