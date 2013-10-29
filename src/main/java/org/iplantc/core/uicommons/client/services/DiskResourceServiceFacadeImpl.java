@@ -10,7 +10,6 @@ import org.iplantc.core.uicommons.client.events.EventBus;
 import org.iplantc.core.uicommons.client.events.diskresources.DiskResourceRefreshEvent;
 import org.iplantc.core.uicommons.client.events.diskresources.DiskResourceRefreshEvent.DiskResourceRefreshEventHandler;
 import org.iplantc.core.uicommons.client.models.DEProperties;
-import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.HasPaths;
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
@@ -307,6 +306,8 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
             @Override
             protected DiskResourceMove convertFrom(String result) {
                 DiskResourceMove resourcesMoved = decode(DiskResourceMove.class, result);
+                // KLUDGE manually set destFolder until services are updated to return full dest info.
+                resourcesMoved.setDestination(destFolder);
                 moveFolders(resourcesMoved);
 
                 return resourcesMoved;
@@ -319,15 +320,16 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
             return;
         }
 
-        Folder dest = findModelWithKey(resourcesMoved.getDest());
+        Folder dest = findModel(resourcesMoved.getDestination());
         for (String path : resourcesMoved.getSources()) {
             Folder folder = findModelWithKey(path);
             if (folder != null) {
+                Folder parent = getParent(folder);
+
                 // Remove the folder and its children from the cache.
                 remove(folder);
 
                 // Remove the folder from its original parent.
-                Folder parent = findModelWithKey(DiskResourceUtil.parseParent(path));
                 if (parent != null && parent.getFolders() != null) {
                     parent.getFolders().remove(folder);
                 }
@@ -350,7 +352,9 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         }
 
         // Update the folder's path to its new location, then cache it in the TreeStore.
-        folder.setId(DiskResourceUtil.appendNameToPath(dest.getId(), folder.getName()));
+        String newPath = DiskResourceUtil.appendNameToPath(dest.getPath(), folder.getName());
+        folder.setId(newPath);
+        folder.setPath(newPath);
         add(dest, folder);
 
         // Move the folder's children to the new location in the cache, updating their paths first.
@@ -407,10 +411,11 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
         Folder folder = findModel(src);
         if (folder != null) {
+            Folder parent = getParent(folder);
+
             // Remove the folder and its children from the cache.
             remove(folder);
 
-            Folder parent = findModelWithKey(DiskResourceUtil.parseParent(src.getId()));
             if (hasFoldersLoaded(parent)) {
                 // Replace the folder and its children with the renamed folder, by adding the children to
                 // the renamed folder and resetting their paths.
@@ -472,10 +477,10 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
     }
 
     @Override
-    public void importFromUrl(final String url, final HasId dest, AsyncCallback<String> callback) {
+    public void importFromUrl(final String url, final DiskResource dest, AsyncCallback<String> callback) {
         String fullAddress = DEProperties.getInstance().getFileIoBaseUrl() + "urlupload"; //$NON-NLS-1$
         JSONObject body = new JSONObject();
-        body.put("dest", new JSONString(dest.getId())); //$NON-NLS-1$
+        body.put("dest", new JSONString(dest.getPath())); //$NON-NLS-1$
         body.put("address", new JSONString(url)); //$NON-NLS-1$
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
@@ -545,7 +550,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
     @Override
     public void getDiskResourceMetaData(DiskResource resource, AsyncCallback<String> callback) {
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "metadata" + "?path=" //$NON-NLS-1$ //$NON-NLS-2$
-                + URL.encodePathSegment(resource.getId());
+                + URL.encodePathSegment(resource.getPath());
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, fullAddress);
         callService(wrapper, callback);
 
@@ -555,7 +560,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
     public void setDiskResourceMetaData(DiskResource resource, Set<DiskResourceMetadata> mdToUpdate,
             Set<DiskResourceMetadata> mdToDelete, AsyncCallback<String> callback) {
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "metadata-batch" //$NON-NLS-1$
-                + "?path=" + URL.encodePathSegment(resource.getId()); //$NON-NLS-1$
+                + "?path=" + URL.encodePathSegment(resource.getPath()); //$NON-NLS-1$
 
         // Create json body consisting of md to updata and md to delete.
         JSONObject obj = new JSONObject();
