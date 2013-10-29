@@ -1,10 +1,8 @@
 package org.iplantc.core.uicommons.client.services;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.iplantc.core.uicommons.client.models.HasId;
 import org.iplantc.core.uicommons.client.models.HasPaths;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
@@ -116,7 +114,7 @@ public interface DiskResourceServiceFacade {
      * @param dest id of the destination folder.
      * @param callback service success/failure callback
      */
-    void importFromUrl(String url, HasId dest, AsyncCallback<String> callback);
+    void importFromUrl(String url, DiskResource dest, AsyncCallback<String> callback);
 
     /**
      * Call service to retrieve upload configuration values for idrop-lite.
@@ -287,11 +285,10 @@ public interface DiskResourceServiceFacade {
     /**
      * Creates a set of public data links for the given disk resources.
      *
-     * @param ticketIdToResourceIdMap the id of the disk resource for which the ticket will be created.
-     * @param isPublicTicket
+     * @param ticketIdList the id of the disk resource for which the ticket will be created.
      * @param callback
      */
-    public void createDataLinks(Map<String, String> ticketIdToResourceIdMap,
+    public void createDataLinks(List <String> ticketIdList,
             AsyncCallback<String> callback);
 
     /**
@@ -333,6 +330,5 @@ public interface DiskResourceServiceFacade {
      * @return a ready to use <code>DiskResourceAutoBeanFactory</code>
      */
     DiskResourceAutoBeanFactory getDiskResourceFactory();
-
 }
 

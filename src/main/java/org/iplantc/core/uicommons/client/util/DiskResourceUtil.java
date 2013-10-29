@@ -146,7 +146,7 @@ public class DiskResourceUtil {
      * @return
      */
     public static boolean isChildOfFolder(Folder parent, DiskResource resource) {
-        return parseParent(resource.getId()).equals(parent.getId());
+        return parseParent(resource.getPath()).equals(parent.getPath());
     }
 
     /**
@@ -158,7 +158,7 @@ public class DiskResourceUtil {
      * @return true if the folder is a descendant of the given ancestor, false otherwise.
      */
     public static boolean isDescendantOfFolder(Folder ancestor, Folder folder) {
-        return folder.getId().startsWith(ancestor.getId());
+        return folder.getPath().startsWith(ancestor.getPath());
     }
 
     public static boolean isMovable(Folder targetFolder, Iterable<DiskResource> dropData) {
@@ -170,7 +170,7 @@ public class DiskResourceUtil {
     }
 
     public static boolean inTrash(DiskResource resource) {
-        return resource != null && resource.getId().startsWith(UserInfo.getInstance().getTrashPath());
+        return resource != null && resource.getPath().startsWith(UserInfo.getInstance().getTrashPath());
     }
 
     public static boolean containsTrashedResource(Set<DiskResource> selectedResources) {

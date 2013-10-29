@@ -31,4 +31,10 @@ public interface DiskResource extends HasId, HasName {
     Date getLastModified();
 
     Permissions getPermissions();
+    
+    @PropertyName("filter")
+    boolean isFilter();
+    
+    @PropertyName("filter")
+    void setFilter(boolean filter);
 }
