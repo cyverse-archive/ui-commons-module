@@ -158,7 +158,7 @@ public class DiskResourceUtil {
      * @return true if the folder is a descendant of the given ancestor, false otherwise.
      */
     public static boolean isDescendantOfFolder(Folder ancestor, Folder folder) {
-        return folder.getPath().startsWith(ancestor.getPath());
+        return folder.getPath().startsWith(ancestor.getPath() + "/"); //$NON-NLS-1$
     }
 
     public static boolean isMovable(Folder targetFolder, Iterable<DiskResource> dropData) {
