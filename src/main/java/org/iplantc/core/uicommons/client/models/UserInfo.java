@@ -71,7 +71,7 @@ public class UserInfo {
     /**
      * Constructs a default instance of the object with all fields being set to null.
      */
-    private UserInfo() {
+    public UserInfo() {
         workspaceId = null;
         email = null;
     }

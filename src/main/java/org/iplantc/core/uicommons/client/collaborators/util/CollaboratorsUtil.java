@@ -78,11 +78,8 @@ public class CollaboratorsUtil {
     }
 
     public static boolean checkCurrentUser(Collaborator model) {
-        if (model.getUserName().equalsIgnoreCase(UserInfo.getInstance().getUsername())) {
-            return true;
-        }
+        return model.getUserName().equalsIgnoreCase(UserInfo.getInstance().getUsername());
 
-        return false;
     }
 
     /**
