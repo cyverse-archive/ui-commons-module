@@ -20,6 +20,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.json.client.JSONArray;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
@@ -158,7 +159,7 @@ public class DiskResourceUtil {
      * @return true if the folder is a descendant of the given ancestor, false otherwise.
      */
     public static boolean isDescendantOfFolder(Folder ancestor, Folder folder) {
-        return folder.getPath().startsWith(ancestor.getPath());
+        return folder.getPath().startsWith(ancestor.getPath() + "/"); //$NON-NLS-1$
     }
 
     public static boolean isMovable(Folder targetFolder, Iterable<DiskResource> dropData) {
@@ -250,15 +251,18 @@ public class DiskResourceUtil {
 
     public static String formatFileSize(String strSize) {
         if (strSize != null && !strSize.isEmpty()) {
-            Long size = Long.parseLong(strSize);
+            Double size = Double.parseDouble(strSize);
             if (size < 1024) {
-                return size + " bytes";
+                return NumberFormat.getFormat("0").format(size) + " bytes";
             } else if (size < 1048576) {
-                return (Math.round(((size * 10) / 1024)) / 10) + " KB";
+                return (NumberFormat
+                        .getFormat("0.0#").format(((size * 10) / 1024) / 10)) + " KB";
             } else if (size < 1073741824) {
-                return (Math.round(((size * 10) / 1048576)) / 10) + " MB";
+                return (NumberFormat
+                        .getFormat("0.0#").format(((size * 10) / 1048576) / 10)) + " MB";
             } else {
-                return (Math.round(((size * 10) / 1073741824)) / 10) + " GB";
+                return (NumberFormat
+                        .getFormat("0.0#").format(((size * 10) / 1073741824) / 10)) + " GB";
             }
         } else {
             return null;
