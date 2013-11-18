@@ -2,11 +2,17 @@ package org.iplantc.core.uicommons.client.models;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.Constants;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
+import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 
 /**
  * 
@@ -21,13 +27,13 @@ public class UserSettings {
     private String defaultFileSelectorPath;
     private boolean rememberLastPath;
     private boolean saveSession;
-    private String defaultOutputFolder;
+    private Folder defaultOutputFolder;
     private String dataShortCut;
     private String appShortCut;
     private String analysesShortCut;
     private String notifyShortCut;
     private String closeShortCut;
-    private String systemDefaultOutputFolder;
+    private Folder systemDefaultOutputFolder;
     private String lastPathId;
     
     
@@ -40,7 +46,7 @@ public class UserSettings {
     public static final String APPS_KB_SHORTCUT = "appsKBShortcut";
     public static final String ANALYSIS_KB_SHORTCUT = "analysisKBShortcut";
     public static final String NOTIFICATION_KB_SHORTCUT = "notificationKBShortcut";
-    public static final String CLOSE_KB_SHORTCU_STRING = "closeKBShortcut";
+    public static final String CLOSE_KB_SHORTCUT_STRING = "closeKBShortcut";
     public static final String SYSTEM_DEFAULT_OUTPUT_DIR = "systemDefaultOutputDir";
     public static final String LAST_PATH_ID = "lastPathId";
 
@@ -49,10 +55,8 @@ public class UserSettings {
 
     private UserSettings() {
         this.enableEmailNotification = false;
-        this.defaultFileSelectorPath = "";
         this.rememberLastPath = false;
         this.saveSession = true;
-        this.defaultOutputFolder = "";
     }
 
     public static UserSettings getInstance() {
@@ -69,8 +73,8 @@ public class UserSettings {
             setDefaultFileSelectorPath(JsonUtil.getString(obj, DEFAULT_FILE_SELECTOR_APTH));
             setRememberLastPath(JsonUtil.getBoolean(obj, REMEMBER_LAST_PATH, true));
             setSaveSession(JsonUtil.getBoolean(obj, SAVE_SESSION, true));
-            setDefaultOutputFolder(JsonUtil.getString(obj, DEFAULT_OUTPUT_FOLDER));
-            setSystemDefaultOutputFolder(JsonUtil.getString(obj,SYSTEM_DEFAULT_OUTPUT_DIR));
+            setDefaultOutputFolder(buildFolder(JsonUtil.getObject(obj, DEFAULT_OUTPUT_FOLDER)));
+            setSystemDefaultOutputFolder(buildFolder(JsonUtil.getObject(obj,SYSTEM_DEFAULT_OUTPUT_DIR)));
             setLastPathId(JsonUtil.getString(obj, LAST_PATH_ID));
             parseDataShortCut(obj);
             parseAnalysisShortCut(obj);
@@ -82,7 +86,7 @@ public class UserSettings {
 
 
     private void parseCloseShortcut(JSONObject obj) {
-        JSONValue temp = obj.get(CLOSE_KB_SHORTCU_STRING);
+        JSONValue temp = obj.get(CLOSE_KB_SHORTCUT_STRING);
         if (temp != null) {
             String stringValue = temp.isString().stringValue();
             if (stringValue != null) {
@@ -226,12 +230,12 @@ public class UserSettings {
         obj.put(DEFAULT_FILE_SELECTOR_APTH, new JSONString(getDefaultFileSelectorPath()));
         obj.put(REMEMBER_LAST_PATH, JSONBoolean.getInstance(isRememberLastPath()));
         obj.put(SAVE_SESSION, JSONBoolean.getInstance(isSaveSession()));
-        obj.put(DEFAULT_OUTPUT_FOLDER, new JSONString(getDefaultOutputFolder()));
+        obj.put(DEFAULT_OUTPUT_FOLDER, JsonUtil.getObject(AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(getDefaultOutputFolder())).getPayload()));
         obj.put(APPS_KB_SHORTCUT, new JSONString(getAppsShortCut()));
         obj.put(ANALYSIS_KB_SHORTCUT, new JSONString(getAnalysesShortCut()));
         obj.put(DATA_KB_SHORTCUT, new JSONString(getDataShortCut()));
         obj.put(NOTIFICATION_KB_SHORTCUT, new JSONString(getNotifiShortCut()));
-        obj.put(CLOSE_KB_SHORTCU_STRING, new JSONString(getCloseShortCut()));
+        obj.put(CLOSE_KB_SHORTCUT_STRING, new JSONString(getCloseShortCut()));
         obj.put(LAST_PATH_ID, new JSONString(getLastPathId()));
         return obj;
     }
@@ -266,14 +270,23 @@ public class UserSettings {
     /**
      * @param defaultOutputFolder the new default output folder.
      */
-    public void setDefaultOutputFolder(String defaultOutputFolder) {
+    public void setDefaultOutputFolder(Folder defaultOutputFolder) {
         this.defaultOutputFolder = defaultOutputFolder;
+    }
+
+    private Folder buildFolder(JSONObject defaultOutputFolder) {
+        DiskResourceAutoBeanFactory factory = GWT.create(DiskResourceAutoBeanFactory.class);
+        AutoBean<Folder> FolderBean = factory.folder();
+        Folder folder = FolderBean.as();
+        folder.setId(JsonUtil.getString(defaultOutputFolder, "id"));
+        folder.setPath(JsonUtil.getString(defaultOutputFolder, "path"));
+        return folder;
     }
 
     /**
      * @return the default output folder.
      */
-    public String getDefaultOutputFolder() {
+    public Folder getDefaultOutputFolder() {
         return defaultOutputFolder;
     }
 
@@ -294,14 +307,14 @@ public class UserSettings {
     /**
      * @return the systemDefaultOutputFolder
      */
-    public String getSystemDefaultOutputFolder() {
+    public Folder getSystemDefaultOutputFolder() {
         return systemDefaultOutputFolder;
     }
 
     /**
      * @param systemDefaultOutputFolder the systemDefaultOutputFolder to set
      */
-    public void setSystemDefaultOutputFolder(String systemDefaultOutputFolder) {
+    public void setSystemDefaultOutputFolder(Folder systemDefaultOutputFolder) {
         this.systemDefaultOutputFolder = systemDefaultOutputFolder;
     }
 
