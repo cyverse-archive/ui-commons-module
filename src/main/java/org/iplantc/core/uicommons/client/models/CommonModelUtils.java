@@ -31,7 +31,12 @@ public class CommonModelUtils {
     }
 
     public static HasId createHasIdFromSplittable(Splittable value) {
-        if ((value == null) || !(value.isKeyed() && (value.get("id") != null) && (value.get("id").isString())))
+        if ((value == null) || !value.isKeyed()) {
+            return null;
+        }
+
+        boolean hasIdKey = !value.isUndefined("id") && value.get("id").isString();
+        if (!hasIdKey)
             return null;
 
         return AutoBeanCodex.decode(factory, HasId.class, value).as();
