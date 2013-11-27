@@ -22,4 +22,9 @@ public interface Folder extends DiskResource {
     
     int getTotal();
     
+    @PropertyName("total_filtered")
+    void setTotalFiltered(int total_filtered);
+
+    @PropertyName("total_filtered")
+    int getTotalFiltered();
 }
