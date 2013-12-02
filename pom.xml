@@ -85,6 +85,13 @@
             <version>1.3.9</version>
             <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+	        <groupId>org.mockito</groupId>
+	        <artifactId>mockito-all</artifactId>
+	        <version>1.9.5</version>
+	        <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <finalName>ui-commons</finalName>

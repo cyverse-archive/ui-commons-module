@@ -23,12 +23,8 @@ public class IPlantAnchor extends Component implements HasClickHandlers {
 
     private final IPlantAnchorAppearance appearance;
 
-    public IPlantAnchor(String text, int width, IPlantAnchorAppearance appearance, ClickHandler handler) {
-        this(text, width, appearance);
-
-        if (handler != null) {
-            addClickHandler(handler);
-        }
+    public IPlantAnchor(String text, int width) {
+        this(text, width, GWT.<IPlantAnchorAppearance> create(IPlantAnchorAppearance.class));
     }
 
     /**
@@ -44,24 +40,14 @@ public class IPlantAnchor extends Component implements HasClickHandlers {
         setWidth(width);
         setElement(XDOM.create(sb.toSafeHtml()));
         setText(text);
-        /*addDomHandler(new MouseOutHandler() {
-
-            @Override
-            public void onMouseOut(MouseOutEvent event) {
-                IPlantAnchor.this.appearance.onMouseOut(getElement());
-            }
-        }, MouseOutEvent.getType());
-        addDomHandler(new MouseOverHandler() {
-            
-            @Override
-            public void onMouseOver(MouseOverEvent event) {
-                IPlantAnchor.this.appearance.onMouseOver(getElement());
-            }
-        }, MouseOverEvent.getType());*/
     }
 
     public IPlantAnchor(String text, int width, ClickHandler handler) {
-        this(text, width, (IPlantAnchorAppearance)GWT.create(IPlantAnchorAppearance.class), handler);
+        this(text, width, GWT.<IPlantAnchorAppearance> create(IPlantAnchorAppearance.class));
+
+        if (handler != null) {
+            addClickHandler(handler);
+        }
     }
 
     public void setText(String text) {
