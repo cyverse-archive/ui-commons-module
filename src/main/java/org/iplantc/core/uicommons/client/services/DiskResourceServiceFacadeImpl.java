@@ -863,5 +863,12 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
                 return deletedIds;
             }});
     }
+    
+    @Override
+    public void restoreAll(AsyncCallback<String> callback) {
+        final String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "restore-all"; //$NON-NLS-1$
+        final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress, "{}");
+        callService(wrapper, callback);
+    }
 
 }

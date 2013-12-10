@@ -347,5 +347,12 @@ public interface DiskResourceServiceFacade {
      * @return a ready to use <code>DiskResourceAutoBeanFactory</code>
      */
     DiskResourceAutoBeanFactory getDiskResourceFactory();
+
+    /**
+     * Restore all items in trash to its original location.
+     * 
+     * @param callback
+     */
+    void restoreAll(AsyncCallback<String> callback);
 }
 
