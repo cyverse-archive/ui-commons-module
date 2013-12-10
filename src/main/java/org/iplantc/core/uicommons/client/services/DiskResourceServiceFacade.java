@@ -97,6 +97,15 @@ public interface DiskResourceServiceFacade {
      */
     void moveDiskResources(final Set<DiskResource> diskResources, final Folder destFolder,
             AsyncCallback<DiskResourceMove> callback);
+    
+    /**
+     * Calls the move folder and move file services for moving contents of a given folder.
+     * 
+     * @param sourceFolderId
+     * @param destFolder
+     * @param callback
+     */
+    void moveContents(final String sourceFolderId, final Folder destFolder,  AsyncCallback<DiskResourceMove> callback);
 
     /**
      * Call service rename a file or folder.
@@ -145,6 +154,14 @@ public interface DiskResourceServiceFacade {
      */
     <T extends DiskResource> void deleteDiskResources(Set<T> diskResources, AsyncCallback<HasPaths> callback);
 
+    /**
+     * Call service to delete disk resources in case user selects all items
+     * 
+     * @param selectedFolderId
+     * @param callback
+     */
+    void deleteContents(String selectedFolderId, AsyncCallback<HasPaths> callback);
+    
     /**
      * Call service to delete disk resources (i.e. {@link File}s and {@link Folder}s)
      * 
