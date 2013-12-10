@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 
+import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
+
 /**
  * An AutoBean interface for DiskResource Move requests and responses.
  * 
@@ -23,4 +25,15 @@ public interface DiskResourceMove {
     List<String> getSources();
 
     void setSources(List<String> sources);
+    
+    /**
+     * In case when contents of the folder needs to moved (i.e select all)
+     * 
+     * @param id id of the parent folder
+     */
+    @PropertyName("source")
+    void setSelectedFolderId(String id);
+    
+    @PropertyName("source")
+    String getSelectedFolderId();
 }

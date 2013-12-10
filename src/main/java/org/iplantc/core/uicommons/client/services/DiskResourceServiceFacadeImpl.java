@@ -815,4 +815,60 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         return FACTORY;
     }
 
+    @Override
+    public void moveContents(String sourceFolderId, final Folder destFolder, AsyncCallback<DiskResourceMove> callback) {
+        String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "move-contents"; //$NON-NLS-1$
+
+        DiskResourceMove request = FACTORY.diskResourceMove().as();
+        request.setDest(destFolder.getPath());
+        request.setSelectedFolderId(sourceFolderId);
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address,
+                encode(request));
+
+        callService(wrapper, new AsyncCallbackConverter<String, DiskResourceMove>(callback) {
+
+            @Override
+            protected DiskResourceMove convertFrom(String result) {
+                DiskResourceMove resourcesMoved = decode(DiskResourceMove.class, result);
+                // KLUDGE manually set destFolder until services are updated to return full dest info.
+                resourcesMoved.setDestination(destFolder);
+                moveFolders(resourcesMoved);
+
+                return resourcesMoved;
+            }
+        });
+        
+    }
+    
+    @Override
+    public void deleteContents(String selectedFolderId, AsyncCallback<HasPaths> callback) {
+        String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "delete-contents"; //$NON-NLS-1$
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress, "{\"path\":\"" + selectedFolderId + "\"}");
+        callService(wrapper, new AsyncCallbackConverter<String, HasPaths>(callback) {
+            @Override
+            protected HasPaths convertFrom(final String json) {
+                HasPaths deletedIds = decode(HasPaths.class, json);
+
+                // Remove any folders found in the response from the TreeStore.
+                if (deletedIds != null && deletedIds.getPaths() != null) {
+                    for (String path : deletedIds.getPaths()) {
+                        Folder deleted = findModelWithKey(path);
+                        if (deleted != null) {
+                            remove(deleted);
+                        }
+                    }
+                }
+
+                return deletedIds;
+            }});
+    }
+    
+    @Override
+    public void restoreAll(AsyncCallback<String> callback) {
+        final String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "restore-all"; //$NON-NLS-1$
+        final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress, "{}");
+        callService(wrapper, callback);
+    }
+
 }
