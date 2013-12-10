@@ -14,4 +14,6 @@ public interface SearchAutoBeanFactory extends AutoBeanFactory {
 
     AutoBean<FileSizeRange> fileSizeRange();
 
+    AutoBean<DiskResourceQueryTemplateList> drQtList();
+
 }

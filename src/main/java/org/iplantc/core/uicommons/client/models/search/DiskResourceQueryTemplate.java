@@ -1,5 +1,9 @@
 package org.iplantc.core.uicommons.client.models.search;
 
+import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
+
+import org.iplantc.core.uicommons.client.models.diskresources.Folder;
+
 /**
  * This object is used to collect the information required to build a search request for the endpoints
  * described <a href=
@@ -9,13 +13,14 @@ package org.iplantc.core.uicommons.client.models.search;
  * @author jstroot
  * 
  */
-public interface DiskResourceQueryTemplate {
+public interface DiskResourceQueryTemplate extends Folder {
 
     /**
      * creator.username:(here is the content)
      * 
      * @return
      */
+    @PropertyName("creator.username")
     String getCreatedBy();
 
     DateInterval getCreatedWithin();
@@ -34,6 +39,7 @@ public interface DiskResourceQueryTemplate {
 
     String getSharedWith();
 
+    @PropertyName("creator.username")
     void setCreatedBy(String createdBy);
 
     void setCreatedWithin(DateInterval createdWithin);
