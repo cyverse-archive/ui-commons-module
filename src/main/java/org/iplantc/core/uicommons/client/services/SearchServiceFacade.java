@@ -1,5 +1,6 @@
 package org.iplantc.core.uicommons.client.services;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
@@ -26,15 +27,10 @@ public interface SearchServiceFacade {
     String QUERY_TEMPLATE_KEY = "query_templates";
 
     /**
-     * Saves the given query template to the {@link #QUERY_TEMPLATE_KEY}.
-     * 
-     * @param queryTemplate
-     * @param callback
-     */
-    void saveQueryTemplate(DiskResourceQueryTemplate queryTemplate, AsyncCallback<String> callback);
-
-    /**
      * Saves the given query templates to the {@link #QUERY_TEMPLATE_KEY}, on the user-data endpoint.
+     * 
+     * This method will ensure that the saved queries all have full permissions set before persisting the
+     * given queryTemplate.
      * 
      * @param queryTemplates
      * @param callback
@@ -59,5 +55,12 @@ public interface SearchServiceFacade {
      * @param callback
      */
     void submitSearchFromQueryTemplate(DiskResourceQueryTemplate queryTemplate, AsyncCallback<String> callback);
+
+    /**
+     * 
+     * @return provides an string id which is unique within the app document.
+     * @see Document#createUniqueId()
+     */
+    String getUniqueId();
 
 }

@@ -1,5 +1,6 @@
 package org.iplantc.core.uicommons.client.services.impl;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.autobean.shared.AutoBean;
@@ -39,9 +40,11 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
     }
 
     private final SearchAutoBeanFactory searchAbFactory;
+    private final DEServiceFacade deServiceFacade;
 
     @Inject
-    public SearchServiceFacadeImpl(SearchAutoBeanFactory searchAbFactory) {
+    public SearchServiceFacadeImpl(final DEServiceFacade deServiceFacade, final SearchAutoBeanFactory searchAbFactory) {
+        this.deServiceFacade = deServiceFacade;
         this.searchAbFactory = searchAbFactory;
     }
 
@@ -50,14 +53,7 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
         String address = getUserDataEndpointAddress();
         ServiceCallWrapper wrapper = new ServiceCallWrapper(GET, address);
-        DEServiceFacade.getInstance().getServiceData(wrapper, new QueryTemplateListCallbackConverter(callback));
-
-    }
-
-    @Override
-    public void saveQueryTemplate(DiskResourceQueryTemplate queryTemplate, AsyncCallback<String> callback) {
-        // TODO Auto-generated method stub
-        // Will stub this out for now and
+        deServiceFacade.getServiceData(wrapper, new QueryTemplateListCallbackConverter(callback));
 
     }
 
@@ -75,6 +71,11 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
     private String getUserDataEndpointAddress(){
         return DEProperties.getInstance().getMuleServiceBaseUrl() + "user-data?key=" + QUERY_TEMPLATE_KEY;
+    }
+
+    @Override
+    public String getUniqueId() {
+        return Document.get().createUniqueId();
     }
 
 }

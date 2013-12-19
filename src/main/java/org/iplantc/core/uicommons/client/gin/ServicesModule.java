@@ -1,8 +1,10 @@
 package org.iplantc.core.uicommons.client.gin;
 
 import com.google.gwt.inject.client.AbstractGinModule;
+import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
+import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.services.DiskResourceServiceFacade;
 import org.iplantc.core.uicommons.client.services.SearchServiceFacade;
 import org.iplantc.core.uicommons.client.services.ToolRequestProvider;
@@ -19,6 +21,12 @@ final class ServicesModule extends AbstractGinModule {
         bind(ToolRequestProvider.class).in(Singleton.class);
 
         bind(SearchServiceFacade.class).to(SearchServiceFacadeImpl.class);
+    }
+
+    @Provides
+    @Singleton
+    public DEServiceFacade createDeServiceFacade() {
+        return DEServiceFacade.getInstance();
     }
 
 }
