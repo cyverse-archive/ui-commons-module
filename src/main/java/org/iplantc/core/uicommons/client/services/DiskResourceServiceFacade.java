@@ -354,5 +354,13 @@ public interface DiskResourceServiceFacade {
      * @param callback
      */
     void restoreAll(AsyncCallback<String> callback);
+
+    /**
+     * Method to use when user selects all items in a folder.
+     * 
+     * @param parentFolderId
+     * @param callback
+     */
+    void downloadContents(String parentFolderId, AsyncCallback<String> callback);
 }
 

@@ -503,6 +503,15 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address, body);
         callService(wrapper, callback);
     }
+    
+    @Override
+    public void downloadContents(String parentFolderId, AsyncCallback<String> callback) {
+        final String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "download-contents"; //$NON-NLS-1$
+        JSONObject body = new JSONObject();
+        body.put("path", new JSONString(parentFolderId));
+        final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address, body.toString());
+        callService(wrapper, callback);
+    }
 
     private final DEClientConstants constants = GWT.create(DEClientConstants.class);
 
