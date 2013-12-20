@@ -19,8 +19,6 @@ import org.mockito.Mock;
 
 import java.util.List;
 
-
-
 @RunWith(GxtMockitoTestRunner.class)
 public class SearchServiceFacadeTest {
 
@@ -53,7 +51,8 @@ public class SearchServiceFacadeTest {
         when(incorrectPermissions.isOwner()).thenReturn(true);
         when(incorrectPermissions.isReadable()).thenReturn(true);
         when(incorrectPermissions.isWritable()).thenReturn(true);
-        
+
+
         DiskResourceQueryTemplate qt1 = mock(DiskResourceQueryTemplate.class);
         DiskResourceQueryTemplate qt2 = mock(DiskResourceQueryTemplate.class);
         DiskResourceQueryTemplate qt3 = mock(DiskResourceQueryTemplate.class);

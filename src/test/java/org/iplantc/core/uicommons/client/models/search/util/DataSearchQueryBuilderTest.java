@@ -1,16 +1,17 @@
 package org.iplantc.core.uicommons.client.models.search.util;
 
+import org.iplantc.core.uicommons.client.models.search.DateInterval;
+import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
+import org.iplantc.core.uicommons.client.models.search.FileSizeRange;
+import org.iplantc.core.uicommons.client.services.impl.DataSearchQueryBuilder;
+import org.junit.Test;
+
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import org.iplantc.core.uicommons.client.models.search.DateInterval;
-import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
-import org.iplantc.core.uicommons.client.models.search.FileSizeRange;
-import org.junit.Test;
-
-import java.util.Date;
 
 /**
  * Questions in need of answering:
@@ -30,6 +31,7 @@ public class DataSearchQueryBuilderTest {
 
         String result = new DataSearchQueryBuilder(dsf).createdBy().toString();
         assertEquals(expected, result);
+        // here be one
 
         fail("Not yet implemented");
     }
@@ -44,6 +46,7 @@ public class DataSearchQueryBuilderTest {
 
         String result = new DataSearchQueryBuilder(dsf).createdBy().toString();
         assertEquals(expected, result);
+        // here be two
 
         fail("Not yet implemented");
     }
@@ -60,6 +63,7 @@ public class DataSearchQueryBuilderTest {
 
         String result = new DataSearchQueryBuilder(dsf).createdWithin().toString();
         assertEquals(expected, result);
+        // here be three
 
         fail("Not yet implemented");
     }

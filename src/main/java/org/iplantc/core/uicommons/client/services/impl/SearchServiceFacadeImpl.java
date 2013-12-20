@@ -7,9 +7,6 @@ import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.Splittable;
 import com.google.web.bindery.autobean.shared.impl.StringQuoter;
-
-import static org.iplantc.de.shared.services.BaseServiceCallWrapper.Type.GET;
-
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
@@ -20,6 +17,8 @@ import org.iplantc.core.uicommons.client.services.SearchServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import java.util.List;
+
+import static org.iplantc.de.shared.services.BaseServiceCallWrapper.Type.GET;
 
 public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
@@ -66,6 +65,11 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
     @Override
     public void submitSearchFromQueryTemplate(DiskResourceQueryTemplate queryTemplate, AsyncCallback<String> callback) {
         // TODO Auto-generated method stub
+        // Stub out functionality until search service comes online
+
+        // Construct query string from given template
+        DataSearchQueryBuilder queryBuilder = new DataSearchQueryBuilder(queryTemplate);
+        String fullQuery = queryBuilder.buildFullQuery();
 
     }
 

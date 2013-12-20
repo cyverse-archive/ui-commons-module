@@ -4,7 +4,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
-import org.iplantc.core.uicommons.client.models.search.util.DataSearchQueryBuilder;
+import org.iplantc.core.uicommons.client.services.impl.DataSearchQueryBuilder;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.iplantc.core.uicommons.client.models.search.util;
+package org.iplantc.core.uicommons.client.services.impl;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
