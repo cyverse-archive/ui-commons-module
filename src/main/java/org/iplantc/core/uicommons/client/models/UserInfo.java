@@ -214,7 +214,7 @@ public class UserInfo {
      * @param trashPath the trashPath to set
      */
     public void setTrashPath(String trashPath) {
-        this.trashPath = trashPath;
+        this.trashPath = JsonUtil.trim(trashPath);
     }
 
     /**
@@ -256,7 +256,7 @@ public class UserInfo {
      * @param homePath the path to the user's home directory.
      */
     public void setHomePath(String homePath) {
-        this.homePath = homePath;
+        this.homePath = JsonUtil.trim(homePath);
     }
 
 	public String getLoginTime() {

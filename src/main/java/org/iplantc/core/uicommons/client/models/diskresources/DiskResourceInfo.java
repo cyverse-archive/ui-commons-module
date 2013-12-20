@@ -4,6 +4,8 @@
 package org.iplantc.core.uicommons.client.models.diskresources;
 
 
+import java.util.Date;
+
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 
 /**
@@ -42,22 +44,22 @@ public interface DiskResourceInfo {
     @PropertyName("type")
     void setType(String type);
 
-    @PropertyName("created")
-    long getCreated();
+    @PropertyName("date-created")
+    Date getCreated();
 
-    @PropertyName("created")
-    void setCreated(long created);
+    @PropertyName("date-created")
+    void setCreated(Date created);
 
-    @PropertyName("modified")
-    long getModified();
+    @PropertyName("date-modified")
+    Date getModified();
 
-    @PropertyName("modified")
-    void setModified(long modified);
+    @PropertyName("date-modified")
+    void setModified(Date modified);
 
-    @PropertyName("size")
-    void setSize(int size);
+    @PropertyName("file-size")
+    void setSize(long size);
 
-    @PropertyName("size")
+    @PropertyName("file-size")
     long getSize();
 
     @PropertyName("mime-type")
