@@ -1,8 +1,20 @@
 package org.iplantc.core.uicommons.client.services;
 
-import java.util.List;
-import java.util.Set;
-
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.json.client.*;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+import com.sencha.gxt.core.client.util.Format;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.SortDir;
+import com.sencha.gxt.data.shared.SortInfoBean;
+import com.sencha.gxt.data.shared.TreeStore;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.DEClientConstants;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
@@ -12,35 +24,15 @@ import org.iplantc.core.uicommons.client.events.diskresources.DiskResourceRefres
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.HasPaths;
 import org.iplantc.core.uicommons.client.models.UserInfo;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceExistMap;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceMetadata;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceStatMap;
-import org.iplantc.core.uicommons.client.models.diskresources.File;
-import org.iplantc.core.uicommons.client.models.diskresources.Folder;
-import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
+import org.iplantc.core.uicommons.client.models.diskresources.*;
 import org.iplantc.core.uicommons.client.models.services.DiskResourceMove;
 import org.iplantc.core.uicommons.client.models.services.DiskResourceRename;
 import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uicommons.client.util.WindowUtil;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.http.client.URL;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-import com.sencha.gxt.core.client.util.Format;
-import com.sencha.gxt.data.shared.ModelKeyProvider;
-import com.sencha.gxt.data.shared.TreeStore;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Provides access to remote services for folder operations.
@@ -69,8 +61,8 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         return AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(entity)).getPayload();
     }
 
-    private static <T> T decode(Class<T> clazz, String playload) {
-        return AutoBeanCodex.decode(FACTORY, clazz, playload).as();
+    private static <T> T decode(Class<T> clazz, String payload) {
+        return AutoBeanCodex.decode(FACTORY, clazz, payload).as();
     }
 
     @Override
@@ -126,17 +118,17 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
     }
 
     @Override
-    public void getFolderContents(final String path,int pageSize,int offset,String sortCol, String sortOrder, final AsyncCallback<Folder> callback) {
-        String address = getDirectoryListingEndpoint(path,pageSize,offset, sortCol, sortOrder);
+    public void getFolderContents(final Folder folder, final FilterPagingLoadConfigBean loadConfig, final AsyncCallback<Folder> callback){
+        String address = getDirectoryListingEndpoint(folder, loadConfig);
         ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
         callService(wrapper, new AsyncCallbackConverter<String, Folder>(callback) {
 
             @Override
-            protected Folder convertFrom(String result) {
-                // Decode JSON result into a folder
-                return decode(Folder.class, result);
+            protected Folder convertFrom(String object) {
+                return decode(Folder.class, object);
             }
         });
+
     }
 
     @Override
@@ -212,15 +204,35 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
         return address;
     }
+//<<<<<<< HEAD
+//
+//    private String getDirectoryListingEndpoint(final String path,int pageSize,int offset,String sortCol, String sortOrder ) {
+//        String address = DEProperties.getInstance().getDataMgmtBaseUrl()
+//                + "paged-directory?"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//=======
+//>>>>>>> CORE-4876: Updated DiskResourceServiceFacade
 
-    private String getDirectoryListingEndpoint(final String path,int pageSize,int offset,String sortCol, String sortOrder ) {
-        String address = DEProperties.getInstance().getDataMgmtBaseUrl()
-                + "paged-directory?"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    /**
+     * This method constructs the address for the paged-directory listing endpoint.
+     *
+     * If the sort info contained in the configBean parameter is null, then a default sort info object will be used in
+     * its place.
+     *
+     * @param folder
+     * @param configBean
+     * @return the fully constructed address for the paged-directory listing endpoint.
+     */
+    private String getDirectoryListingEndpoint(final Folder folder, final FilterPagingLoadConfigBean configBean){
+        String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "paged-directory?";
 
-        if (!Strings.isNullOrEmpty(path)) {
-            address += "path=" + URL.encodePathSegment(path) + "&sort-col="+ sortCol + "&limit=" + pageSize + "" + "&offset=" + offset + "&sort-order=" + sortOrder; //$NON-NLS-1$
+        SortInfoBean sortInfo = Iterables.getFirst(configBean.getSortInfo(), new SortInfoBean("NAME", SortDir.ASC));
+        if(!Strings.isNullOrEmpty(folder.getPath())){
+            address += "path=" + URL.encodePathSegment(folder.getPath())
+                    + "&sort-col=" + sortInfo.getSortField()
+                    + "&limit=" + configBean.getLimit()
+                    + "&offset=" + configBean.getOffset()
+                    + "&sort-order=" + sortInfo.getSortDir().toString();
         }
-
         return address;
     }
 

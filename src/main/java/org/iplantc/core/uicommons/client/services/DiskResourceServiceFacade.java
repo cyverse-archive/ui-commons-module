@@ -1,21 +1,14 @@
 package org.iplantc.core.uicommons.client.services;
 
-import java.util.List;
-import java.util.Set;
-
-import org.iplantc.core.uicommons.client.models.HasPaths;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceExistMap;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceMetadata;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceStatMap;
-import org.iplantc.core.uicommons.client.models.diskresources.File;
-import org.iplantc.core.uicommons.client.models.diskresources.Folder;
-import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
-import org.iplantc.core.uicommons.client.models.services.DiskResourceMove;
-
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
+import org.iplantc.core.uicommons.client.models.HasPaths;
+import org.iplantc.core.uicommons.client.models.diskresources.*;
+import org.iplantc.core.uicommons.client.models.services.DiskResourceMove;
+
+import java.util.List;
+import java.util.Set;
 
 public interface DiskResourceServiceFacade {
 
@@ -39,7 +32,6 @@ public interface DiskResourceServiceFacade {
     /**
      * set user's default analyses output folder
      *
-     * @param folderName
      * @param callback
      */
     void putDefaultOutput(AsyncCallback<String> callback);
@@ -47,14 +39,12 @@ public interface DiskResourceServiceFacade {
     /**
      * Called to retrieve the entire contents of a folder.
      *
-     * @param path path to requested folder.
-     * @param pageSize limit the no.of records to fetch
-     * @param offset to start from
-     * @param sortCol column name to sort on
-     * @param sortOder asc or desc direction
+     * @param folder the folder whose contents are to be retrieved
+     * @param loadConfig the paged load config which contains all parameters necessary to construct a well-formed
+     *                   paged directory listing request
      * @param callback executed when RPC call completes.
      */
-    void getFolderContents(final String path, int pageSize, int offset, String sortCol, String sortOrder, final AsyncCallback<Folder> callback);
+    void getFolderContents(final Folder folder, final FilterPagingLoadConfigBean loadConfig, final AsyncCallback<Folder> callback);
 
     /**
      * Called to retrieve the contents of a folder without its file contents.
