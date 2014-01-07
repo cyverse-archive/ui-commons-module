@@ -2,7 +2,9 @@ package org.iplantc.core.uicommons.client.services;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 
+import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
 import org.iplantc.core.uicommons.client.services.impl.DataSearchQueryBuilder;
 
@@ -51,10 +53,11 @@ public interface SearchServiceFacade {
      * 
      * Internally, this uses a {@link DataSearchQueryBuilder} to construct the query.
      * 
-     * @param filter
-     * @param callback
+     * @param queryTemplate the template used to construct the query string.
+     * @param loadConfig the load config which defines the offset and limit for the paged request
+     * @param callback executed when RPC call completes.
      */
-    void submitSearchFromQueryTemplate(DiskResourceQueryTemplate queryTemplate, AsyncCallback<String> callback);
+    void submitSearchFromQueryTemplate(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final AsyncCallback<Folder> callback);
 
     /**
      * 

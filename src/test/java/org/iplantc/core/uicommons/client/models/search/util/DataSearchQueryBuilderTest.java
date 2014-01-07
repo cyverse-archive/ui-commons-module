@@ -33,7 +33,6 @@ public class DataSearchQueryBuilderTest {
         assertEquals(expected, result);
         // here be one
 
-        fail("Not yet implemented");
     }
 
     @Test
@@ -48,7 +47,6 @@ public class DataSearchQueryBuilderTest {
         assertEquals(expected, result);
         // here be two
 
-        fail("Not yet implemented");
     }
 
     @Test
@@ -65,7 +63,6 @@ public class DataSearchQueryBuilderTest {
         assertEquals(expected, result);
         // here be three
 
-        fail("Not yet implemented");
     }
 
     @Test
@@ -79,7 +76,6 @@ public class DataSearchQueryBuilderTest {
         String result = new DataSearchQueryBuilder(dsf).file().toString();
         assertEquals(expected, result);
 
-        fail("Not yet implemented");
     }
 
     @Test
@@ -95,7 +91,6 @@ public class DataSearchQueryBuilderTest {
         String result = new DataSearchQueryBuilder(dsf).fileSizeRange().toString();
         assertEquals(expected, result);
 
-        fail("Not yet implemented");
     }
 
     @Test
@@ -109,7 +104,6 @@ public class DataSearchQueryBuilderTest {
         String result = new DataSearchQueryBuilder(dsf).metadata().toString();
         assertEquals(expected, result);
 
-        fail("Not yet implemented");
     }
 
     @Test
@@ -125,7 +119,6 @@ public class DataSearchQueryBuilderTest {
         String result = new DataSearchQueryBuilder(dsf).modifiedWithin().toString();
         assertEquals(expected, result);
 
-        fail("Not yet implemented");
     }
 
     @Test
@@ -139,7 +132,6 @@ public class DataSearchQueryBuilderTest {
         String result = new DataSearchQueryBuilder(dsf).negatedFile().toString();
         assertEquals(expected, result);
 
-        fail("Not yet implemented");
     }
 
     @Test
@@ -153,7 +145,6 @@ public class DataSearchQueryBuilderTest {
         String result = new DataSearchQueryBuilder(dsf).negatedMetadata().toString();
         assertEquals(expected, result);
 
-        fail("Not yet implemented");
     }
 
     @Test
@@ -167,7 +158,6 @@ public class DataSearchQueryBuilderTest {
         String result = new DataSearchQueryBuilder(dsf).sharedWith().toString();
         assertEquals(expected, result);
 
-        fail("Not yet implemented");
     }
 
 }

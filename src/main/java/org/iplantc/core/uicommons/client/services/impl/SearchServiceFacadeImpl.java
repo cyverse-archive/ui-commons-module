@@ -1,14 +1,12 @@
 package org.iplantc.core.uicommons.client.services.impl;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
-import com.google.web.bindery.autobean.shared.AutoBean;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.google.web.bindery.autobean.shared.Splittable;
-import com.google.web.bindery.autobean.shared.impl.StringQuoter;
+import static org.iplantc.de.shared.services.BaseServiceCallWrapper.Type.GET;
+
+import java.util.List;
+
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
+import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplateList;
 import org.iplantc.core.uicommons.client.models.search.SearchAutoBeanFactory;
@@ -16,9 +14,14 @@ import org.iplantc.core.uicommons.client.services.AsyncCallbackConverter;
 import org.iplantc.core.uicommons.client.services.SearchServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
-import java.util.List;
-
-import static org.iplantc.de.shared.services.BaseServiceCallWrapper.Type.GET;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.Splittable;
+import com.google.web.bindery.autobean.shared.impl.StringQuoter;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 
 public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
@@ -63,7 +66,7 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
     }
     
     @Override
-    public void submitSearchFromQueryTemplate(DiskResourceQueryTemplate queryTemplate, AsyncCallback<String> callback) {
+    public void submitSearchFromQueryTemplate(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final AsyncCallback<Folder> callback) {
         // TODO Auto-generated method stub
         // Stub out functionality until search service comes online
 
