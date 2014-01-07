@@ -393,6 +393,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
                 String newId = response.getDest();
                 newDr.setId(newId);
+                newDr.setPath(newId);
                 newDr.setName(DiskResourceUtil.parseNameFromPath(newId));
 
                 if (newDr instanceof Folder) {
