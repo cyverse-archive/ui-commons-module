@@ -436,26 +436,8 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
             return;
         }
 
-        // KLUDGE TreeStore#removeChildren doesn't actually remove the children from their parent's
-        // TreeModel wrapper, so remove the parent as well, then re-add it without children.
-        Folder parent = null;
-        int index = getRootItems().indexOf(folder);
-        if (index < 0) {
-            parent = getParent(folder);
-
-            if (parent != null) {
-                index = indexOf(folder);
-            }
-        }
-
-        remove(folder);
+        removeChildren(folder);
         folder.setFolders(null);
-
-        if (parent == null) {
-            insert(index, folder);
-        } else {
-            insert(parent, index, folder);
-        }
     }
 
     /**
