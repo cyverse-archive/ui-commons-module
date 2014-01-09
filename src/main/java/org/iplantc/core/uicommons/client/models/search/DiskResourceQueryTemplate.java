@@ -39,10 +39,27 @@ public interface DiskResourceQueryTemplate extends Folder {
 
     String getSharedWith();
 
+    /**
+     * @return true if this template has unsaved changes, false otherwise.
+     */
+    boolean isDirty();
+
+    /**
+     * @return true if this template has been persisted, false otherwise.
+     */
+    boolean isSaved();
+
     @PropertyName("creator.username")
     void setCreatedBy(String createdBy);
 
     void setCreatedWithin(DateInterval createdWithin);
+
+    /**
+     * Sets the templates dirty state.
+     * 
+     * @param dirty true if the template has unsaved changes.
+     */
+    void setDirty(boolean dirty);
 
     void setFileQuery(String fileQuery);
 

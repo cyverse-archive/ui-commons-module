@@ -2,6 +2,8 @@ package org.iplantc.core.uicommons.client.services;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.autobean.shared.AutoBean;
+
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
@@ -35,16 +37,20 @@ public interface SearchServiceFacade {
      * given queryTemplate.
      * 
      * @param queryTemplates
-     * @param callback
+     * @param callback returns the set of persisted templates on success. These templates will have their
+     *            {@link DiskResourceQueryTemplate#isSaved()} flag set to true and the
+     *            {@link DiskResourceQueryTemplate#isDirty()} flags set to false.
      */
-    void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<String> callback);
+    void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<List<DiskResourceQueryTemplate>> callback);
 
     /**
      * Retrieves the list of saved query templates using the {@link #QUERY_TEMPLATE_KEY}.
      * 
      * If there are no saved templates, then an empty list will be returned.
      * 
-     * @param callback
+     * @param callback returns the set of persisted templates on success. These templates will have their
+     *            {@link DiskResourceQueryTemplate#isSaved()} flag set to true and the
+     *            {@link DiskResourceQueryTemplate#isDirty()} flags set to false.
      */
     void getSavedQueryTemplates(AsyncCallback<List<DiskResourceQueryTemplate>> callback);
 
@@ -65,5 +71,12 @@ public interface SearchServiceFacade {
      * @see Document#createUniqueId()
      */
     String getUniqueId();
+
+    /**
+     * @param queryTemplates the list to be copied
+     * @return a list of frozen query templates
+     * @see AutoBean#setFrozen(boolean)
+     */
+    List<DiskResourceQueryTemplate> createFrozenList(List<DiskResourceQueryTemplate> queryTemplates);
 
 }
