@@ -41,11 +41,6 @@ public class DEProperties {
     private static final String UNPROTECTED_FILE_IO_BASE_URL = "org.iplantc.services.file-io.base.unsecured";
 
     /**
-     * Properties key of the base URL of the Kif-share service.
-     */
-    private static final String KIFSHARE_TICKET_BASE_URL = "org.iplantc.services.de-data-mgmt.view-tickets";
-
-    /**
      * Properties key of the notification polling interval
      */
     private static final String NOTIFICATION_POLL_INTERVAL = "org.iplantc.discoveryenvironment.notifications.poll-interval";
@@ -127,11 +122,6 @@ public class DEProperties {
      * The base URL of the unprotected file I/O services.
      */
     private String unproctedfileIoBaseUrl;
-
-    /**
-     * The base URL of the Kif-share service.
-     */
-    private String kifShareTicketBaseUrl;
 
     /**
      * The polling interval
@@ -243,7 +233,6 @@ public class DEProperties {
         dataMgmtBaseUrl = properties.get(DATA_MGMT_BASE_URL);
         fileIoBaseUrl = properties.get(FILE_IO_BASE_URL);
         unproctedfileIoBaseUrl = properties.get(UNPROTECTED_FILE_IO_BASE_URL);
-        kifShareTicketBaseUrl = properties.get(KIFSHARE_TICKET_BASE_URL);
         muleServiceBaseUrl = properties.get(MULE_SERVICE_BASE_URL);
         unproctedMuleServiceBaseUrl = properties.get(UNPROTECTED_MULE_SERVICE_BASE_URL);
         serverPushEnabled = Boolean.parseBoolean(properties.get(SERVER_PUSH_ENABLED));
@@ -325,15 +314,6 @@ public class DEProperties {
      */
     public String getUnprotectedFileIoBaseUrl() {
         return unproctedfileIoBaseUrl;
-    }
-
-    /**
-     * Gets the base URL of the Kif-share service.
-     * 
-     * @return the URL as a string.
-     */
-    public String getKifShareTicketBaseUrl() {
-        return kifShareTicketBaseUrl;
     }
 
     /**
