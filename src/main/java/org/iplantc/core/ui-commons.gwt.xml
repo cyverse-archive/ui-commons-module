@@ -21,7 +21,6 @@
     <inherits name="com.google.gwt.uibinder.UiBinder" />
 
     <!-- Testing -->
-    <inherits name="com.google.gwt.junit.JUnit" />
     <inherits name='org.iplantc.de.DiscoveryEnvironmentCommon' />
     <source path="client"/>
     <source path="uicommons"/>
