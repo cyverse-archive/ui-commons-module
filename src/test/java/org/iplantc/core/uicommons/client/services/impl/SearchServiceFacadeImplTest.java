@@ -17,7 +17,7 @@ public class SearchServiceFacadeImplTest {
      * @see SearchServiceFacade#getSavedQueryTemplates(AsyncCallback)
      */
     @Test public void testGetSavedQueryTemplates() {
-        // TODO
+        // TODO create test
 
         /* Verify that all isDirty() methods of return templates return false. */
         // TODO perform verification above
@@ -28,7 +28,7 @@ public class SearchServiceFacadeImplTest {
      * @see SearchServiceFacade#saveQueryTemplates(List, AsyncCallback)
      */
     @Test public void testSaveQueryTemplates() {
-        // TODO
+        // TODO create test
 
         /* Verify that all isDirty() methods of return templates return false. */
         // TODO perform verification above
@@ -39,7 +39,7 @@ public class SearchServiceFacadeImplTest {
      * @see DiskResourceQueryTemplate, FilterPagingLoadConfigBean, AsyncCallback)
      */
     @Test public void testSubmitSearchFromQueryTemplate() {
-        // TODO
+        // TODO create test
     }
 
 }

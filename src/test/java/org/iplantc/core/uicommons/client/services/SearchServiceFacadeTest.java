@@ -14,6 +14,7 @@ import org.iplantc.core.uicommons.client.models.search.SearchAutoBeanFactory;
 import org.iplantc.core.uicommons.client.services.impl.SearchServiceFacadeImpl;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
@@ -41,6 +42,7 @@ public class SearchServiceFacadeTest {
      * </ol>
      * 
      */
+    @Ignore
     @Test public void testSaveQueryTemplates() {
 
         Permissions incorrectPermissions = mock(Permissions.class);

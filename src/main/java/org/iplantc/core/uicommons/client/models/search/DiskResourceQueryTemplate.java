@@ -74,4 +74,7 @@ public interface DiskResourceQueryTemplate extends Folder {
     void setNegatedMetadataQuery(String negatedMetadataQuery);
 
     void setSharedWith(String sharedWith);
+
+    @Override
+    void setId(String id);
 }

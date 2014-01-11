@@ -1,6 +1,7 @@
 package org.iplantc.core.uicommons.client.services.impl;
 
 import com.google.common.collect.Lists;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -14,6 +15,8 @@ import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
+import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplateList;
@@ -94,9 +97,39 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
         // Stub out functionality until search service comes online
 
         // Construct query string from given template
-        DataSearchQueryBuilder queryBuilder = new DataSearchQueryBuilder(queryTemplate);
-        String fullQuery = queryBuilder.buildFullQuery();
+        // DataSearchQueryBuilder queryBuilder = new DataSearchQueryBuilder(queryTemplate);
+        // String fullQuery = queryBuilder.buildFullQuery();
+        submitSearchFromQueryTemplateStub(queryTemplate, loadConfig, callback);
 
+    }
+
+    public void submitSearchFromQueryTemplateStub(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final AsyncCallback<Folder> callback) {
+        // Create stubbed folder to return
+        DiskResourceAutoBeanFactory drFactory = GWT.create(DiskResourceAutoBeanFactory.class);
+        File file1 = createStubFile(drFactory, getUniqueId(), "File_Result_1.txt", "/");
+        File file2 = createStubFile(drFactory, getUniqueId(), "File_Result_2.txt", "/");
+        File file3 = createStubFile(drFactory, getUniqueId(), "File_Result_3.txt", "/");
+
+        queryTemplate.setFiles(Lists.newArrayList(file1, file2, file3));
+        queryTemplate.setFolders(Collections.<Folder> emptyList());
+
+        callback.onSuccess(queryTemplate);
+    }
+
+    private File createStubFile(DiskResourceAutoBeanFactory factory, String id, String fileName, String path) {
+        Splittable fileSplit = StringQuoter.createSplittable();
+        Splittable permissions = StringQuoter.createSplittable();
+        StringQuoter.create(true).assign(permissions, "own");
+        StringQuoter.create(true).assign(permissions, "read");
+        StringQuoter.create(true).assign(permissions, "write");
+        permissions.assign(fileSplit, "permissions");
+
+        File ret = AutoBeanCodex.decode(factory, File.class, fileSplit).as();
+        ret.setId(id);
+        ret.setName(fileName);
+        ret.setPath(path);
+
+        return ret;
     }
 
     private String getUserDataEndpointAddress(){
