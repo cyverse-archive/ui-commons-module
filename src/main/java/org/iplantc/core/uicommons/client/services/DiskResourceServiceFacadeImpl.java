@@ -208,7 +208,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
         return address;
     }
-    
+
     private String getDirectoryListingEndpoint(final String path,int pageSize,int offset,String sortCol, String sortOrder ) {
         String address = DEProperties.getInstance().getDataMgmtBaseUrl()
                 + "paged-directory?"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -503,7 +503,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address, body);
         callService(wrapper, callback);
     }
-    
+
     @Override
     public void downloadContents(String parentFolderId, AsyncCallback<String> callback) {
         final String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "download-contents"; //$NON-NLS-1$
@@ -847,9 +847,9 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
                 return resourcesMoved;
             }
         });
-        
+
     }
-    
+
     @Override
     public void deleteContents(String selectedFolderId, AsyncCallback<HasPaths> callback) {
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "delete-contents"; //$NON-NLS-1$
@@ -872,12 +872,28 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
                 return deletedIds;
             }});
     }
-    
+
     @Override
     public void restoreAll(AsyncCallback<String> callback) {
         final String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "restore-all"; //$NON-NLS-1$
         final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress, "{}");
         callService(wrapper, callback);
     }
+
+	@Override
+	public void getMetadataTemplateListing(AsyncCallback<String> callback) {
+		String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "metadata/templates";
+		final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
+	    callService(wrapper, callback);
+	}
+
+	@Override
+	public void getMetadataTemplate(String templateId,
+			AsyncCallback<String> callback) {
+		String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "metadata/template/" + templateId;
+		final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
+	    callService(wrapper, callback);
+
+	}
 
 }
