@@ -8,6 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.iplantc.core.uicommons.client.DEServiceFacade;
+import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.diskresources.Permissions;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
 import org.iplantc.core.uicommons.client.models.search.SearchAutoBeanFactory;
@@ -26,11 +27,17 @@ public class SearchServiceFacadeTest {
     @Mock SearchAutoBeanFactory searchAbFactory;
 
     @Mock DEServiceFacade deServiceFacade;
+    
+    @Mock Endpoints endpointsMock;
+    
+    @Mock ReservedBuckets bucketsMock;
+    
+    @Mock UserInfo userInfoMock;
 
     private SearchServiceFacade searchService;
 
     @Before public void setUp() {
-        searchService = new SearchServiceFacadeImpl(deServiceFacade, searchAbFactory);
+        searchService = new SearchServiceFacadeImpl(deServiceFacade, searchAbFactory, endpointsMock, bucketsMock, userInfoMock);
     }
 
     /**

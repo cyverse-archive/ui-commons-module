@@ -13,22 +13,48 @@ import com.google.web.bindery.autobean.shared.impl.StringQuoter;
 
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 
+import static org.iplantc.de.shared.services.BaseServiceCallWrapper.Type.GET;
+import static org.iplantc.de.shared.services.BaseServiceCallWrapper.Type.POST;
+
+import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
-import org.iplantc.core.uicommons.client.models.DEProperties;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
-import org.iplantc.core.uicommons.client.models.diskresources.File;
+import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplateList;
 import org.iplantc.core.uicommons.client.models.search.SearchAutoBeanFactory;
 import org.iplantc.core.uicommons.client.services.AsyncCallbackConverter;
+import org.iplantc.core.uicommons.client.services.Endpoints;
+import org.iplantc.core.uicommons.client.services.ReservedBuckets;
 import org.iplantc.core.uicommons.client.services.SearchServiceFacade;
+import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import java.util.Collections;
 import java.util.List;
 
 public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
+
+    public final class BooleanCallbackConverter extends AsyncCallbackConverter<String, Boolean> {
+        public BooleanCallbackConverter(AsyncCallback<Boolean> callback) {
+            super(callback);
+        }
+
+        @Override
+        protected Boolean convertFrom(String object) {
+            final Splittable split = StringQuoter.split(object);
+            if (split.isUndefined("success")) {
+                GWT.log("saveQueryTemplates callback return is missing \"success\" json key:\n\t" + split.getPayload());
+                return null;
+            }
+            if (!split.get("success").isBoolean()) {
+                GWT.log("saveQueryTemplates callback \"success\" json key is not a boolean but should be:\n\t" + split.getPayload());
+                return null;
+            }
+
+            return split.get("success").asBoolean();
+        }
+    }
 
     public final class QueryTemplateListCallbackConverter extends AsyncCallbackConverter<String, List<DiskResourceQueryTemplate>> {
         public QueryTemplateListCallbackConverter(AsyncCallback<List<DiskResourceQueryTemplate>> callback) {
@@ -45,100 +71,19 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
         }
     }
 
-    private final SearchAutoBeanFactory searchAbFactory;
+    private final ReservedBuckets buckets;
     private final DEServiceFacade deServiceFacade;
+    private final Endpoints endpoints;
+    private final SearchAutoBeanFactory searchAbFactory;
+    private final UserInfo userInfo;
 
     @Inject
-    public SearchServiceFacadeImpl(final DEServiceFacade deServiceFacade, final SearchAutoBeanFactory searchAbFactory) {
+    public SearchServiceFacadeImpl(final DEServiceFacade deServiceFacade, final SearchAutoBeanFactory searchAbFactory, final Endpoints endpoints, final ReservedBuckets buckets, final UserInfo userInfo) {
         this.deServiceFacade = deServiceFacade;
         this.searchAbFactory = searchAbFactory;
-    }
-
-    @Override
-    public void getSavedQueryTemplates(AsyncCallback<List<DiskResourceQueryTemplate>> callback) {
-        getSavedQueryTemplatesStub(callback);
-        // String address = getUserDataEndpointAddress();
-        // ServiceCallWrapper wrapper = new ServiceCallWrapper(GET, address);
-        // deServiceFacade.getServiceData(wrapper, new QueryTemplateListCallbackConverter(callback));
-
-    }
-
-    public void getSavedQueryTemplatesStub(AsyncCallback<List<DiskResourceQueryTemplate>> callback) {
-        callback.onSuccess(stubbedSavedQueryTemplateList);
-    }
-
-    @Override
-    public void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<List<DiskResourceQueryTemplate>> callback) {
-        saveQueryTemplateStub(queryTemplates, callback);
-
-    }
-    
-    private final List<DiskResourceQueryTemplate> stubbedSavedQueryTemplateList = Lists.newArrayList();
-
-    private void saveQueryTemplateStub(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<List<DiskResourceQueryTemplate>> callback) {
-        List<DiskResourceQueryTemplate> returnList = Lists.newArrayList();
-        for (DiskResourceQueryTemplate template : queryTemplates) {
-
-            // Serialize, set the "saved" key set to true, and re-encode
-            Splittable serialized = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(template));
-
-            StringQuoter.create(true).assign(serialized, "saved");
-            DiskResourceQueryTemplate as = AutoBeanCodex.decode(searchAbFactory, DiskResourceQueryTemplate.class, serialized).as();
-            returnList.add(as);
-        }
-        stubbedSavedQueryTemplateList.clear();
-        stubbedSavedQueryTemplateList.addAll(returnList);
-        callback.onSuccess(returnList);
-    }
-
-    @Override
-    public void submitSearchFromQueryTemplate(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final AsyncCallback<Folder> callback) {
-        // TODO Auto-generated method stub
-        // Stub out functionality until search service comes online
-
-        // Construct query string from given template
-        // DataSearchQueryBuilder queryBuilder = new DataSearchQueryBuilder(queryTemplate);
-        // String fullQuery = queryBuilder.buildFullQuery();
-        submitSearchFromQueryTemplateStub(queryTemplate, loadConfig, callback);
-
-    }
-
-    public void submitSearchFromQueryTemplateStub(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final AsyncCallback<Folder> callback) {
-        // Create stubbed folder to return
-        DiskResourceAutoBeanFactory drFactory = GWT.create(DiskResourceAutoBeanFactory.class);
-        File file1 = createStubFile(drFactory, getUniqueId(), "File_Result_1.txt", "/");
-        File file2 = createStubFile(drFactory, getUniqueId(), "File_Result_2.txt", "/");
-        File file3 = createStubFile(drFactory, getUniqueId(), "File_Result_3.txt", "/");
-
-        queryTemplate.setFiles(Lists.newArrayList(file1, file2, file3));
-        queryTemplate.setFolders(Collections.<Folder> emptyList());
-
-        callback.onSuccess(queryTemplate);
-    }
-
-    private File createStubFile(DiskResourceAutoBeanFactory factory, String id, String fileName, String path) {
-        Splittable fileSplit = StringQuoter.createSplittable();
-        Splittable permissions = StringQuoter.createSplittable();
-        StringQuoter.create(true).assign(permissions, "own");
-        StringQuoter.create(true).assign(permissions, "read");
-        StringQuoter.create(true).assign(permissions, "write");
-        permissions.assign(fileSplit, "permissions");
-
-        File ret = AutoBeanCodex.decode(factory, File.class, fileSplit).as();
-        ret.setId(id);
-        ret.setName(fileName);
-        ret.setPath(path);
-
-        return ret;
-    }
-
-    private String getUserDataEndpointAddress(){
-        return DEProperties.getInstance().getMuleServiceBaseUrl() + "user-data?key=" + QUERY_TEMPLATE_KEY;
-    }
-
-    @Override
-    public String getUniqueId() {
-        return Document.get().createUniqueId();
+        this.endpoints = endpoints;
+        this.buckets = buckets;
+        this.userInfo = userInfo;
     }
 
     @Override
@@ -154,6 +99,53 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
             toSave.add(decode.as());
         }
         return Collections.unmodifiableList(toSave);
+    }
+
+    @Override
+    public void getSavedQueryTemplates(AsyncCallback<List<DiskResourceQueryTemplate>> callback) {
+        String address = endpoints.buckets() + "/" + userInfo.getUsername() + "/" + buckets.queryTemplates();
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(GET, address);
+        deServiceFacade.getServiceData(wrapper, new QueryTemplateListCallbackConverter(callback));
+    }
+    
+    @Override
+    public String getUniqueId() {
+        return Document.get().createUniqueId();
+    }
+
+    @Override
+    public void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<Boolean> callback) {
+        String address = endpoints.buckets() + "/" + userInfo.getUsername() + "/" + buckets.queryTemplates();
+
+        Splittable body = StringQuoter.createSplittable();
+        int index = 0;
+        for (DiskResourceQueryTemplate qt : queryTemplates) {
+            final Splittable encode = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(qt));
+            encode.assign(body, index++);
+        }
+        GWT.log("saveQueryTemplates body payload" + JsonUtil.prettyPrint(body));
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(POST, address, body.getPayload());
+        deServiceFacade.getServiceData(wrapper, new BooleanCallbackConverter(callback));
+    }
+
+    @Override
+    public void submitSearchFromQueryTemplate(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final SearchType searchType,
+            final AsyncCallback<Folder> callback) {
+        String queryParameter = "q=" + new DataSearchQueryBuilder(queryTemplate).buildFullQuery();
+        String limitParameter = "&limit=" + loadConfig.getLimit();
+        String offsetParameter = "&offset=" + loadConfig.getOffset();
+        String typeParameter = "&type=" + ((searchType == null) ? SearchType.ANY.toString() : searchType.toString());
+
+        String address = endpoints.filesystemIndex() + "?" + queryParameter + limitParameter + offsetParameter + typeParameter;
+
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(GET, address);
+        deServiceFacade.getServiceData(wrapper, new AsyncCallbackConverter<String, Folder>(callback) {
+
+            @Override
+            protected Folder convertFrom(String object) {
+                return null;
+            }
+        });
     }
 
 }

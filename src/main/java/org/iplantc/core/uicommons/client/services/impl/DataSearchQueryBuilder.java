@@ -11,11 +11,6 @@ import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate
  * If a field in the given filter is null or empty, the corresponding search term will be omitted from
  * the final query.
  * 
- * # Currently working on assumption that the full query can have a field term shown twice.
- * 
- * # Question for tony: What does the query string look like when designating multiple fields?
- * # Question for tony: Is there a "sharedWith" key in the file and/or folder records?
- * 
  * @author jstroot
  * 
  */
@@ -25,7 +20,6 @@ public class DataSearchQueryBuilder {
     private final StringBuilder sb;
 
     public DataSearchQueryBuilder(DiskResourceQueryTemplate dsf) {
-
         this.dsf = dsf;
         sb = new StringBuilder();
     }
@@ -43,7 +37,7 @@ public class DataSearchQueryBuilder {
     }
 
     public DataSearchQueryBuilder createdWithin() {
-        String query = createQuery("dataCreated:", "");
+        String query = createQuery("dateCreated:", "[" + dsf.getCreatedWithin().getFrom().toString() + " TO " + dsf.getCreatedWithin().getTo().toString() + "]");
         sb.append(query);
         return this;
     }
@@ -78,13 +72,13 @@ public class DataSearchQueryBuilder {
     public DataSearchQueryBuilder metadata() {
         String content = dsf.getMetadataQuery();
         // Search metadata.attribute, metadata.value, and metadata.unit for the given query
-        sb.append(createQuery("metadata.\\*", content));
+        sb.append(createQuery("metadata.\\*:", content));
         return this;
     }
 
     public DataSearchQueryBuilder modifiedWithin() {
-        String content = "";
-        sb.append(createQuery("dataModified:", content));
+        String content = "[" + dsf.getModifiedWithin().getFrom().toString() + " TO " + dsf.getModifiedWithin().getTo().toString() + "]";
+        sb.append(createQuery("dateModified:", content));
         return this;
     }
 
@@ -96,7 +90,7 @@ public class DataSearchQueryBuilder {
     public DataSearchQueryBuilder negatedFile() {
         // Split the query and reassemble with a "-" slapped onto the front.
         Iterable<String> split = Splitter.on(" ").split(dsf.getNegatedFileQuery());
-        String content = Joiner.on(" -").join(split);
+        String content = "-" + Joiner.on(" -").join(split);
         sb.append(createQuery("label:", content));
         return this;
     }
@@ -104,7 +98,7 @@ public class DataSearchQueryBuilder {
     public DataSearchQueryBuilder negatedMetadata() {
         // Split the query and reassemble with a "-" slapped onto the front.
         Iterable<String> split = Splitter.on(" ").split(dsf.getNegatedMetadataQuery());
-        String content = Joiner.on(" -").join(split);
+        String content = "-" + Joiner.on(" -").join(split);
         // Search metadata.attribute, metadata.value, and metadata.unit for the given query
         sb.append(createQuery("metadata.\\*:", content));
         return this;
@@ -112,7 +106,7 @@ public class DataSearchQueryBuilder {
 
     public DataSearchQueryBuilder sharedWith() {
         String content = dsf.getSharedWith();
-        sb.append(createQuery("", content));
+        sb.append(createQuery("sharedWith:", content));
         return this;
     }
 

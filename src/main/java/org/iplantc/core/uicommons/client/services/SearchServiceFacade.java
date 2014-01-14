@@ -27,21 +27,30 @@ import java.util.List;
  * 
  */
 public interface SearchServiceFacade {
+    public enum SearchType {
+        ANY("any"), FILE("file"), FOLDER("folder");
+
+        private final String value;
+
+        private SearchType(final String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+
+    }
 
     String QUERY_TEMPLATE_KEY = "query_templates";
 
     /**
-     * Saves the given query templates to the {@link #QUERY_TEMPLATE_KEY}, on the user-data endpoint.
-     * 
-     * This method will ensure that the saved queries all have full permissions set before persisting the
-     * given queryTemplate.
-     * 
-     * @param queryTemplates
-     * @param callback returns the set of persisted templates on success. These templates will have their
-     *            {@link DiskResourceQueryTemplate#isSaved()} flag set to true and the
-     *            {@link DiskResourceQueryTemplate#isDirty()} flags set to false.
+     * @param queryTemplates the list to be copied
+     * @return a list of frozen query templates
+     * @see AutoBean#setFrozen(boolean)
      */
-    void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<List<DiskResourceQueryTemplate>> callback);
+    List<DiskResourceQueryTemplate> createFrozenList(List<DiskResourceQueryTemplate> queryTemplates);
 
     /**
      * Retrieves the list of saved query templates using the {@link #QUERY_TEMPLATE_KEY}.
@@ -55,6 +64,26 @@ public interface SearchServiceFacade {
     void getSavedQueryTemplates(AsyncCallback<List<DiskResourceQueryTemplate>> callback);
 
     /**
+     * 
+     * @return provides an string id which is unique within the app document.
+     * @see Document#createUniqueId()
+     */
+    String getUniqueId();
+
+    /**
+     * Saves the given query templates to the {@link #QUERY_TEMPLATE_KEY}, on the user-data endpoint.
+     * 
+     * This method will ensure that the saved queries all have full permissions set before persisting the
+     * given queryTemplate.
+     * 
+     * @param queryTemplates
+     * @param callback returns the set of persisted templates on success. These templates will have their
+     *            {@link DiskResourceQueryTemplate#isSaved()} flag set to true and the
+     *            {@link DiskResourceQueryTemplate#isDirty()} flags set to false.
+     */
+    void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<Boolean> callback);
+
+    /**
      * Submits a search query build from the given filter.
      * 
      * Internally, this uses a {@link DataSearchQueryBuilder} to construct the query.
@@ -63,20 +92,6 @@ public interface SearchServiceFacade {
      * @param loadConfig the load config which defines the offset and limit for the paged request
      * @param callback executed when RPC call completes.
      */
-    void submitSearchFromQueryTemplate(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final AsyncCallback<Folder> callback);
-
-    /**
-     * 
-     * @return provides an string id which is unique within the app document.
-     * @see Document#createUniqueId()
-     */
-    String getUniqueId();
-
-    /**
-     * @param queryTemplates the list to be copied
-     * @return a list of frozen query templates
-     * @see AutoBean#setFrozen(boolean)
-     */
-    List<DiskResourceQueryTemplate> createFrozenList(List<DiskResourceQueryTemplate> queryTemplates);
+    void submitSearchFromQueryTemplate(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final SearchType searchType, final AsyncCallback<Folder> callback);
 
 }
