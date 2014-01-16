@@ -73,13 +73,8 @@ public interface SearchServiceFacade {
     /**
      * Saves the given query templates to the {@link #QUERY_TEMPLATE_KEY}, on the user-data endpoint.
      * 
-     * This method will ensure that the saved queries all have full permissions set before persisting the
-     * given queryTemplate.
-     * 
      * @param queryTemplates
-     * @param callback returns the set of persisted templates on success. These templates will have their
-     *            {@link DiskResourceQueryTemplate#isSaved()} flag set to true and the
-     *            {@link DiskResourceQueryTemplate#isDirty()} flags set to false.
+     * @param callback returns the set of persisted templates on success.
      */
     void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<Boolean> callback);
 

@@ -15,6 +15,8 @@ import java.util.Set;
 /**
  * Constructs a {@link DiskResourceQueryTemplate} from a given string.
  * 
+ * FIXME To be implemented
+ * 
  * @author jstroot
  * 
  */

@@ -17,7 +17,6 @@ import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 import static org.iplantc.de.shared.services.BaseServiceCallWrapper.Type.GET;
 import static org.iplantc.de.shared.services.BaseServiceCallWrapper.Type.POST;
 
-import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
@@ -130,7 +129,6 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
     @Override
     public void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<Boolean> callback) {
-        //String address = endpoints.buckets() + "/" + userInfo.getUsername() + "/" + buckets.queryTemplates();
         String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "buckets/" + userInfo.getUsername() + "/reserved/" + buckets.queryTemplates();
 
         Splittable body = StringQuoter.createIndexed();
@@ -139,7 +137,6 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
             final Splittable encode = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(qt));
             encode.assign(body, index++);
         }
-        GWT.log("saveQueryTemplates body payload" + JsonUtil.prettyPrint(body));
         ServiceCallWrapper wrapper = new ServiceCallWrapper(POST, address, body.getPayload());
         deServiceFacade.getServiceData(wrapper, new BooleanCallbackConverter(callback));
     }
@@ -153,8 +150,6 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
         String offsetParameter = "&offset=" + loadConfig.getOffset();
         String typeParameter = "&type=" + ((searchType == null) ? SearchType.ANY.toString() : searchType.toString());
 
-        // String address = endpoints.filesystemIndex() + "?" + queryParameter + limitParameter +
-        // offsetParameter + typeParameter;
         String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "index?" + queryParameter + limitParameter + offsetParameter + typeParameter;
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(GET, address);

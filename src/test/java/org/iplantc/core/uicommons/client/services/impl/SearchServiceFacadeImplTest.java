@@ -40,8 +40,7 @@ public class SearchServiceFacadeImplTest {
     
     @Mock DEServiceFacade deServiceFacadeMock;
     @Mock SearchAutoBeanFactory searchAbFactoryMock;
-    @Mock
-    DiskResourceAutoBeanFactory drFactoryMock;
+    @Mock DiskResourceAutoBeanFactory drFactoryMock;
     @Mock Endpoints endpointMock;
     @Mock ReservedBuckets bucketsMock;
     @Mock UserInfo userInfoMock;
@@ -78,7 +77,6 @@ public class SearchServiceFacadeImplTest {
         /* Verify proper construction of service call wrapper */
         ArgumentCaptor<ServiceCallWrapper> wrapperCaptor = ArgumentCaptor.forClass(ServiceCallWrapper.class);
         verify(deServiceFacadeMock).getServiceData(wrapperCaptor.capture(), asyncStringCaptor.capture());
-        // verify(endpointMock).buckets();
         verify(userInfoMock).getUsername();
         verify(bucketsMock).queryTemplates();
 
@@ -147,7 +145,6 @@ public class SearchServiceFacadeImplTest {
         /* Verify proper construction of service call wrapper */
         ArgumentCaptor<ServiceCallWrapper> wrapperCaptor = ArgumentCaptor.forClass(ServiceCallWrapper.class);
         verify(deServiceFacadeMock).getServiceData(wrapperCaptor.capture(), asyncStringCaptor.capture());
-        // verify(endpointMock).buckets();
         verify(userInfoMock).getUsername();
         verify(bucketsMock).queryTemplates();
 
@@ -189,11 +186,12 @@ public class SearchServiceFacadeImplTest {
      * 
      * @see DiskResourceQueryTemplate, FilterPagingLoadConfigBean, AsyncCallback)
      */
-    @Test
-    public void testSubmitSearchFromQueryTemplate_Case1() {
+    @Ignore
+    @Test public void testSubmitSearchFromQueryTemplate_Case1() {
         // TODO create test
     }
 
+    @Ignore
     @Test public void testCreateFrozenList() {
         // TODO Verify necessity of this method
     }

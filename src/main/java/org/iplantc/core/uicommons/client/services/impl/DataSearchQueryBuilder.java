@@ -7,9 +7,10 @@ import com.google.common.base.Strings;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
 
 /**
- * This class uses a builder pattern to construct a search query from a given filter.
+ * This class uses a builder pattern to construct a search query from a given query template.
  * 
- * If a field in the given filter is null or empty, the corresponding search term will be omitted from
+ * If a field in the given query template is null or empty, the corresponding search term will be omitted
+ * from
  * the final query.
  * 
  * @author jstroot
@@ -29,7 +30,6 @@ public class DataSearchQueryBuilder {
         createdBy().createdWithin().file().fileSizeRange().metadata().modifiedWithin().negatedFile().negatedMetadata().sharedWith();
         return toString();
     }
-
 
     public DataSearchQueryBuilder createdBy() {
         if (!Strings.isNullOrEmpty(dsf.getCreatedBy())) {
