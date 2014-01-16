@@ -59,10 +59,10 @@ public interface DiskResourceServiceFacade {
     /**
      * Called to retrieve the contents of a folder without its file contents.
      * 
-     * @param path path to requested folder.
+     * @param parent requested folder.
      * @param callback executed when RPC call completes.
      */
-    void getSubFolders(final String path, final AsyncCallback<List<Folder>> callback);
+    void getSubFolders(final Folder parent, final AsyncCallback<List<Folder>> callback);
 
     /**
      * Call service to create a new folder

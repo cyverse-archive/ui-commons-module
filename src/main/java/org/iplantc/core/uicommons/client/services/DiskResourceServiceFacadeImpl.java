@@ -140,25 +140,29 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
     }
 
     @Override
-    public void getSubFolders(final String path, final AsyncCallback<List<Folder>> callback) {
-        Folder folder = findModelWithKey(path);
+    public void getSubFolders(final Folder parent, final AsyncCallback<List<Folder>> callback) {
+        final Folder folder = findModel(parent);
 
         if (hasFoldersLoaded(folder)) {
             callback.onSuccess(getSubFolders(folder));
         } else {
-            String address = getDirectoryListingEndpoint(path, false);
+            String address = getDirectoryListingEndpoint(parent.getPath(), false);
             ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
             callService(wrapper, new AsyncCallbackConverter<String, List<Folder>>(callback) {
 
                 @Override
                 protected List<Folder> convertFrom(String result) {
                     // Decode JSON result into a folder
-                    Folder folder = decode(Folder.class, result);
+                    Folder folderListing = decode(Folder.class, result);
+
+                    // KLUDGE The folder in the result may have a different ID if parent is a root.
+                    // This can be removed once folders have persistent IDs separate from their paths.
+                    folderListing.setId(folder.getId());
 
                     // Store or update the folder's subfolders.
-                    saveSubFolders(folder);
+                    saveSubFolders(folderListing);
 
-                    return getSubFolders(folder);
+                    return getSubFolders(folderListing);
                 }
             });
         }
