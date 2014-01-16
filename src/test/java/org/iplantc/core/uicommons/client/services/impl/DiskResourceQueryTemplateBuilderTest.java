@@ -20,6 +20,7 @@ public class DiskResourceQueryTemplateBuilderTest {
     }
 
     @Test public void testBuild() {
+        // FIXME COMPLETE UNIT TEST
         String testString = "ONE_FIELD: derpy derpy doo OTHER_FIELD: gorpy groovy gravy YET_ANOTHER_FIELD: torpy";
 
         final HashMap<String, List<String>> newHashMap = Maps.newHashMap();
@@ -36,7 +37,7 @@ public class DiskResourceQueryTemplateBuilderTest {
 
         final Set<Entry<String, List<String>>> entrySet = newHashMap.entrySet();
         for (Entry<String, List<String>> entry : entrySet) {
-            System.out.println("Key : " + entry.getKey() + " -> " + entry.getValue());
+            // System.out.println("Key : " + entry.getKey() + " -> " + entry.getValue());
         }
         assertTrue(true);
     }
