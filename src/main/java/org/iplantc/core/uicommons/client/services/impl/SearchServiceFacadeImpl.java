@@ -1,5 +1,6 @@
 package org.iplantc.core.uicommons.client.services.impl;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
@@ -18,7 +19,10 @@ import static org.iplantc.de.shared.services.BaseServiceCallWrapper.Type.POST;
 
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
+import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.UserInfo;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
+import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplateList;
@@ -63,11 +67,18 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
         @Override
         protected List<DiskResourceQueryTemplate> convertFrom(String object) {
+            if (Strings.isNullOrEmpty(object)) {
+                return Collections.emptyList();
+            }
             // Expecting the string to be JSON list
             Splittable split = StringQuoter.createSplittable();
-            StringQuoter.create(object).assign(split, DiskResourceQueryTemplateList.LIST_KEY);
+            StringQuoter.split(object).assign(split, DiskResourceQueryTemplateList.LIST_KEY);
             AutoBean<DiskResourceQueryTemplateList> decode = AutoBeanCodex.decode(searchAbFactory, DiskResourceQueryTemplateList.class, split);
-            return decode.as().getQueryTemplateList();
+            final List<DiskResourceQueryTemplate> queryTemplateList = decode.as().getQueryTemplateList();
+            for (DiskResourceQueryTemplate qt : queryTemplateList) {
+                qt.setDirty(false);
+            }
+            return queryTemplateList;
         }
     }
 
@@ -76,11 +87,14 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
     private final Endpoints endpoints;
     private final SearchAutoBeanFactory searchAbFactory;
     private final UserInfo userInfo;
+    private final DiskResourceAutoBeanFactory drFactory;
 
     @Inject
-    public SearchServiceFacadeImpl(final DEServiceFacade deServiceFacade, final SearchAutoBeanFactory searchAbFactory, final Endpoints endpoints, final ReservedBuckets buckets, final UserInfo userInfo) {
+    public SearchServiceFacadeImpl(final DEServiceFacade deServiceFacade, final SearchAutoBeanFactory searchAbFactory, final DiskResourceAutoBeanFactory drFactory, final Endpoints endpoints,
+            final ReservedBuckets buckets, final UserInfo userInfo) {
         this.deServiceFacade = deServiceFacade;
         this.searchAbFactory = searchAbFactory;
+        this.drFactory = drFactory;
         this.endpoints = endpoints;
         this.buckets = buckets;
         this.userInfo = userInfo;
@@ -103,7 +117,8 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
     @Override
     public void getSavedQueryTemplates(AsyncCallback<List<DiskResourceQueryTemplate>> callback) {
-        String address = endpoints.buckets() + "/" + userInfo.getUsername() + "/" + buckets.queryTemplates();
+        //String address = endpoints.buckets() + "/" + userInfo.getUsername() + "/" + buckets.queryTemplates();
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "buckets/" + userInfo.getUsername() + "/reserved/" + buckets.queryTemplates();
         ServiceCallWrapper wrapper = new ServiceCallWrapper(GET, address);
         deServiceFacade.getServiceData(wrapper, new QueryTemplateListCallbackConverter(callback));
     }
@@ -115,9 +130,10 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
     @Override
     public void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<Boolean> callback) {
-        String address = endpoints.buckets() + "/" + userInfo.getUsername() + "/" + buckets.queryTemplates();
+        //String address = endpoints.buckets() + "/" + userInfo.getUsername() + "/" + buckets.queryTemplates();
+        String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "buckets/" + userInfo.getUsername() + "/reserved/" + buckets.queryTemplates();
 
-        Splittable body = StringQuoter.createSplittable();
+        Splittable body = StringQuoter.createIndexed();
         int index = 0;
         for (DiskResourceQueryTemplate qt : queryTemplates) {
             final Splittable encode = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(qt));
@@ -131,19 +147,44 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
     @Override
     public void submitSearchFromQueryTemplate(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final SearchType searchType,
             final AsyncCallback<Folder> callback) {
+        // TODO there are some reserved words that must be protected against
         String queryParameter = "q=" + new DataSearchQueryBuilder(queryTemplate).buildFullQuery();
         String limitParameter = "&limit=" + loadConfig.getLimit();
         String offsetParameter = "&offset=" + loadConfig.getOffset();
         String typeParameter = "&type=" + ((searchType == null) ? SearchType.ANY.toString() : searchType.toString());
 
-        String address = endpoints.filesystemIndex() + "?" + queryParameter + limitParameter + offsetParameter + typeParameter;
+        // String address = endpoints.filesystemIndex() + "?" + queryParameter + limitParameter +
+        // offsetParameter + typeParameter;
+        String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "index?" + queryParameter + limitParameter + offsetParameter + typeParameter;
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(GET, address);
         deServiceFacade.getServiceData(wrapper, new AsyncCallbackConverter<String, Folder>(callback) {
 
             @Override
             protected Folder convertFrom(String object) {
-                return null;
+                if (queryTemplate.getFiles() == null) {
+                    queryTemplate.setFiles(Lists.<File> newArrayList());
+                }
+                if (queryTemplate.getFolders() == null) {
+                    queryTemplate.setFolders(Lists.<Folder> newArrayList());
+                }
+                Splittable split = StringQuoter.split(object);
+                if (split.get("matches").isIndexed()) {
+                    final int size = split.get("matches").size();
+                    for (int i = 0; i < size; i++) {
+                        final Splittable child = split.get("matches").get(i);
+                        final String asString = child.get("type").asString();
+                        if (asString.equals("folder")) {
+                            final AutoBean<Folder> decodeFolder = AutoBeanCodex.decode(drFactory, Folder.class, child.get("entity"));
+                            queryTemplate.getFolders().add(decodeFolder.as());
+
+                        } else if (asString.equals("file")) {
+                            final AutoBean<File> decodeFile = AutoBeanCodex.decode(drFactory, File.class, child.get("entity"));
+                            queryTemplate.getFiles().add(decodeFile.as());
+                        }
+                    }
+                }
+                return queryTemplate;
             }
         });
     }

@@ -6,7 +6,6 @@ import com.google.inject.Singleton;
 
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.UserInfo;
-import org.iplantc.core.uicommons.client.models.UserSettings;
 import org.iplantc.core.uicommons.client.services.DiskResourceServiceFacade;
 import org.iplantc.core.uicommons.client.services.SearchServiceFacade;
 import org.iplantc.core.uicommons.client.services.ToolRequestProvider;
@@ -36,4 +35,5 @@ final class ServicesModule extends AbstractGinModule {
     public UserInfo createUserInfo() {
         return UserInfo.getInstance();
     }
+
 }

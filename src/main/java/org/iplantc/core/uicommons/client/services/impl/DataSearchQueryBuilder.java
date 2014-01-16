@@ -2,6 +2,7 @@ package org.iplantc.core.uicommons.client.services.impl;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
 
@@ -31,14 +32,18 @@ public class DataSearchQueryBuilder {
 
 
     public DataSearchQueryBuilder createdBy() {
-        String queryContent = dsf.getCreatedBy();
-        sb.append(createQuery("creator.username:", queryContent));
+        if (!Strings.isNullOrEmpty(dsf.getCreatedBy())) {
+            String queryContent = dsf.getCreatedBy();
+            sb.append(createQuery("creator.username:", queryContent)).append(" ");
+        }
         return this;
     }
 
     public DataSearchQueryBuilder createdWithin() {
-        String query = createQuery("dateCreated:", "[" + dsf.getCreatedWithin().getFrom().toString() + " TO " + dsf.getCreatedWithin().getTo().toString() + "]");
-        sb.append(query);
+        if ((dsf.getCreatedWithin() != null) && (dsf.getCreatedWithin().getFrom() != null) && (dsf.getCreatedWithin().getTo() != null)) {
+            String query = createQuery("dateCreated:", "[" + dsf.getCreatedWithin().getFrom().toString() + " TO " + dsf.getCreatedWithin().getTo().toString() + "]");
+            sb.append(query).append(" ");
+        }
         return this;
     }
 
@@ -48,14 +53,18 @@ public class DataSearchQueryBuilder {
      * @return
      */
     public DataSearchQueryBuilder file() {
-        String content = dsf.getFileQuery();
-        sb.append(createQuery("label:", content));
+        if (!Strings.isNullOrEmpty(dsf.getFileQuery())) {
+            String content = dsf.getFileQuery();
+            sb.append(createQuery("label:", content)).append(" ");
+        }
         return this;
     }
 
     public DataSearchQueryBuilder fileSizeRange() {
-        String content = "[" + dsf.getFileSizeRange().getMin() + " TO " + dsf.getFileSizeRange().getMax() + "]";
-        sb.append(createQuery("fileSize:", content));
+        if ((dsf.getFileSizeRange() != null) && (dsf.getFileSizeRange().getMin() != null) && (dsf.getFileSizeRange().getMax() != null)) {
+            String content = "[" + dsf.getFileSizeRange().getMin() + " TO " + dsf.getFileSizeRange().getMax() + "]";
+            sb.append(createQuery("fileSize:", content)).append(" ");
+        }
         return this;
     }
 
@@ -70,15 +79,19 @@ public class DataSearchQueryBuilder {
      * @return
      */
     public DataSearchQueryBuilder metadata() {
-        String content = dsf.getMetadataQuery();
-        // Search metadata.attribute, metadata.value, and metadata.unit for the given query
-        sb.append(createQuery("metadata.\\*:", content));
+        if (!Strings.isNullOrEmpty(dsf.getMetadataQuery())) {
+            String content = dsf.getMetadataQuery();
+            // Search metadata.attribute, metadata.value, and metadata.unit for the given query
+            sb.append(createQuery("metadata.\\*:", content)).append(" ");
+        }
         return this;
     }
 
     public DataSearchQueryBuilder modifiedWithin() {
-        String content = "[" + dsf.getModifiedWithin().getFrom().toString() + " TO " + dsf.getModifiedWithin().getTo().toString() + "]";
-        sb.append(createQuery("dateModified:", content));
+        if ((dsf.getModifiedWithin() != null) && (dsf.getModifiedWithin().getFrom() != null) && (dsf.getModifiedWithin().getTo() != null)) {
+            String content = "[" + dsf.getModifiedWithin().getFrom().toString() + " TO " + dsf.getModifiedWithin().getTo().toString() + "]";
+            sb.append(createQuery("dateModified:", content)).append(" ");
+        }
         return this;
     }
 
@@ -88,25 +101,31 @@ public class DataSearchQueryBuilder {
      * @return
      */
     public DataSearchQueryBuilder negatedFile() {
-        // Split the query and reassemble with a "-" slapped onto the front.
-        Iterable<String> split = Splitter.on(" ").split(dsf.getNegatedFileQuery());
-        String content = "-" + Joiner.on(" -").join(split);
-        sb.append(createQuery("label:", content));
+        if (!Strings.isNullOrEmpty(dsf.getNegatedFileQuery())) {
+            // Split the query and reassemble with a "-" slapped onto the front.
+            Iterable<String> split = Splitter.on(" ").split(dsf.getNegatedFileQuery());
+            String content = "-" + Joiner.on(" -").join(split);
+            sb.append(createQuery("label:", content)).append(" ");
+        }
         return this;
     }
 
     public DataSearchQueryBuilder negatedMetadata() {
-        // Split the query and reassemble with a "-" slapped onto the front.
-        Iterable<String> split = Splitter.on(" ").split(dsf.getNegatedMetadataQuery());
-        String content = "-" + Joiner.on(" -").join(split);
-        // Search metadata.attribute, metadata.value, and metadata.unit for the given query
-        sb.append(createQuery("metadata.\\*:", content));
+        if (!Strings.isNullOrEmpty(dsf.getNegatedMetadataQuery())) {
+            // Split the query and reassemble with a "-" slapped onto the front.
+            Iterable<String> split = Splitter.on(" ").split(dsf.getNegatedMetadataQuery());
+            String content = "-" + Joiner.on(" -").join(split);
+            // Search metadata.attribute, metadata.value, and metadata.unit for the given query
+            sb.append(createQuery("metadata.\\*:", content)).append(" ");
+        }
         return this;
     }
 
     public DataSearchQueryBuilder sharedWith() {
-        String content = dsf.getSharedWith();
-        sb.append(createQuery("sharedWith:", content));
+        if (!Strings.isNullOrEmpty(dsf.getSharedWith())) {
+            String content = dsf.getSharedWith();
+            sb.append(createQuery("sharedWith:", content)).append(" ");
+        }
         return this;
     }
 
@@ -115,11 +134,11 @@ public class DataSearchQueryBuilder {
      */
     @Override
     public String toString() {
-        return sb.toString();
+        return sb.toString().trim();
     }
 
     private String createQuery(String queryField, String queryContent) {
         String query = queryField + queryContent;
-        return query;
+        return query.trim();
     }
 }

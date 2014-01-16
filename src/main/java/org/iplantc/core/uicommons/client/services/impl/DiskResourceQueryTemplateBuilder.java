@@ -39,6 +39,7 @@ public class DiskResourceQueryTemplateBuilder {
     public DiskResourceQueryTemplate build() throws ParseException {
         String ret = queryString.trim();
         
+        // Some debugging related stuff
         if (queryString.startsWith("throw")) {
             throw new ParseException("Simulated parse error", 1);
         }
