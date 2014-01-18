@@ -1,6 +1,5 @@
 package org.iplantc.core.uicommons.client.services;
 
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 
@@ -64,13 +63,6 @@ public interface SearchServiceFacade {
     void getSavedQueryTemplates(AsyncCallback<List<DiskResourceQueryTemplate>> callback);
 
     /**
-     * 
-     * @return provides an string id which is unique within the app document.
-     * @see Document#createUniqueId()
-     */
-    String getUniqueId();
-
-    /**
      * Saves the given query templates to the {@link #QUERY_TEMPLATE_KEY}, on the user-data endpoint.
      * 
      * @param queryTemplates
@@ -83,9 +75,12 @@ public interface SearchServiceFacade {
      * 
      * Internally, this uses a {@link DataSearchQueryBuilder} to construct the query.
      * 
-     * @param queryTemplate the template used to construct the query string.
+     * @param queryTemplate the template used to construct the query string. The query string derived
+     *            from this object will be URL encoded.
      * @param loadConfig the load config which defines the offset and limit for the paged request
-     * @param callback executed when RPC call completes.
+     * @param callback executed when RPC call completes. The files and folders accessible by the returned
+     *            folder's getFiles() and getFolders() methods will only contain the matches returned
+     *            from the search query.
      */
     void submitSearchFromQueryTemplate(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final SearchType searchType, final AsyncCallback<Folder> callback);
 

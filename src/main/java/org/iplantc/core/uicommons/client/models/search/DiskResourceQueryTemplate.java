@@ -75,6 +75,21 @@ public interface DiskResourceQueryTemplate extends Folder {
 
     void setSharedWith(String sharedWith);
 
+    /**
+     * Overrides the default property name binding of "id" to "label"
+     * 
+     * @see org.iplantc.core.uicommons.client.models.HasId#getId()
+     */
     @Override
+    @PropertyName("label")
+    String getId();
+
+    /**
+     * Overrides the default property name binding of "id" to "label"
+     * 
+     * @see org.iplantc.core.uicommons.client.models.diskresources.DiskResource#setId(java.lang.String)
+     */
+    @Override
+    @PropertyName("label")
     void setId(String id);
 }

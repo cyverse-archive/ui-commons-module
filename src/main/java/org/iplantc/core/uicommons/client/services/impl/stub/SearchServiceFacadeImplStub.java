@@ -43,12 +43,6 @@ public class SearchServiceFacadeImplStub implements SearchServiceFacade {
     }
 
     @Override
-    public String getUniqueId() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<Boolean> callback) {
         saveQueryTemplateStub(queryTemplates, callback);
     }
@@ -59,7 +53,7 @@ public class SearchServiceFacadeImplStub implements SearchServiceFacade {
 
     }
 
-    private File createStubFile(DiskResourceAutoBeanFactory factory, String id, String fileName, String path) {
+    private File createStubFile(DiskResourceAutoBeanFactory factory, String fileName, String path) {
         Splittable fileSplit = StringQuoter.createSplittable();
         Splittable permissions = StringQuoter.createSplittable();
         StringQuoter.create(true).assign(permissions, "own");
@@ -68,7 +62,7 @@ public class SearchServiceFacadeImplStub implements SearchServiceFacade {
         permissions.assign(fileSplit, "permissions");
 
         File ret = AutoBeanCodex.decode(factory, File.class, fileSplit).as();
-        ret.setId(id);
+        ret.setId(fileName);
         ret.setName(fileName);
         ret.setPath(path);
 
@@ -78,9 +72,9 @@ public class SearchServiceFacadeImplStub implements SearchServiceFacade {
     void submitSearchFromQueryTemplateStub(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final SearchType searchType, final AsyncCallback<Folder> callback) {
         // Create stubbed folder to return
         DiskResourceAutoBeanFactory drFactory = GWT.create(DiskResourceAutoBeanFactory.class);
-        File file1 = createStubFile(drFactory, getUniqueId(), "File_Result_1.txt", "/");
-        File file2 = createStubFile(drFactory, getUniqueId(), "File_Result_2.txt", "/");
-        File file3 = createStubFile(drFactory, getUniqueId(), "File_Result_3.txt", "/");
+        File file1 = createStubFile(drFactory, "File_Result_1.txt", "/");
+        File file2 = createStubFile(drFactory, "File_Result_2.txt", "/");
+        File file3 = createStubFile(drFactory, "File_Result_3.txt", "/");
 
         queryTemplate.setFiles(Lists.newArrayList(file1, file2, file3));
         queryTemplate.setFolders(Collections.<Folder> emptyList());

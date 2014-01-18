@@ -3,7 +3,7 @@ package org.iplantc.core.uicommons.client.services.impl;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.dom.client.Document;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.web.bindery.autobean.shared.AutoBean;
@@ -123,14 +123,11 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
     }
     
     @Override
-    public String getUniqueId() {
-        return Document.get().createUniqueId();
-    }
-
-    @Override
     public void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<Boolean> callback) {
         String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "buckets/" + userInfo.getUsername() + "/reserved/" + buckets.queryTemplates();
 
+        // check to see if query templates all have names, and that they are unique.throw illegal
+        // argument exception
         Splittable body = StringQuoter.createIndexed();
         int index = 0;
         for (DiskResourceQueryTemplate qt : queryTemplates) {
@@ -144,8 +141,7 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
     @Override
     public void submitSearchFromQueryTemplate(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final SearchType searchType,
             final AsyncCallback<Folder> callback) {
-        // TODO there are some reserved words that must be protected against
-        String queryParameter = "q=" + new DataSearchQueryBuilder(queryTemplate).buildFullQuery();
+        String queryParameter = "q=" + URL.encodePathSegment(new DataSearchQueryBuilder(queryTemplate).buildFullQuery());
         String limitParameter = "&limit=" + loadConfig.getLimit();
         String offsetParameter = "&offset=" + loadConfig.getOffset();
         String typeParameter = "&type=" + ((searchType == null) ? SearchType.ANY.toString() : searchType.toString());
@@ -157,13 +153,13 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
             @Override
             protected Folder convertFrom(String object) {
-                if (queryTemplate.getFiles() == null) {
-                    queryTemplate.setFiles(Lists.<File> newArrayList());
-                }
-                if (queryTemplate.getFolders() == null) {
-                    queryTemplate.setFolders(Lists.<Folder> newArrayList());
-                }
+                // Clear previous collections from template
+                queryTemplate.setFiles(Lists.<File> newArrayList());
+                queryTemplate.setFolders(Lists.<Folder> newArrayList());
+
                 Splittable split = StringQuoter.split(object);
+                // Set the total returned on the query template
+                queryTemplate.setTotal(Double.valueOf(split.get("total").asNumber()).intValue());
                 if (split.get("matches").isIndexed()) {
                     final int size = split.get("matches").size();
                     for (int i = 0; i < size; i++) {

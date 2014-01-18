@@ -189,6 +189,10 @@ public class SearchServiceFacadeImplTest {
     @Ignore
     @Test public void testSubmitSearchFromQueryTemplate_Case1() {
         // TODO create test
+        // TODO verify that query string is url encoded.
+        // TODO verify that total returned from service is set on template returned via callback
+        // TODO verify that querytemplate will only contain files/folders returned from service
+
     }
 
     @Ignore
