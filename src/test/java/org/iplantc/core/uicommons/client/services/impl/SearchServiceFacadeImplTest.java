@@ -159,6 +159,7 @@ public class SearchServiceFacadeImplTest {
     /**
      * Verifies proper body construction.
      * 
+     * FIXME Verify that all "files" and "folders" collections are reset before saving
      * 
      * Ignored until a means of dealing with Autobeans is discovered
      * FIXME JDS ignoring this test until AutoBeanCodex can be appropriately mocked.

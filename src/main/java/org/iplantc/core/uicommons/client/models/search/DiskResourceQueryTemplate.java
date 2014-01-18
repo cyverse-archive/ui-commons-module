@@ -29,6 +29,15 @@ public interface DiskResourceQueryTemplate extends Folder {
 
     FileSizeRange getFileSizeRange();
 
+    /**
+     * Overrides the default property name binding of "id" to "label"
+     * 
+     * @see org.iplantc.core.uicommons.client.models.HasId#getId()
+     */
+    @Override
+    @PropertyName("label")
+    String getId();
+
     String getMetadataQuery();
 
     DateInterval getModifiedWithin();
@@ -65,6 +74,15 @@ public interface DiskResourceQueryTemplate extends Folder {
 
     void setFileSizeRange(FileSizeRange fileSizeRange);
 
+    /**
+     * Overrides the default property name binding of "id" to "label"
+     * 
+     * @see org.iplantc.core.uicommons.client.models.diskresources.DiskResource#setId(java.lang.String)
+     */
+    @Override
+    @PropertyName("label")
+    void setId(String id);
+
     void setMetadataQuery(String metadataQuery);
 
     void setModifiedWithin(DateInterval modifiedWithin);
@@ -74,22 +92,4 @@ public interface DiskResourceQueryTemplate extends Folder {
     void setNegatedMetadataQuery(String negatedMetadataQuery);
 
     void setSharedWith(String sharedWith);
-
-    /**
-     * Overrides the default property name binding of "id" to "label"
-     * 
-     * @see org.iplantc.core.uicommons.client.models.HasId#getId()
-     */
-    @Override
-    @PropertyName("label")
-    String getId();
-
-    /**
-     * Overrides the default property name binding of "id" to "label"
-     * 
-     * @see org.iplantc.core.uicommons.client.models.diskresources.DiskResource#setId(java.lang.String)
-     */
-    @Override
-    @PropertyName("label")
-    void setId(String id);
 }

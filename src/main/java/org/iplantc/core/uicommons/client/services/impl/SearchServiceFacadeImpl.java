@@ -76,7 +76,10 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
             final List<DiskResourceQueryTemplate> queryTemplateList = decode.as().getQueryTemplateList();
             for (DiskResourceQueryTemplate qt : queryTemplateList) {
                 qt.setDirty(false);
+                qt.setFiles(Lists.<File> newArrayList());
+                qt.setFolders(Lists.<Folder> newArrayList());
             }
+
             return queryTemplateList;
         }
     }
@@ -165,12 +168,22 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
                     for (int i = 0; i < size; i++) {
                         final Splittable child = split.get("matches").get(i);
                         final String asString = child.get("type").asString();
-                        if (asString.equals("folder")) {
-                            final AutoBean<Folder> decodeFolder = AutoBeanCodex.decode(drFactory, Folder.class, child.get("entity"));
-                            queryTemplate.getFolders().add(decodeFolder.as());
+                        final Splittable entity = child.get("entity");
 
+                        // Re-map JSON keys
+                        GWT.log("Re-mapping JSON keys!  'dateModified' -> 'date-modified'");
+                        entity.get("dateModified").assign(entity, "date-modified");
+                        // Re-map JSON keys
+                        GWT.log("Re-mapping JSON keys!  'dateCreated' -> 'date-created'");
+                        entity.get("dateCreated").assign(entity, "date-created");
+                        if (asString.equals("folder")) {
+                            final AutoBean<Folder> decodeFolder = AutoBeanCodex.decode(drFactory, Folder.class, entity);
+                            queryTemplate.getFolders().add(decodeFolder.as());
                         } else if (asString.equals("file")) {
-                            final AutoBean<File> decodeFile = AutoBeanCodex.decode(drFactory, File.class, child.get("entity"));
+                            // Re-map JSON keys
+                            GWT.log("Re-mapping JSON keys!  'fileSize' -> 'file-size'");
+                            entity.get("fileSize").assign(entity, "file-size");
+                            final AutoBean<File> decodeFile = AutoBeanCodex.decode(drFactory, File.class, entity);
                             queryTemplate.getFiles().add(decodeFile.as());
                         }
                     }
