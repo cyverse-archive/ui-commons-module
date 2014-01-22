@@ -1,20 +1,8 @@
 package org.iplantc.core.uicommons.client.services;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.http.client.URL;
-import com.google.gwt.json.client.*;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-import com.sencha.gxt.core.client.util.Format;
-import com.sencha.gxt.data.shared.ModelKeyProvider;
-import com.sencha.gxt.data.shared.SortDir;
-import com.sencha.gxt.data.shared.SortInfoBean;
-import com.sencha.gxt.data.shared.TreeStore;
-import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
+import java.util.List;
+import java.util.Set;
+
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.DEClientConstants;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
@@ -24,15 +12,40 @@ import org.iplantc.core.uicommons.client.events.diskresources.DiskResourceRefres
 import org.iplantc.core.uicommons.client.models.DEProperties;
 import org.iplantc.core.uicommons.client.models.HasPaths;
 import org.iplantc.core.uicommons.client.models.UserInfo;
-import org.iplantc.core.uicommons.client.models.diskresources.*;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceExistMap;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceMetadata;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceStatMap;
+import org.iplantc.core.uicommons.client.models.diskresources.File;
+import org.iplantc.core.uicommons.client.models.diskresources.Folder;
+import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
 import org.iplantc.core.uicommons.client.models.services.DiskResourceMove;
 import org.iplantc.core.uicommons.client.models.services.DiskResourceRename;
+import org.iplantc.core.uicommons.client.services.impl.models.DiskResourceMetadataBatchRequest;
+import org.iplantc.core.uicommons.client.services.impl.models.DiskResourceServiceAutoBeanFactory;
 import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uicommons.client.util.WindowUtil;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
-import java.util.List;
-import java.util.Set;
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+import com.sencha.gxt.core.client.util.Format;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.SortDir;
+import com.sencha.gxt.data.shared.SortInfoBean;
+import com.sencha.gxt.data.shared.TreeStore;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 
 /**
  * Provides access to remote services for folder operations.
@@ -55,7 +68,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         EventBus.getInstance().addHandler(DiskResourceRefreshEvent.TYPE, this);
     }
 
-    private static final DiskResourceAutoBeanFactory FACTORY = GWT.create(DiskResourceAutoBeanFactory.class);
+    private static final DiskResourceServiceAutoBeanFactory FACTORY = GWT.create(DiskResourceServiceAutoBeanFactory.class);
 
     private static <T> String encode(final T entity) {
         return AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(entity)).getPayload();
@@ -570,34 +583,29 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "metadata-batch" //$NON-NLS-1$
                 + "?path=" + URL.encodePathSegment(resource.getPath()); //$NON-NLS-1$
 
-        // Create json body consisting of md to updata and md to delete.
-        JSONObject obj = new JSONObject();
-        obj.put("add", buildMetadataToAddJsonArray(mdToUpdate));
-        obj.put("delete", buildMetadataToDeleteJsonArray(mdToDelete));
+        // Create request consisting of metadata to update and delete.
+        DiskResourceMetadataBatchRequest request = FACTORY.metadataBatchRequest().as();
+        request.setAdd(buildMetadataToAddRequest(mdToUpdate));
+        request.setDelete(buildMetadataToDeleteRequest(mdToDelete));
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
-                obj.toString());
+                encode(request));
         callService(wrapper, callback);
     }
 
-    private JSONValue buildMetadataToAddJsonArray(Set<DiskResourceMetadata> metadata) {
-        final JSONArray arr = new JSONArray();
-        int i = 0;
+    private Set<DiskResourceMetadata> buildMetadataToAddRequest(Set<DiskResourceMetadata> metadata) {
         for (DiskResourceMetadata md : metadata) {
             md.setId(null);
-            JSONValue jsonValue = JSONParser.parseStrict(encode(md));
-            arr.set(i++, jsonValue);
         }
-        return arr;
+        return metadata;
     }
 
-    private JSONValue buildMetadataToDeleteJsonArray(Set<DiskResourceMetadata> metadataToDelete) {
-        JSONArray arr = new JSONArray();
-        int i = 0;
+    private Set<String> buildMetadataToDeleteRequest(Set<DiskResourceMetadata> metadataToDelete) {
+        Set<String> deleteRequest = Sets.newHashSet();
         for (DiskResourceMetadata md : metadataToDelete) {
-            arr.set(i++, new JSONString(md.getAttribute()));
+            deleteRequest.add(md.getAttribute());
         }
-        return arr;
+        return deleteRequest;
     }
 
     @Override
