@@ -584,6 +584,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         final JSONArray arr = new JSONArray();
         int i = 0;
         for (DiskResourceMetadata md : metadata) {
+            md.setId(null);
             JSONValue jsonValue = JSONParser.parseStrict(encode(md));
             arr.set(i++, jsonValue);
         }
