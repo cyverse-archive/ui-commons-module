@@ -61,4 +61,11 @@ public interface CommonUiConstants extends CommonConstants {
     String notifyKeyShortCut();
 
     String closeKeyShortCut();
+    
+    /**
+     * iDrop download URL
+     * 
+     * @return
+     */
+    String idropUrl();
 }
