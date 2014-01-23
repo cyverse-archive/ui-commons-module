@@ -39,7 +39,7 @@ import java.util.List;
 public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
 
-    final class SubmitSearchCallbackConverter extends AsyncCallbackConverter<String, Folder> {
+    class SubmitSearchCallbackConverter extends AsyncCallbackConverter<String, Folder> {
         private final DiskResourceQueryTemplate queryTemplate;
         private final UserInfo userInfo1;
         private final DiskResourceAutoBeanFactory factory;
@@ -147,7 +147,7 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
     }
 
-    public final class BooleanCallbackConverter extends AsyncCallbackConverter<String, Boolean> {
+    class BooleanCallbackConverter extends AsyncCallbackConverter<String, Boolean> {
         public BooleanCallbackConverter(AsyncCallback<Boolean> callback) {
             super(callback);
         }
@@ -168,7 +168,7 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
         }
     }
 
-    public final class QueryTemplateListCallbackConverter extends AsyncCallbackConverter<String, List<DiskResourceQueryTemplate>> {
+    class QueryTemplateListCallbackConverter extends AsyncCallbackConverter<String, List<DiskResourceQueryTemplate>> {
         public QueryTemplateListCallbackConverter(AsyncCallback<List<DiskResourceQueryTemplate>> callback) {
             super(callback);
         }

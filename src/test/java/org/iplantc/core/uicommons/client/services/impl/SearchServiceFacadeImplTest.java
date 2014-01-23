@@ -6,6 +6,7 @@ import com.google.gwtmockito.GxtMockitoTestRunner;
 import com.google.web.bindery.autobean.shared.AutoBean;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -53,10 +54,10 @@ public class SearchServiceFacadeImplTest {
     @Captor ArgumentCaptor<AsyncCallbackConverter<String, List<DiskResourceQueryTemplate>>> asyncStringCaptor;
     @Captor ArgumentCaptor<List<DiskResourceQueryTemplate>> qtListCaptor;
 
-    private SearchServiceFacade searchService;
+    private SearchServiceFacade unitUnderTest;
 
     @Before public void setUp() {
-        searchService = new SearchServiceFacadeImpl(deServiceFacadeMock, searchAbFactoryMock, drFactoryMock, endpointMock, bucketsMock, userInfoMock);
+        unitUnderTest = new SearchServiceFacadeImpl(deServiceFacadeMock, searchAbFactoryMock, drFactoryMock, endpointMock, bucketsMock, userInfoMock);
     }
 
     /**
@@ -72,7 +73,9 @@ public class SearchServiceFacadeImplTest {
         when(endpointMock.buckets()).thenReturn(bucketAddy);
         when(userInfoMock.getUsername()).thenReturn(userName);
         when(bucketsMock.queryTemplates()).thenReturn(queryTemplateBucket);
-        searchService.getSavedQueryTemplates(asyncQtListMock);
+
+        // Call method under test
+        unitUnderTest.getSavedQueryTemplates(asyncQtListMock);
 
         /* Verify proper construction of service call wrapper */
         ArgumentCaptor<ServiceCallWrapper> wrapperCaptor = ArgumentCaptor.forClass(ServiceCallWrapper.class);
@@ -80,50 +83,9 @@ public class SearchServiceFacadeImplTest {
         verify(userInfoMock).getUsername();
         verify(bucketsMock).queryTemplates();
 
-        final String expectedAddress = bucketAddy + "/" + userName + "/" + queryTemplateBucket;
-        /* FIXME FIX THIS VERIFY: Verify expected address construction */
-        // assertEquals(expectedAddress, wrapperCaptor.getValue().getAddress());
-        /* Verify that it is a GET */
-        assertEquals(Type.GET, wrapperCaptor.getValue().getType());
-
-        /* TODO Verify that an empty collection will be returned if service provides empty string. */
-
-    }
-
-    /**
-     * Verifies that the returned list of {@link DiskResourceQueryTemplate}s have all
-     * <code>isDirty()</code> flags set to false.
-     * 
-     * This test currently breaks because of autobean codex
-     * FIXME JDS ignoring this test until AutoBeanCodex can be appropriately mocked.
-     * 
-     * @see SearchServiceFacade#getSavedQueryTemplates(AsyncCallback)
-     */
-    @Ignore
-    @Test public void testGetSavedQueryTemplates_Case2() {
-
-        searchService.getSavedQueryTemplates(asyncQtListMock);
-        verify(deServiceFacadeMock).getServiceData(any(ServiceCallWrapper.class), asyncStringCaptor.capture());
-        DiskResourceQueryTemplate qtMock1 = mock(DiskResourceQueryTemplate.class);
-        DiskResourceQueryTemplate qtMock2 = mock(DiskResourceQueryTemplate.class);
-        DiskResourceQueryTemplate qtMock3 = mock(DiskResourceQueryTemplate.class);
-        when(qtMock1.isDirty()).thenReturn(true);
-        when(qtMock1.isDirty()).thenReturn(false);
-        when(qtMock1.isDirty()).thenReturn(true);
-        final DiskResourceQueryTemplateList qtListMock = mock(DiskResourceQueryTemplateList.class);
-        when(qtListMock.getQueryTemplateList()).thenReturn(Lists.newArrayList(qtMock1, qtMock2, qtMock3));
-        when(qtlistAbMock.as()).thenReturn(qtListMock);
-        when(searchAbFactoryMock.create(DiskResourceQueryTemplateList.class)).thenReturn(qtlistAbMock);
-
-        // Trigger pre-canned response
-        final String endpointResponse = "";
-        asyncStringCaptor.getValue().onSuccess(endpointResponse);
-
-        verify(asyncQtListMock).onSuccess(qtListCaptor.capture());
-        for (DiskResourceQueryTemplate qt : qtListCaptor.getValue()) {
-            /* Verify that all isDirty() methods of return templates return false. */
-            verify(qt).setDirty(eq(false));
-        }
+        final String expectedAddress = bucketAddy + "/" + userName + "/reserved/" + queryTemplateBucket;
+        assertEquals("Verify expected address construction", expectedAddress, wrapperCaptor.getValue().getAddress());
+        assertEquals("Verify that it is a GET", Type.GET, wrapperCaptor.getValue().getType());
     }
 
     /**
@@ -132,15 +94,15 @@ public class SearchServiceFacadeImplTest {
      * @see SearchServiceFacade#saveQueryTemplates(List, AsyncCallback)
      */
     @Test public void testSaveQueryTemplates_Case1() {
-        final String bucketAddy = "testSaveBuckets";
+        final String bucketAddy = "buckets";
         final String userName = "testSaveUsername";
         final String queryTemplatesBucket = "testSaveQuertyTemplatesBucket";
         when(endpointMock.buckets()).thenReturn(bucketAddy);
         when(userInfoMock.getUsername()).thenReturn(userName);
         when(bucketsMock.queryTemplates()).thenReturn(queryTemplatesBucket);
         
-        final ArrayList<DiskResourceQueryTemplate> newArrayList = Lists.newArrayList();
-        searchService.saveQueryTemplates(newArrayList, asyncBooleanMock);
+        final ArrayList<DiskResourceQueryTemplate> newArrayList = Lists.newArrayList(mock(DiskResourceQueryTemplate.class));
+        unitUnderTest.saveQueryTemplates(newArrayList, asyncBooleanMock);
 
         /* Verify proper construction of service call wrapper */
         ArgumentCaptor<ServiceCallWrapper> wrapperCaptor = ArgumentCaptor.forClass(ServiceCallWrapper.class);
@@ -148,10 +110,8 @@ public class SearchServiceFacadeImplTest {
         verify(userInfoMock).getUsername();
         verify(bucketsMock).queryTemplates();
 
-        final String expectedAddress = bucketAddy + "/" + userName + "/" + queryTemplatesBucket;
-
-        /* TODO FIX THIS VERIFY: Verify expected address construction */
-        // assertEquals(expectedAddress, wrapperCaptor.getValue().getAddress());
+        final String expectedAddress = bucketAddy + "/" + userName + "/reserved/" + queryTemplatesBucket;
+        assertTrue("Verify expected endpoint construction", wrapperCaptor.getValue().getAddress().endsWith(expectedAddress));
         /* Verify that it is a POST */
         assertEquals(Type.POST, wrapperCaptor.getValue().getType());
     }
@@ -162,18 +122,19 @@ public class SearchServiceFacadeImplTest {
      * FIXME Verify that all "files" and "folders" collections are reset before saving
      * 
      * Ignored until a means of dealing with Autobeans is discovered
-     * FIXME JDS ignoring this test until AutoBeanCodex can be appropriately mocked.
      * 
      * @see SearchServiceFacade#saveQueryTemplates(List, AsyncCallback)
      */
-    @Ignore
+    @Ignore("Unable to appropriately mock out Autobean factory")
     @Test public void testSaveQueryTemplates_Case2() {
 
         DiskResourceQueryTemplate mock1 = mock(DiskResourceQueryTemplate.class);
         DiskResourceQueryTemplate mock2 = mock(DiskResourceQueryTemplate.class);
         when(mock1.getName()).thenReturn("a name");
         final ArrayList<DiskResourceQueryTemplate> newArrayList = Lists.newArrayList(mock1, mock2);
-        searchService.saveQueryTemplates(newArrayList, asyncBooleanMock);
+        
+        // Call method under test
+        unitUnderTest.saveQueryTemplates(newArrayList, asyncBooleanMock);
 
         /* Verify proper construction of service call wrapper */
         ArgumentCaptor<ServiceCallWrapper> wrapperCaptor = ArgumentCaptor.forClass(ServiceCallWrapper.class);
@@ -187,7 +148,7 @@ public class SearchServiceFacadeImplTest {
      * 
      * @see DiskResourceQueryTemplate, FilterPagingLoadConfigBean, AsyncCallback)
      */
-    @Ignore
+    @Ignore("To Be Implemented")
     @Test public void testSubmitSearchFromQueryTemplate_Case1() {
         // TODO create test
         // TODO verify that query string is url encoded.
@@ -196,9 +157,55 @@ public class SearchServiceFacadeImplTest {
 
     }
 
-    @Ignore
+    @Ignore("To Be Implemented")
     @Test public void testCreateFrozenList() {
         // TODO Verify necessity of this method
+    }
+    
+        
+    /**
+     * Verifies that the returned list of {@link DiskResourceQueryTemplate}s have all
+     * <code>isDirty()</code> flags set to false.
+     * 
+     * This test currently breaks because of autobean codex
+     * 
+     * @see SearchServiceFacade#getSavedQueryTemplates(AsyncCallback)
+     */
+    @Ignore("Unable to appropriately mock out Autobean factory")
+    @Test public void testQueryTemplateListCallbackConverter_Case1() {
+    
+        unitUnderTest.getSavedQueryTemplates(asyncQtListMock);
+        verify(deServiceFacadeMock).getServiceData(any(ServiceCallWrapper.class), asyncStringCaptor.capture());
+        DiskResourceQueryTemplate qtMock1 = mock(DiskResourceQueryTemplate.class);
+        DiskResourceQueryTemplate qtMock2 = mock(DiskResourceQueryTemplate.class);
+        DiskResourceQueryTemplate qtMock3 = mock(DiskResourceQueryTemplate.class);
+        when(qtMock1.isDirty()).thenReturn(true);
+        when(qtMock1.isDirty()).thenReturn(false);
+        when(qtMock1.isDirty()).thenReturn(true);
+        final DiskResourceQueryTemplateList qtListMock = mock(DiskResourceQueryTemplateList.class);
+        when(qtListMock.getQueryTemplateList()).thenReturn(Lists.newArrayList(qtMock1, qtMock2, qtMock3));
+        when(qtlistAbMock.as()).thenReturn(qtListMock);
+        when(searchAbFactoryMock.create(DiskResourceQueryTemplateList.class)).thenReturn(qtlistAbMock);
+    
+        // Trigger pre-canned response
+        final String endpointResponse = "{\"fileSizeRange\":{},\"total\":22,\"files\":[],\"modifiedWithin\":{},\"fileQuery\":\"and nudda \",\"permissions\":{\"write\":true,\"read\":true,\"own\":true},\"path\":\"/savedFilters/\",\"folders\":[],\"label\":\"T3\",\"createdWithin\":{}},{\"fileSizeRange\":{},\"files\":[],\"modifiedWithin\":{},\"fileQuery\":\"asdf\",\"permissions\":{\"write\":true,\"read\":true,\"own\":true},\"path\":\"/savedFilters/\",\"folders\":[],\"label\":\"asdf\",\"createdWithin\":{}},{\"fileSizeRange\":{},\"files\":[],\"modifiedWithin\":{},\"fileQuery\":\"asdf\",\"permissions\":{\"write\":true,\"read\":true,\"own\":true},\"path\":\"/savedFilters/\",\"folders\":[],\"label\":\"TwoNEW\",\"createdWithin\":{}},{\"fileSizeRange\":{},\"files\":[],\"modifiedWithin\":{},\"fileQuery\":\"asdf\",\"permissions\":{\"write\":true,\"read\":true,\"own\":true},\"path\":\"/savedFilters/\",\"folders\":[],\"label\":\"Freeeee\",\"createdWithin\":{}}]";
+        asyncStringCaptor.getValue().onSuccess(endpointResponse);
+    
+        verify(asyncQtListMock).onSuccess(qtListCaptor.capture());
+        for (DiskResourceQueryTemplate qt : qtListCaptor.getValue()) {
+            /* Verify that all isDirty() methods of return templates return false. */
+            verify(qt).setDirty(eq(false));
+        }
+    }
+
+    @Ignore("To Be Implemented")
+    @Test public void testBooleanCallbackConverter_Case1() {
+
+    }
+
+    @Ignore("To Be Implemented")
+    @Test public void testSubmitSearchCallbackConverter_Case1() {
+
     }
 
 }

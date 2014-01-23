@@ -51,6 +51,7 @@ public class DataSearchQueryBuilder {
 
     /**
      * label:(some query)
+     * FIXME File and negated file terms need to be combined
      * 
      * @return
      */
@@ -110,6 +111,8 @@ public class DataSearchQueryBuilder {
 
     /**
      * label:(-some -query -fldjf)
+     * 
+     * FIXME File and negated file terms need to be combined
      * 
      * @return
      */
