@@ -15,14 +15,6 @@ import org.iplantc.core.uicommons.client.models.diskresources.Folder;
  */
 public interface DiskResourceQueryTemplate extends Folder {
 
-    /**
-     * creator.username:(here is the content)
-     * 
-     * @return
-     */
-    @PropertyName("creator.username")
-    String getCreatedBy();
-
     DateInterval getCreatedWithin();
 
     String getFileQuery();
@@ -38,13 +30,20 @@ public interface DiskResourceQueryTemplate extends Folder {
     @PropertyName("label")
     String getId();
 
-    String getMetadataQuery();
+    String getMetadataAttributeQuery();
+
+    String getMetadataValueQuery();
 
     DateInterval getModifiedWithin();
 
     String getNegatedFileQuery();
 
-    String getNegatedMetadataQuery();
+    /**
+     * creator.username:(here is the content)
+     * 
+     * @return
+     */
+    String getOwnedBy();
 
     String getSharedWith();
 
@@ -57,9 +56,6 @@ public interface DiskResourceQueryTemplate extends Folder {
      * @return true if this template has been persisted, false otherwise.
      */
     boolean isSaved();
-
-    @PropertyName("creator.username")
-    void setCreatedBy(String createdBy);
 
     void setCreatedWithin(DateInterval createdWithin);
 
@@ -83,13 +79,17 @@ public interface DiskResourceQueryTemplate extends Folder {
     @PropertyName("label")
     void setId(String id);
 
+    void setMetadataAttributeQuery(String attributeValues);
+
     void setMetadataQuery(String metadataQuery);
+
+    void setMetadataValueQuery(String metadataValueValues);
 
     void setModifiedWithin(DateInterval modifiedWithin);
 
     void setNegatedFileQuery(String negatedFileQuery);
 
-    void setNegatedMetadataQuery(String negatedMetadataQuery);
+    void setOwnedBy(String ownedBy);
 
     void setSharedWith(String sharedWith);
 }
