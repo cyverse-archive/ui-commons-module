@@ -1,5 +1,9 @@
 package org.iplantc.core.uicommons.client.widgets.search;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import com.google.gwt.event.dom.client.HasKeyUpHandlers;
 import com.google.gwt.event.dom.client.KeyCodeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -27,7 +31,14 @@ import org.iplantc.core.uicommons.client.events.SubmitTextSearchEvent.SubmitText
  */
 public class SearchFieldDecorator<F extends HasKeyUpHandlers & HasText> implements HasSubmitTextSearchEvents, KeyUpHandler, HasHandlers {
 
-    final class SearchFieldDelayedTask extends DelayedTask {
+    /**
+     * A task which fires a {@link SubmitTextSearchEvent} if the length of the text from the given
+     * {@link #dtSearchField} is >= the given {@link #minChars1}
+     * 
+     * @author jstroot
+     * 
+     */
+    class SearchFieldDelayedTask extends DelayedTask {
         private final F dtSearchField;
         private final HasHandlers hasHandlers;
         private final int minChars1;
@@ -47,13 +58,56 @@ public class SearchFieldDecorator<F extends HasKeyUpHandlers & HasText> implemen
         }
     }
 
-    final int queryDelay = 500;
+    /**
+     * Applies "implicit asterisks" to the front and end of every space delimited term in the given
+     * searchText string if that string does not contain any of the following characters:
+     * 
+     * <pre>
+     * *
+     * ?
+     * \
+     * </pre>
+     * 
+     * @param searchText
+     * @return a string whose space-delimited terms are prepended and appended with "*" if the given
+     *         string does not contain *, ?, nor /.
+     */
+    public static String applyImplicitAsteriskSearchText(final String searchText) {
+        String implicitSearchText = "";
+        if (searchText.matches(".*[*?\\\\]+.*")) {
+            // Leave text alone
+            implicitSearchText = searchText;
+        } else {
+            // Apply implicit "*"
+            final Iterable<String> transform = Iterables.transform(Splitter.on(" ").omitEmptyStrings().trimResults().split(searchText), new Function<String, String>() {
+                @Override
+                public String apply(String input) {
+                    return "*".concat(input).concat("*");
+                }
+            });
+            implicitSearchText = Joiner.on(" ").join(transform);
+        }
+        return implicitSearchText;
+    }
     final int minChars = 3;
+    final int queryDelay = 500;
+    final DelayedTask task;
+
     private HandlerManager handlerManager;
-    private final DelayedTask task;
 
     public SearchFieldDecorator(final F searchField) {
         task = new SearchFieldDelayedTask(searchField, this, minChars);
+        searchField.addKeyUpHandler(this);
+    }
+
+    /**
+     * Convenience constructor for testing purposes
+     * 
+     * @param searchField
+     * @param task
+     */
+    SearchFieldDecorator(final F searchField, final SearchFieldDelayedTask task) {
+        this.task = task;
         searchField.addKeyUpHandler(this);
     }
 
@@ -85,6 +139,7 @@ public class SearchFieldDecorator<F extends HasKeyUpHandlers & HasText> implemen
             case KeyCodes.KEY_SHIFT:
             case KeyCodes.KEY_TAB:
                 isModifierKey = true;
+                return;
             default:
                 isModifierKey = KeyCodeEvent.isArrow(event.getNativeKeyCode());
         }

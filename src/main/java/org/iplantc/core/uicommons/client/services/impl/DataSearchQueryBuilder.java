@@ -27,13 +27,15 @@ public class DataSearchQueryBuilder {
     }
 
     public String buildFullQuery() {
-        createdBy().createdWithin().file().fileSizeRange().metadata().modifiedWithin().negatedFile().negatedMetadata().sharedWith();
+        ownedBy().createdWithin().file().fileSizeRange().metadataAttribute().metadataValue().modifiedWithin().negatedFile().sharedWith();
         return toString();
     }
 
-    public DataSearchQueryBuilder createdBy() {
-        if (!Strings.isNullOrEmpty(dsf.getCreatedBy())) {
-            String queryContent = dsf.getCreatedBy();
+    public DataSearchQueryBuilder ownedBy() {
+        if (!Strings.isNullOrEmpty(dsf.getOwnedBy())) {
+            String queryContent = dsf.getOwnedBy();
+            // FIXME Consult with Tony on how to put this query together.
+            // FIXME This query will change when this is all updated to a JSON format
             sb.append(createQuery("creator.username:", queryContent)).append(" ");
         }
         return this;
@@ -78,10 +80,21 @@ public class DataSearchQueryBuilder {
     /**
      * @return
      */
-    public DataSearchQueryBuilder metadata() {
-        if (!Strings.isNullOrEmpty(dsf.getMetadataQuery())) {
-            String content = dsf.getMetadataQuery();
-            // Search metadata.attribute, metadata.value, and metadata.unit for the given query
+    public DataSearchQueryBuilder metadataAttribute() {
+        if (!Strings.isNullOrEmpty(dsf.getMetadataAttributeQuery())) {
+            String content = dsf.getMetadataAttributeQuery();
+            // Search metadata.attribute for the given query
+            // FIXME This will not work with the query string dsl. JSON format will need to be supported.
+            sb.append(createQuery("metadata.\\*:", content)).append(" ");
+        }
+        return this;
+    }
+
+    public DataSearchQueryBuilder metadataValue() {
+        if (!Strings.isNullOrEmpty(dsf.getMetadataValueQuery())) {
+            String content = dsf.getMetadataValueQuery();
+            // Search metadata.value for the given query
+            // FIXME This will not work with the query string dsl. JSON format will need to be supported.
             sb.append(createQuery("metadata.\\*:", content)).append(" ");
         }
         return this;
@@ -106,17 +119,6 @@ public class DataSearchQueryBuilder {
             Iterable<String> split = Splitter.on(" ").split(dsf.getNegatedFileQuery());
             String content = "-" + Joiner.on(" -").join(split);
             sb.append(createQuery("label:", content)).append(" ");
-        }
-        return this;
-    }
-
-    public DataSearchQueryBuilder negatedMetadata() {
-        if (!Strings.isNullOrEmpty(dsf.getNegatedMetadataQuery())) {
-            // Split the query and reassemble with a "-" slapped onto the front.
-            Iterable<String> split = Splitter.on(" ").split(dsf.getNegatedMetadataQuery());
-            String content = "-" + Joiner.on(" -").join(split);
-            // Search metadata.attribute, metadata.value, and metadata.unit for the given query
-            sb.append(createQuery("metadata.\\*:", content)).append(" ");
         }
         return this;
     }

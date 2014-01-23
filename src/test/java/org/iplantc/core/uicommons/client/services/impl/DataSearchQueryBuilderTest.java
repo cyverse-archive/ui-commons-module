@@ -56,9 +56,9 @@ public class DataSearchQueryBuilderTest {
         final String expectedModifiedWithin = setModifiedWithin(new Date(), new DateWrapper().addDays(1).asDate(), dsf);
         final String expectedCreatedWithin = setCreatedWithin(new Date(), new DateWrapper().addMonths(1).asDate(), dsf);
         final String expectedNegatedFile = setNegatedFileQuery(Lists.newArrayList("term1", "term2", "term3"), dsf);
-        final String expectedMetadataQuery = setMetadataQuery("some metadata query", dsf);
-        final String expectedNegatedMetadata = setNegatedMetadata(Lists.newArrayList("negatedTerm1", "negatedTerm2", "negatedTerm3"), dsf);
-        final String expectedCreatedBy = setCreatedBy("someUser", dsf);
+        final String expectedMetadataAttributeQuery = setMetadataAttributeQuery("some metadata query", dsf);
+        final String expectedMetadataValueQuery = setMetadataValueQuery("some metadata query", dsf);
+        final String expectedOwnedBy = setOwnedBy("someUser", dsf);
         final String expectedFileSizeRange = setFileSizeRange(0.1, 100.78763, dsf);
         final String expectedSharedWith = setSharedWith("some users who were shared with", dsf);
 
@@ -68,17 +68,18 @@ public class DataSearchQueryBuilderTest {
         assertTrue(result.contains(expectedModifiedWithin));
         assertTrue(result.contains(expectedCreatedWithin));
         assertTrue(result.contains(expectedNegatedFile));
-        assertTrue(result.contains(expectedMetadataQuery));
-        assertTrue(result.contains(expectedNegatedMetadata));
-        assertTrue(result.contains(expectedCreatedBy));
+        assertTrue(result.contains(expectedMetadataAttributeQuery));
+        assertTrue(result.contains(expectedMetadataValueQuery));
+        assertTrue(result.contains(expectedOwnedBy));
         assertTrue(result.contains(expectedFileSizeRange));
         assertTrue(result.contains(expectedSharedWith));
     }
 
-    @Test public void testCreatedBy() {
-        final String expectedValue = setCreatedBy("someUser", dsf);
+    @Test
+    public void testOwnedBy() {
+        final String expectedValue = setOwnedBy("someUser", dsf);
 
-        String result = new DataSearchQueryBuilder(dsf).createdBy().toString();
+        String result = new DataSearchQueryBuilder(dsf).ownedBy().toString();
         assertEquals(expectedValue, result);
     }
 
@@ -103,10 +104,19 @@ public class DataSearchQueryBuilderTest {
         assertEquals(expectedValue, result);
     }
 
-    @Test public void testMetadata() {
-        final String expectedValue = setMetadataQuery("some metadata to search for", dsf);
+    @Test
+    public void testMetadataAttribute() {
+        final String expectedValue = setMetadataAttributeQuery("some metadata to search for", dsf);
 
-        String result = new DataSearchQueryBuilder(dsf).metadata().toString();
+        String result = new DataSearchQueryBuilder(dsf).metadataAttribute().toString();
+        assertEquals(expectedValue, result);
+    }
+
+    @Test
+    public void testMetadataValue() {
+        final String expectedValue = setMetadataValueQuery("some metadata to search for", dsf);
+
+        String result = new DataSearchQueryBuilder(dsf).metadataValue().toString();
         assertEquals(expectedValue, result);
     }
 
@@ -130,18 +140,6 @@ public class DataSearchQueryBuilderTest {
         assertEquals(expectedValue, result);
     }
 
-    @Test public void testNegatedMetadata() {
-        final String term1 = "metadataTerm1";
-        final String term2 = "metadataTerm2";
-        final String term3 = "term3";
-        final ArrayList<String> newArrayList = Lists.newArrayList(term1, term2, term3);
-
-        final String expectedValue = setNegatedMetadata(newArrayList, dsf);
-
-        String result = new DataSearchQueryBuilder(dsf).negatedMetadata().toString();
-        assertEquals(expectedValue, result);
-    }
-
     @Test public void testSharedWith() {
         final String retVal = "user that are shared with";
         final String expectedValue = setSharedWith(retVal, dsf);
@@ -155,8 +153,8 @@ public class DataSearchQueryBuilderTest {
      * @param drqt
      * @return the expected value
      */
-    private String setCreatedBy(final String givenValue, final DiskResourceQueryTemplate drqt) {
-        when(dsf.getCreatedBy()).thenReturn(givenValue);
+    private String setOwnedBy(final String givenValue, final DiskResourceQueryTemplate drqt) {
+        when(dsf.getOwnedBy()).thenReturn(givenValue);
         return CREATED_BY_FIELD + givenValue;
     }
 
@@ -206,8 +204,18 @@ public class DataSearchQueryBuilderTest {
      * @param drqt
      * @return the expected value
      */
-    private String setMetadataQuery(final String givenQuery, final DiskResourceQueryTemplate drqt) {
-        when(dsf.getMetadataQuery()).thenReturn(givenQuery);
+    private String setMetadataAttributeQuery(final String givenQuery, final DiskResourceQueryTemplate drqt) {
+        when(dsf.getMetadataAttributeQuery()).thenReturn(givenQuery);
+        return METADATA_FIELD + givenQuery;
+    }
+
+    /**
+     * @param givenQuery
+     * @param drqt
+     * @return the expected value
+     */
+    private String setMetadataValueQuery(final String givenQuery, final DiskResourceQueryTemplate drqt) {
+        when(dsf.getMetadataValueQuery()).thenReturn(givenQuery);
         return METADATA_FIELD + givenQuery;
     }
 
@@ -235,17 +243,6 @@ public class DataSearchQueryBuilderTest {
         when(dsf.getNegatedFileQuery()).thenReturn(Joiner.on(" ").join(givenSearchTerms));
 
         return FILE_QUERY_FIELD + "-" + Joiner.on(" -").join(givenSearchTerms);
-    }
-
-    /**
-     * @param givenSearchTerms
-     * @param drqt
-     * @return the expected value
-     */
-    private String setNegatedMetadata(final List<String> givenSearchTerms, final DiskResourceQueryTemplate drqt) {
-        when(dsf.getNegatedMetadataQuery()).thenReturn(Joiner.on(" ").join(givenSearchTerms));
-
-        return METADATA_FIELD + "-" + Joiner.on(" -").join(givenSearchTerms);
     }
 
     /**
