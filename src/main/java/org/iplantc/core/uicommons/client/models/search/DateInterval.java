@@ -2,7 +2,9 @@ package org.iplantc.core.uicommons.client.models.search;
 
 import java.util.Date;
 
-public interface DateInterval {
+import org.iplantc.core.uicommons.client.models.HasLabel;
+
+public interface DateInterval extends HasLabel {
 
     Date getFrom();
 
