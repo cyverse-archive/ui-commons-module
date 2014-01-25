@@ -1,15 +1,13 @@
 package org.iplantc.core.uicommons.client.services.impl;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import com.google.gwtmockito.GwtMockitoTestRunner;
-
-import com.sencha.gxt.core.client.util.DateWrapper;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.iplantc.core.uicommons.client.models.search.DateInterval;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
@@ -19,9 +17,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import com.sencha.gxt.core.client.util.DateWrapper;
+import com.sencha.gxt.core.client.util.Format;
 
 /**
  * 
@@ -33,17 +33,6 @@ import java.util.List;
  */
 @RunWith(GwtMockitoTestRunner.class)
 public class DataSearchQueryBuilderTest {
-
-    /*
-     * These are the supported fields
-     */
-    static final String CREATED_BY_FIELD = "creator.username:";
-    static final String DATE_CREATED_FIELD = "dateCreated:";
-    static final String DATE_MODIFIED_FIELD = "dateModified:";
-    static final String FILE_QUERY_FIELD = "label:";
-    static final String FILE_SIZE_FIELD = "fileSize:";
-    static final String METADATA_FIELD = "metadata.\\*:";
-    static final String SHARED_WITH_FIELD = "sharedWith:";
     
     @Mock DiskResourceQueryTemplate dsf;
 
@@ -51,19 +40,24 @@ public class DataSearchQueryBuilderTest {
         
     } 
 
-    @Test public void testBuildQuery() {
-        final String expectedFileQuery = setFileQuery("some file query", dsf);
-        final String expectedModifiedWithin = setModifiedWithin(new Date(), new DateWrapper().addDays(1).asDate(), dsf);
-        final String expectedCreatedWithin = setCreatedWithin(new Date(), new DateWrapper().addMonths(1).asDate(), dsf);
-        final String expectedNegatedFile = setNegatedFileQuery(Lists.newArrayList("term1", "term2", "term3"), dsf);
-        final String expectedMetadataAttributeQuery = setMetadataAttributeQuery("some metadata query", dsf);
+    @Test
+    public void testBuildQuery() {
+        final String expectedFileQuery = setFileQuery("some* file* query*", dsf);
+        final String expectedModifiedWithin = setModifiedWithin(new Date(), new DateWrapper().addDays(1)
+                .asDate(), dsf);
+        final String expectedCreatedWithin = setCreatedWithin(new Date(), new DateWrapper().addMonths(1)
+                .asDate(), dsf);
+        final String expectedNegatedFile = setNegatedFileQuery(
+                Lists.newArrayList("term1*", "term2*", "term3*"), dsf);
+        final String expectedMetadataAttributeQuery = setMetadataAttributeQuery("some metadata query",
+                dsf);
         final String expectedMetadataValueQuery = setMetadataValueQuery("some metadata query", dsf);
         final String expectedOwnedBy = setOwnedBy("someUser", dsf);
         final String expectedFileSizeRange = setFileSizeRange(0.1, 100.78763, dsf);
         final String expectedSharedWith = setSharedWith("some users who were shared with", dsf);
 
         String result = new DataSearchQueryBuilder(dsf).buildFullQuery();
-        
+
         assertTrue(result.contains(expectedFileQuery));
         assertTrue(result.contains(expectedModifiedWithin));
         assertTrue(result.contains(expectedCreatedWithin));
@@ -80,28 +74,28 @@ public class DataSearchQueryBuilderTest {
         final String expectedValue = setOwnedBy("someUser", dsf);
 
         String result = new DataSearchQueryBuilder(dsf).ownedBy().toString();
-        assertEquals(expectedValue, result);
+        assertEquals(wrappedQuery(expectedValue), result);
     }
 
     @Test public void testCreatedWithin() {
         final String expectedValue = setCreatedWithin(new Date(), new DateWrapper().addDays(1).asDate(), dsf);
 
         String result = new DataSearchQueryBuilder(dsf).createdWithin().toString();
-        assertEquals(expectedValue, result);
+        assertEquals(wrappedQuery(expectedValue), result);
     }
     
     @Test public void testFile() {
-        final String expectedValue = setFileQuery("some words in query", dsf);
+        final String expectedValue = setFileQuery("some* words* in* query*", dsf);
 
         String result = new DataSearchQueryBuilder(dsf).file().toString();
-        assertEquals(expectedValue, result);
+        assertEquals(wrappedQuery(expectedValue), result);
     }
 
     @Test public void testFileSizeRange() {
-        final String expectedValue = setFileSizeRange(0.01, 100.10101, dsf);
+        final String expectedValue = setFileSizeRange(1.0, 100.0, dsf);
 
         String result = new DataSearchQueryBuilder(dsf).fileSizeRange().toString();
-        assertEquals(expectedValue, result);
+        assertEquals(wrappedQuery(expectedValue), result);
     }
 
     @Test
@@ -109,7 +103,7 @@ public class DataSearchQueryBuilderTest {
         final String expectedValue = setMetadataAttributeQuery("some metadata to search for", dsf);
 
         String result = new DataSearchQueryBuilder(dsf).metadataAttribute().toString();
-        assertEquals(expectedValue, result);
+        assertEquals(wrappedQuery(expectedValue), result);
     }
 
     @Test
@@ -117,7 +111,7 @@ public class DataSearchQueryBuilderTest {
         final String expectedValue = setMetadataValueQuery("some metadata to search for", dsf);
 
         String result = new DataSearchQueryBuilder(dsf).metadataValue().toString();
-        assertEquals(expectedValue, result);
+        assertEquals(wrappedQuery(expectedValue), result);
     }
 
     @Test public void testModifiedWithin() {
@@ -126,18 +120,18 @@ public class DataSearchQueryBuilderTest {
         final String expectedValue = setModifiedWithin(fromDate, toDate, dsf);
 
         String result = new DataSearchQueryBuilder(dsf).modifiedWithin().toString();
-        assertEquals(expectedValue, result);
+        assertEquals(wrappedQuery(expectedValue), result);
     }
 
     @Test public void testNegatedFile() {
-        final String term1 = "term1";
-        final String term2 = "term2";
-        final String term3 = "term3";
+        final String term1 = "term1*";
+        final String term2 = "term2*";
+        final String term3 = "term3*";
         final ArrayList<String> newArrayList = Lists.newArrayList(term1, term2, term3);
         final String expectedValue = setNegatedFileQuery(newArrayList, dsf);
 
         String result = new DataSearchQueryBuilder(dsf).negatedFile().toString();
-        assertEquals(expectedValue, result);
+        assertEquals(wrappedQuery(expectedValue), result);
     }
 
     @Test public void testSharedWith() {
@@ -145,7 +139,7 @@ public class DataSearchQueryBuilderTest {
         final String expectedValue = setSharedWith(retVal, dsf);
 
         String result = new DataSearchQueryBuilder(dsf).sharedWith().toString();
-        assertEquals(expectedValue, result);
+        assertEquals(wrappedQuery(expectedValue), result);
     }
 
     /**
@@ -155,7 +149,8 @@ public class DataSearchQueryBuilderTest {
      */
     private String setOwnedBy(final String givenValue, final DiskResourceQueryTemplate drqt) {
         when(dsf.getOwnedBy()).thenReturn(givenValue);
-        return CREATED_BY_FIELD + givenValue;
+        return "{\"nested\":{\"query\":{\"bool\":{\"must\":[{\"term\":{\"permission\":\"own\"}},{\"wildcard\":{\"user\":\""
+                + givenValue + "#*\"}}]}},\"path\":\"userPermissions\"}}";
     }
 
     /**
@@ -171,7 +166,8 @@ public class DataSearchQueryBuilderTest {
 
         when(dsf.getCreatedWithin()).thenReturn(di);
 
-        return DATE_CREATED_FIELD + "[" + fromDate.toString() + " TO " + toDate.toString() + "]";
+        return "{\"range\":{\"dateCreated\":{\"gte\":\"" + fromDate.getTime() / 1000 + "\",\"lte\":\""
+                + toDate.getTime() / 1000 + "\"}}}";
     }
 
     /**
@@ -181,7 +177,7 @@ public class DataSearchQueryBuilderTest {
      */
     private String setFileQuery(final String givenQuery, final DiskResourceQueryTemplate drqt) {
         when(dsf.getFileQuery()).thenReturn(givenQuery);
-        return FILE_QUERY_FIELD + givenQuery;
+        return "{\"wildcard\":{\"label\":\"" + givenQuery + "\"}}";
     }
 
     /**
@@ -196,7 +192,8 @@ public class DataSearchQueryBuilderTest {
         when(fsr.getMax()).thenReturn(max);
 
         when(dsf.getFileSizeRange()).thenReturn(fsr);
-        return FILE_SIZE_FIELD + "[" + min + " TO " + max + "]";
+        return "{\"range\":{\"fileSize\":{\"gte\":\"" + min.longValue() + "\",\"lte\":\""
+                + max.longValue() + "\"}}}";
     }
 
     /**
@@ -206,7 +203,8 @@ public class DataSearchQueryBuilderTest {
      */
     private String setMetadataAttributeQuery(final String givenQuery, final DiskResourceQueryTemplate drqt) {
         when(dsf.getMetadataAttributeQuery()).thenReturn(givenQuery);
-        return METADATA_FIELD + givenQuery;
+        return "{\"nested\":{\"query\":{\"wildcard\":{\"attribute\":\"" + givenQuery
+                + "\"}},\"path\":\"metadata\"}}";
     }
 
     /**
@@ -216,7 +214,8 @@ public class DataSearchQueryBuilderTest {
      */
     private String setMetadataValueQuery(final String givenQuery, final DiskResourceQueryTemplate drqt) {
         when(dsf.getMetadataValueQuery()).thenReturn(givenQuery);
-        return METADATA_FIELD + givenQuery;
+        return "{\"nested\":{\"query\":{\"wildcard\":{\"value\":\"" + givenQuery
+                + "\"}},\"path\":\"metadata\"}}";
     }
 
     /**
@@ -231,7 +230,8 @@ public class DataSearchQueryBuilderTest {
         when(di.getTo()).thenReturn(to);
 
         when(dsf.getModifiedWithin()).thenReturn(di);
-        return DATE_MODIFIED_FIELD + "[" + from.toString() + " TO " + to.toString() + "]";
+        return "{\"range\":{\"dateModified\":{\"gte\":\"" + from.getTime() / 1000 + "\",\"lte\":\""
+                + to.getTime() / 1000 + "\"}}}";
     }
 
     /**
@@ -242,7 +242,7 @@ public class DataSearchQueryBuilderTest {
     private String setNegatedFileQuery(final List<String> givenSearchTerms, final DiskResourceQueryTemplate drqt) {
         when(dsf.getNegatedFileQuery()).thenReturn(Joiner.on(" ").join(givenSearchTerms));
 
-        return FILE_QUERY_FIELD + "-" + Joiner.on(" -").join(givenSearchTerms);
+        return "{\"field\":{\"label\":\"" + "-" + Joiner.on(" -").join(givenSearchTerms) + "\"}}";
     }
 
     /**
@@ -252,7 +252,12 @@ public class DataSearchQueryBuilderTest {
      */
     private String setSharedWith(final String givenValue, final DiskResourceQueryTemplate drqt) {
         when(dsf.getSharedWith()).thenReturn(givenValue);
-        return SHARED_WITH_FIELD + givenValue;
+        return "{\"bool\":{\"must\":[{\"nested\":{\"query\":{\"bool\":{\"must\":[{\"term\":{\"permission\":\"own\"}},{\"wildcard\":{\"user\":\"\"}}]}},\"path\":\"userPermissions\"}},{\"nested\":{\"query\":{\"wildcard\":{\"user\":\""
+                + givenValue + "#*\"}},\"path\":\"userPermissions\"}}]}}";
+    }
+
+    private String wrappedQuery(String query) {
+        return Format.substitute("{\"bool\":{\"must\":[{0}]}}", query);
     }
 
 }

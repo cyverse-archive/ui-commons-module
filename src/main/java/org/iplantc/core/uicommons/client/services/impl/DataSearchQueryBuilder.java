@@ -1,29 +1,35 @@
 package org.iplantc.core.uicommons.client.services.impl;
 
+import java.util.Date;
+
+import org.iplantc.core.uicommons.client.models.UserInfo;
+import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
+import org.iplantc.core.uicommons.client.widgets.search.SearchFieldDecorator;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-
-import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
+import com.google.web.bindery.autobean.shared.Splittable;
+import com.google.web.bindery.autobean.shared.impl.StringQuoter;
 
 /**
  * This class uses a builder pattern to construct a search query from a given query template.
  * 
  * If a field in the given query template is null or empty, the corresponding search term will be omitted
- * from
- * the final query.
+ * from the final query.
  * 
  * @author jstroot
  * 
  */
+@SuppressWarnings("nls")
 public class DataSearchQueryBuilder {
 
     private final DiskResourceQueryTemplate dsf;
-    private final StringBuilder sb;
+    private final Splittable queryList;
 
     public DataSearchQueryBuilder(DiskResourceQueryTemplate dsf) {
         this.dsf = dsf;
-        sb = new StringBuilder();
+        queryList = StringQuoter.createIndexed();
     }
 
     public String buildFullQuery() {
@@ -31,42 +37,86 @@ public class DataSearchQueryBuilder {
         return toString();
     }
 
+    /**
+     * {"nested":{"path":"userPermissions",
+     *            "query":{"bool":{"must":[{"term":{"permission":"own"}},
+     *                                     {"wildcard":{"user":(some query)}}]}}}}
+     * 
+     * @return
+     */
     public DataSearchQueryBuilder ownedBy() {
-        if (!Strings.isNullOrEmpty(dsf.getOwnedBy())) {
-            String queryContent = dsf.getOwnedBy();
-            // FIXME Consult with Tony on how to put this query together.
-            // FIXME This query will change when this is all updated to a JSON format
-            sb.append(createQuery("creator.username:", queryContent)).append(" ");
-        }
-        return this;
-    }
-
-    public DataSearchQueryBuilder createdWithin() {
-        if ((dsf.getCreatedWithin() != null) && (dsf.getCreatedWithin().getFrom() != null) && (dsf.getCreatedWithin().getTo() != null)) {
-            String query = createQuery("dateCreated:", "[" + dsf.getCreatedWithin().getFrom().toString() + " TO " + dsf.getCreatedWithin().getTo().toString() + "]");
-            sb.append(query).append(" ");
+        String queryContent = dsf.getOwnedBy();
+        if (!Strings.isNullOrEmpty(queryContent)) {
+            appendArrayItem(queryList, createOwnerQuery(queryContent));
         }
         return this;
     }
 
     /**
-     * label:(some query)
-     * FIXME File and negated file terms need to be combined
+     * {"range": {"dateModified": {"gte":(some query),"lte":(some query)}}}
      * 
      * @return
      */
-    public DataSearchQueryBuilder file() {
-        if (!Strings.isNullOrEmpty(dsf.getFileQuery())) {
-            String content = dsf.getFileQuery();
-            sb.append(createQuery("label:", content)).append(" ");
+    public DataSearchQueryBuilder createdWithin() {
+        if ((dsf.getCreatedWithin() != null)) {
+            Date dateFrom = dsf.getCreatedWithin().getFrom();
+            Date dateTo = dsf.getCreatedWithin().getTo();
+            if ((dateFrom != null) && (dateTo != null)) {
+                // {"range": {"dateCreated": {"gte":"1380559151","lte":"1390511909"}}}
+                Splittable range = createRangeQuery("dateCreated", dateFrom.getTime() / 1000,
+                        dateTo.getTime() / 1000);
+                appendArrayItem(queryList, range);
+            } else if (dateFrom != null) {
+                // {"range": {"dateModified": {"gte":"1380559151"}}}
+                Splittable range = createMinRangeQuery("dateCreated", dateFrom.getTime() / 1000);
+                appendArrayItem(queryList, range);
+            } else if (dateTo != null) {
+                // {"range": {"dateModified": {"lte":"1390511909"}}}
+                Splittable range = createMaxRangeQuery("dateCreated", dateTo.getTime() / 1000);
+                appendArrayItem(queryList, range);
+            }
         }
         return this;
     }
 
+    /**
+     * {"wildcard":{"label":(some query)}}
+     * 
+     * @return
+     */
+    public DataSearchQueryBuilder file() {
+        String content = dsf.getFileQuery();
+        if (!Strings.isNullOrEmpty(content)) {
+            // {"wildcard": {"label": "*txt*"}}
+            content = SearchFieldDecorator.applyImplicitAsteriskSearchText(content);
+            appendArrayItem(queryList, createQuery("wildcard", "label", content));
+        }
+        return this;
+    }
+
+    /**
+     * {"range": {"fileSize": {"gte":(some query),"lte":(some query)}}}
+     * 
+     * @return
+     */
     public DataSearchQueryBuilder fileSizeRange() {
-        if ((dsf.getFileSizeRange() != null) && (dsf.getFileSizeRange().getMin() != null) && (dsf.getFileSizeRange().getMax() != null)) {
-            String content = "[" + dsf.getFileSizeRange().getMin() + " TO " + dsf.getFileSizeRange().getMax() + "]";
-            sb.append(createQuery("fileSize:", content)).append(" ");
+        if ((dsf.getFileSizeRange() != null)) {
+            Double minSize = dsf.getFileSizeRange().getMin();
+            Double maxSize = dsf.getFileSizeRange().getMax();
+
+            if ((minSize != null) && (maxSize != null)) {
+                // {"range": {"fileSize": {"gte":"1000","lte":"100000"}}}
+                appendArrayItem(queryList,
+                        createRangeQuery("fileSize", minSize.longValue(), maxSize.longValue()));
+            } else if (minSize != null) {
+                // {"range": {"fileSize": {"gte":"1000"}}}
+                Splittable range = createMinRangeQuery("fileSize", minSize.longValue());
+                appendArrayItem(queryList, range);
+            } else if (maxSize != null) {
+                // {"range": {"fileSize": {"lte":"100000"}}}
+                Splittable range = createMaxRangeQuery("fileSize", maxSize.longValue());
+                appendArrayItem(queryList, range);
+            }
         }
         return this;
     }
@@ -82,54 +132,104 @@ public class DataSearchQueryBuilder {
      * @return
      */
     public DataSearchQueryBuilder metadataAttribute() {
-        if (!Strings.isNullOrEmpty(dsf.getMetadataAttributeQuery())) {
-            String content = dsf.getMetadataAttributeQuery();
-            // Search metadata.attribute for the given query
-            // FIXME This will not work with the query string dsl. JSON format will need to be supported.
-            sb.append(createQuery("metadata.\\*:", content)).append(" ");
+        String content = dsf.getMetadataAttributeQuery();
+        if (!Strings.isNullOrEmpty(content)) {
+            // {"nested":{"path":"metadata","query":{"wildcard":{"attribute":"*content*"}}}}
+            Splittable metadata = StringQuoter.createSplittable();
+
+            Splittable nested = addChild(metadata, "nested");
+            StringQuoter.create("metadata").assign(nested, "path");
+
+            createQuery("wildcard", "attribute", content).assign(nested, "query");
+
+            appendArrayItem(queryList, metadata);
         }
         return this;
     }
 
     public DataSearchQueryBuilder metadataValue() {
-        if (!Strings.isNullOrEmpty(dsf.getMetadataValueQuery())) {
-            String content = dsf.getMetadataValueQuery();
-            // Search metadata.value for the given query
-            // FIXME This will not work with the query string dsl. JSON format will need to be supported.
-            sb.append(createQuery("metadata.\\*:", content)).append(" ");
-        }
-        return this;
-    }
+        String content = dsf.getMetadataValueQuery();
+        if (!Strings.isNullOrEmpty(content)) {
+            // {"nested":{"path":"metadata","query":{"wildcard":{"value":"*content*"}}}}
+            Splittable metadata = StringQuoter.createSplittable();
 
-    public DataSearchQueryBuilder modifiedWithin() {
-        if ((dsf.getModifiedWithin() != null) && (dsf.getModifiedWithin().getFrom() != null) && (dsf.getModifiedWithin().getTo() != null)) {
-            String content = "[" + dsf.getModifiedWithin().getFrom().toString() + " TO " + dsf.getModifiedWithin().getTo().toString() + "]";
-            sb.append(createQuery("dateModified:", content)).append(" ");
+            Splittable nested = addChild(metadata, "nested");
+            StringQuoter.create("metadata").assign(nested, "path");
+
+            createQuery("wildcard", "value", content).assign(nested, "query");
+
+            appendArrayItem(queryList, metadata);
         }
         return this;
     }
 
     /**
-     * label:(-some -query -fldjf)
+     * {"range": {"dateModified": {"gte":(some query),"lte":(some query)}}}
      * 
-     * FIXME File and negated file terms need to be combined
+     * @return
+     */
+    public DataSearchQueryBuilder modifiedWithin() {
+        if ((dsf.getModifiedWithin() != null)) {
+            Date dateFrom = dsf.getModifiedWithin().getFrom();
+            Date dateTo = dsf.getModifiedWithin().getTo();
+
+            if ((dateFrom != null) && (dateTo != null)) {
+                // {"range": {"dateModified": {"gte":"1380559151","lte":"1390511909"}}}
+                Splittable range = createRangeQuery("dateModified", dateFrom.getTime() / 1000,
+                        dateTo.getTime() / 1000);
+                appendArrayItem(queryList, range);
+            } else if (dateFrom != null) {
+                // {"range": {"dateModified": {"gte":"1380559151"}}}
+                Splittable range = createMinRangeQuery("dateModified", dateFrom.getTime() / 1000);
+                appendArrayItem(queryList, range);
+            } else if (dateTo != null) {
+                // {"range": {"dateModified": {"lte":"1390511909"}}}
+                Splittable range = createMaxRangeQuery("dateModified", dateTo.getTime() / 1000);
+                appendArrayItem(queryList, range);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * {"field":{"label":(-some -query -fldjf)}}
      * 
      * @return
      */
     public DataSearchQueryBuilder negatedFile() {
-        if (!Strings.isNullOrEmpty(dsf.getNegatedFileQuery())) {
+        String content = dsf.getNegatedFileQuery();
+        if (!Strings.isNullOrEmpty(content)) {
+            content = SearchFieldDecorator.applyImplicitAsteriskSearchText(content);
             // Split the query and reassemble with a "-" slapped onto the front.
-            Iterable<String> split = Splitter.on(" ").split(dsf.getNegatedFileQuery());
-            String content = "-" + Joiner.on(" -").join(split);
-            sb.append(createQuery("label:", content)).append(" ");
+            Iterable<String> split = Splitter.on(" ").split(content);
+            content = "-" + Joiner.on(" -").join(split);
+
+            // {"field": {"label": "-*txt*"}}
+            appendArrayItem(queryList, createQuery("field", "label", content));
         }
         return this;
     }
 
     public DataSearchQueryBuilder sharedWith() {
-        if (!Strings.isNullOrEmpty(dsf.getSharedWith())) {
-            String content = dsf.getSharedWith();
-            sb.append(createQuery("sharedWith:", content)).append(" ");
+        String content = applyImplicitUsernameWildcard(dsf.getSharedWith());
+        if (!Strings.isNullOrEmpty(content)) {
+            // {"bool":{"must":[{"nested":{"path":"userPermissions","query":{"bool":{"must":[{"term":{"permission":"own"}},{"wildcard":{"user":"currentUser#*"}}]}}}},{"nested":{"path":"userPermissions","query":{"bool":{"must":[{"wildcard":{"user":queryContent}}]}}}}]}}
+            Splittable query = StringQuoter.createSplittable();
+            Splittable bool = addChild(query, "bool");
+            Splittable must = addArray(bool, "must");
+
+            appendArrayItem(must, createOwnerQuery(UserInfo.getInstance().getUsername()));
+
+            Splittable sharedWith = StringQuoter.createSplittable();
+
+            Splittable nested = addChild(sharedWith, "nested");
+            StringQuoter.create("userPermissions").assign(nested, "path");
+
+            createQuery("wildcard", "user", content).assign(nested, "query");
+
+            appendArrayItem(must, sharedWith);
+
+            appendArrayItem(queryList, query);
         }
         return this;
     }
@@ -139,11 +239,96 @@ public class DataSearchQueryBuilder {
      */
     @Override
     public String toString() {
-        return sb.toString().trim();
+        // {"bool":{"must":[queryList]}}
+        Splittable query = StringQuoter.createSplittable();
+        Splittable bool = addChild(query, "bool");
+        queryList.assign(bool, "must");
+        return query.getPayload();
     }
 
-    private String createQuery(String queryField, String queryContent) {
-        String query = queryField + queryContent;
-        return query.trim();
+    private Splittable createQuery(String queryType, String field, String content) {
+        // {queryType: {field: content}}
+        Splittable query = StringQuoter.createSplittable();
+
+        Splittable wildcard = addChild(query, queryType);
+        StringQuoter.create(content).assign(wildcard, field);
+
+        return query;
+    }
+
+    private Splittable createRangeQuery(String field, long lowerLimit, long upperLimit) {
+        // {"range": {field: {"gte": lowerLimit,"lte": upperLimit}}}
+        Splittable query = StringQuoter.createSplittable();
+
+        Splittable range = addChild(addChild(query, "range"), field);
+
+        StringQuoter.create(String.valueOf(lowerLimit)).assign(range, "gte");
+        StringQuoter.create(String.valueOf(upperLimit)).assign(range, "lte");
+
+        return query;
+    }
+
+    private Splittable createMinRangeQuery(String field, long lowerLimit) {
+        // {"range": {field: {"gte": lowerLimit}}}
+        Splittable query = StringQuoter.createSplittable();
+
+        Splittable range = addChild(addChild(query, "range"), field);
+
+        StringQuoter.create(String.valueOf(lowerLimit)).assign(range, "gte");
+
+        return query;
+    }
+
+    private Splittable createMaxRangeQuery(String field, long upperLimit) {
+        // {"range": {field: {"lte": upperLimit}}}
+        Splittable query = StringQuoter.createSplittable();
+
+        Splittable range = addChild(addChild(query, "range"), field);
+
+        StringQuoter.create(String.valueOf(upperLimit)).assign(range, "lte");
+
+        return query;
+    }
+
+    private Splittable createOwnerQuery(String user) {
+        // {"nested":{"path":"userPermissions","query":{"bool":{"must":[{"term":{"permission":"own"}},{"wildcard":{"user":queryContent}}]}}}}
+        Splittable ownedBy = StringQuoter.createSplittable();
+
+        Splittable nested = addChild(ownedBy, "nested");
+        StringQuoter.create("userPermissions").assign(nested, "path");
+
+        Splittable query = addChild(nested, "query");
+        Splittable bool = addChild(query, "bool");
+        Splittable must = addArray(bool, "must");
+
+        appendArrayItem(must, createQuery("term", "permission", "own"));
+        appendArrayItem(must, createQuery("wildcard", "user", applyImplicitUsernameWildcard(user)));
+
+        return ownedBy;
+    }
+
+    private String applyImplicitUsernameWildcard(String user) {
+        // usernames are formatted as user#zone
+        if (!Strings.isNullOrEmpty(user) && !user.endsWith("*") && !user.contains("#")) {
+            user += "#*";
+        }
+
+        return user;
+    }
+
+    private Splittable addChild(Splittable parent, String key) {
+        Splittable child = StringQuoter.createSplittable();
+        child.assign(parent, key);
+        return child;
+    }
+
+    private Splittable addArray(Splittable parent, String key) {
+        Splittable child = StringQuoter.createIndexed();
+        child.assign(parent, key);
+        return child;
+    }
+
+    private void appendArrayItem(Splittable array, Splittable item) {
+        item.assign(array, array.size());
     }
 }
