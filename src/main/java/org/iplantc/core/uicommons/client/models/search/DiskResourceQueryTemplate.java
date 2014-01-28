@@ -1,8 +1,8 @@
 package org.iplantc.core.uicommons.client.models.search;
 
-import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
-
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
+
+import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 
 /**
  * This object is used to collect the information required to build a search request for the endpoints
@@ -14,6 +14,12 @@ import org.iplantc.core.uicommons.client.models.diskresources.Folder;
  * 
  */
 public interface DiskResourceQueryTemplate extends Folder {
+
+    @PropertyName("execution-time")
+    void setExecutionTime(long execution_time);
+
+    @PropertyName("execution-time")
+    long getExecutionTime();
 
     DateInterval getCreatedWithin();
 
