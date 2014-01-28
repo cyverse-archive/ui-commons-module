@@ -33,6 +33,9 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.google.web.bindery.autobean.shared.Splittable;
 import com.google.web.bindery.autobean.shared.impl.StringQuoter;
+import com.sencha.gxt.core.client.util.Format;
+import com.sencha.gxt.data.shared.SortDir;
+import com.sencha.gxt.data.shared.SortInfoBean;
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 
 @SuppressWarnings("nls")
@@ -259,11 +262,46 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
         String limitParameter = "&limit=" + loadConfig.getLimit();
         String offsetParameter = "&offset=" + loadConfig.getOffset();
         String typeParameter = "&type=" + ((searchType == null) ? SearchType.ANY.toString() : searchType.toString());
+        String sortParameter = "";
+        List<SortInfoBean> sortInfoList = loadConfig.getSortInfo();
+        if (sortInfoList != null && !sortInfoList.isEmpty()) {
+            SortInfoBean sortInfo = sortInfoList.get(0);
+            String sortField = convertSortField(sortInfo.getSortField());
+            if (!Strings.isNullOrEmpty(sortField)) {
+                String sortDir = sortInfo.getSortDir() == null ? SortDir.ASC.toString() : sortInfo
+                        .getSortDir().toString();
+                sortParameter = Format.substitute("&sort={0}:{1}", sortField, sortDir.toLowerCase());
+            }
+        }
 
-        String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "index?" + queryParameter + limitParameter + offsetParameter + typeParameter;
+        String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "index?" + queryParameter
+                + limitParameter + offsetParameter + typeParameter + sortParameter;
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(GET, address);
         deServiceFacade.getServiceData(wrapper, new SubmitSearchCallbackConverter(callback, queryTemplate, userInfo, drFactory));
     }
 
+    private String convertSortField(String sortField) {
+        if ("id".equalsIgnoreCase(sortField)) {
+            return "entity.id";
+        }
+
+        if ("size".equalsIgnoreCase(sortField)) {
+            return "entity.fileSize";
+        }
+
+        if ("dateCreated".equalsIgnoreCase(sortField)) {
+            return "entity.dateCreated";
+        }
+
+        if ("lastModified".equalsIgnoreCase(sortField)) {
+            return "entity.dateModified";
+        }
+
+        if ("name".equalsIgnoreCase(sortField)) {
+            return "entity.label";
+        }
+
+        return sortField;
+    }
 }
