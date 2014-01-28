@@ -49,9 +49,9 @@ public class DataSearchQueryBuilderTest {
                 .asDate(), dsf);
         final String expectedNegatedFile = setNegatedFileQuery(
                 Lists.newArrayList("term1*", "term2*", "term3*"), dsf);
-        final String expectedMetadataAttributeQuery = setMetadataAttributeQuery("some metadata query",
-                dsf);
-        final String expectedMetadataValueQuery = setMetadataValueQuery("some metadata query", dsf);
+        final String expectedMetadataAttributeQuery = setMetadataAttributeQuery(
+                "some* metadata* query*", dsf);
+        final String expectedMetadataValueQuery = setMetadataValueQuery("some* metadata* query*", dsf);
         final String expectedOwnedBy = setOwnedBy("someUser", dsf);
         final String expectedFileSizeRange = setFileSizeRange(0.1, 100.78763, dsf);
         final String expectedSharedWith = setSharedWith("some users who were shared with", dsf);
@@ -100,7 +100,7 @@ public class DataSearchQueryBuilderTest {
 
     @Test
     public void testMetadataAttribute() {
-        final String expectedValue = setMetadataAttributeQuery("some metadata to search for", dsf);
+        final String expectedValue = setMetadataAttributeQuery("some* metadata* to* search* for*", dsf);
 
         String result = new DataSearchQueryBuilder(dsf).metadataAttribute().toString();
         assertEquals(wrappedQuery(expectedValue), result);
@@ -108,7 +108,7 @@ public class DataSearchQueryBuilderTest {
 
     @Test
     public void testMetadataValue() {
-        final String expectedValue = setMetadataValueQuery("some metadata to search for", dsf);
+        final String expectedValue = setMetadataValueQuery("some* metadata* to* search* for*", dsf);
 
         String result = new DataSearchQueryBuilder(dsf).metadataValue().toString();
         assertEquals(wrappedQuery(expectedValue), result);
