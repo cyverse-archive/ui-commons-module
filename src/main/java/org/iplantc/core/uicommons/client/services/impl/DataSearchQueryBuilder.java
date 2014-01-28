@@ -134,6 +134,8 @@ public class DataSearchQueryBuilder {
     public DataSearchQueryBuilder metadataAttribute() {
         String content = dsf.getMetadataAttributeQuery();
         if (!Strings.isNullOrEmpty(content)) {
+            content = SearchFieldDecorator.applyImplicitAsteriskSearchText(content);
+
             // {"nested":{"path":"metadata","query":{"wildcard":{"attribute":"*content*"}}}}
             Splittable metadata = StringQuoter.createSplittable();
 
@@ -150,6 +152,8 @@ public class DataSearchQueryBuilder {
     public DataSearchQueryBuilder metadataValue() {
         String content = dsf.getMetadataValueQuery();
         if (!Strings.isNullOrEmpty(content)) {
+            content = SearchFieldDecorator.applyImplicitAsteriskSearchText(content);
+
             // {"nested":{"path":"metadata","query":{"wildcard":{"value":"*content*"}}}}
             Splittable metadata = StringQuoter.createSplittable();
 
@@ -200,6 +204,7 @@ public class DataSearchQueryBuilder {
         String content = dsf.getNegatedFileQuery();
         if (!Strings.isNullOrEmpty(content)) {
             content = SearchFieldDecorator.applyImplicitAsteriskSearchText(content);
+
             // Split the query and reassemble with a "-" slapped onto the front.
             Iterable<String> split = Splitter.on(" ").split(content);
             content = "-" + Joiner.on(" -").join(split);
