@@ -1,10 +1,25 @@
 package org.iplantc.core.uicommons.client.services.impl;
 
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+import com.google.web.bindery.autobean.shared.Splittable;
+import com.google.web.bindery.autobean.shared.impl.StringQuoter;
+
+import com.sencha.gxt.core.client.util.Format;
+import com.sencha.gxt.data.shared.SortDir;
+import com.sencha.gxt.data.shared.SortInfoBean;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
+
 import static org.iplantc.de.shared.services.BaseServiceCallWrapper.Type.GET;
 import static org.iplantc.de.shared.services.BaseServiceCallWrapper.Type.POST;
-
-import java.util.Collections;
-import java.util.List;
 
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.models.DEProperties;
@@ -21,22 +36,8 @@ import org.iplantc.core.uicommons.client.services.ReservedBuckets;
 import org.iplantc.core.uicommons.client.services.SearchServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.http.client.URL;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
-import com.google.web.bindery.autobean.shared.AutoBean;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-import com.google.web.bindery.autobean.shared.Splittable;
-import com.google.web.bindery.autobean.shared.impl.StringQuoter;
-import com.sencha.gxt.core.client.util.Format;
-import com.sencha.gxt.data.shared.SortDir;
-import com.sencha.gxt.data.shared.SortInfoBean;
-import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("nls")
 public class SearchServiceFacadeImpl implements SearchServiceFacade {
@@ -188,13 +189,19 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
             StringQuoter.split(object).assign(split, DiskResourceQueryTemplateList.LIST_KEY);
             AutoBean<DiskResourceQueryTemplateList> decode = AutoBeanCodex.decode(searchAbFactory, DiskResourceQueryTemplateList.class, split);
             final List<DiskResourceQueryTemplate> queryTemplateList = decode.as().getQueryTemplateList();
+            final List<DiskResourceQueryTemplate> retQueryTemplateList = Lists.newArrayList();
             for (DiskResourceQueryTemplate qt : queryTemplateList) {
                 qt.setDirty(false);
                 qt.setFiles(Lists.<File> newArrayList());
                 qt.setFolders(Lists.<Folder> newArrayList());
+                final Splittable encode = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(qt));
+                StringQuoter.create(true).assign(encode, "saved");
+                final AutoBean<DiskResourceQueryTemplate> decode2 = AutoBeanCodex.decode(searchAbFactory, DiskResourceQueryTemplate.class, encode);
+                retQueryTemplateList.add(decode2.as());
+
             }
 
-            return queryTemplateList;
+            return retQueryTemplateList;
         }
     }
 
