@@ -1,8 +1,10 @@
 package org.iplantc.core.uicommons.client.models.diskresources;
 
+import org.iplantc.core.uicommons.client.models.HasId;
+
 import com.google.web.bindery.autobean.shared.AutoBean.PropertyName;
 
-public interface DiskResourceMetadata {
+public interface DiskResourceMetadata extends HasId {
 
     @PropertyName("attr")
     String getAttribute();
@@ -18,4 +20,8 @@ public interface DiskResourceMetadata {
     String getUnit();
 
     void setUnit(String unit);
+    
+    void setId(String id);
+    
+    
 }

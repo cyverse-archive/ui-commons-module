@@ -25,13 +25,4 @@
 	cursor: pointer;
 }
 
-/* DEPRECATED - This is redundant */
-.anchor .anchorMouseOver {
-	text-decoration: underline;
-	background-color: #ededed;
-}
 
-/* DEPRECATED - This is redundant */
-.anchor .anchorMouseOut {
-	text-decoration: none;
-}

@@ -1,8 +1,5 @@
 package org.iplantc.core.uicommons.client.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.base.Strings;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
@@ -12,6 +9,7 @@ import com.google.gwt.event.dom.client.KeyCodeEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+
 import com.sencha.gxt.cell.core.client.form.TextInputCell;
 import com.sencha.gxt.core.client.util.DelayedTask;
 import com.sencha.gxt.data.shared.loader.FilterConfig;
@@ -22,14 +20,21 @@ import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoader;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
+import org.iplantc.core.uicommons.client.widgets.search.SearchFieldDecorator;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A TextField used for fetching filtered results with a given PagingLoader and a FilterPagingLoadConfig.
  * If the given PagingLoader does not already reuse a FilterPagingLoadConfig, this class will create one
  * before loading the Loader.
  * 
  * @author psarando
+ * @deprecated use {@link SearchFieldDecorator} instead.
  * 
  */
+@Deprecated
 public class SearchField<T> extends TextField {
     protected final PagingLoader<FilterPagingLoadConfig, PagingLoadResult<T>> loader;
     private int minChars = 3;

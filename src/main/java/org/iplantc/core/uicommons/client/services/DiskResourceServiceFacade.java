@@ -1,21 +1,14 @@
 package org.iplantc.core.uicommons.client.services;
 
-import java.util.List;
-import java.util.Set;
-
-import org.iplantc.core.uicommons.client.models.HasPaths;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceExistMap;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceMetadata;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceStatMap;
-import org.iplantc.core.uicommons.client.models.diskresources.File;
-import org.iplantc.core.uicommons.client.models.diskresources.Folder;
-import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
-import org.iplantc.core.uicommons.client.models.services.DiskResourceMove;
-
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
+import org.iplantc.core.uicommons.client.models.HasPaths;
+import org.iplantc.core.uicommons.client.models.diskresources.*;
+import org.iplantc.core.uicommons.client.models.services.DiskResourceMove;
+
+import java.util.List;
+import java.util.Set;
 
 public interface DiskResourceServiceFacade {
 
@@ -39,7 +32,6 @@ public interface DiskResourceServiceFacade {
     /**
      * set user's default analyses output folder
      *
-     * @param folderName
      * @param callback
      */
     void putDefaultOutput(AsyncCallback<String> callback);
@@ -47,22 +39,20 @@ public interface DiskResourceServiceFacade {
     /**
      * Called to retrieve the entire contents of a folder.
      *
-     * @param path path to requested folder.
-     * @param pageSize limit the no.of records to fetch
-     * @param offset to start from
-     * @param sortCol column name to sort on
-     * @param sortOder asc or desc direction
+     * @param folder the folder whose contents are to be retrieved
+     * @param loadConfig the paged load config which contains all parameters necessary to construct a well-formed
+     *                   paged directory listing request
      * @param callback executed when RPC call completes.
      */
-    void getFolderContents(final String path, int pageSize, int offset, String sortCol, String sortOrder, final AsyncCallback<Folder> callback);
+    void getFolderContents(final Folder folder, final FilterPagingLoadConfigBean loadConfig, final AsyncCallback<Folder> callback);
 
     /**
      * Called to retrieve the contents of a folder without its file contents.
-     * 
-     * @param path path to requested folder.
+     *
+     * @param parent requested folder.
      * @param callback executed when RPC call completes.
      */
-    void getSubFolders(final String path, final AsyncCallback<List<Folder>> callback);
+    void getSubFolders(final Folder parent, final AsyncCallback<List<Folder>> callback);
 
     /**
      * Call service to create a new folder
@@ -74,7 +64,7 @@ public interface DiskResourceServiceFacade {
 
     /**
      * Check if a list of files or folders exist.
-     * 
+     *
      * @param diskResourcePaths paths to desired resources.
      * @param callback callback executed when RPC call completes. On success, a map that maps
      *            resource paths to whether or not they exist.
@@ -83,7 +73,7 @@ public interface DiskResourceServiceFacade {
 
     /**
      * Fetch preview data for a file.
-     * 
+     *
      * @param path path to desired file.
      * @param callback callback executed when RPC call completes.
      */
@@ -97,10 +87,10 @@ public interface DiskResourceServiceFacade {
      */
     void moveDiskResources(final Set<DiskResource> diskResources, final Folder destFolder,
             AsyncCallback<DiskResourceMove> callback);
-    
+
     /**
      * Calls the move folder and move file services for moving contents of a given folder.
-     * 
+     *
      * @param sourceFolderId
      * @param destFolder
      * @param callback
@@ -156,15 +146,15 @@ public interface DiskResourceServiceFacade {
 
     /**
      * Call service to delete disk resources in case user selects all items
-     * 
+     *
      * @param selectedFolderId
      * @param callback
      */
     void deleteContents(String selectedFolderId, AsyncCallback<HasPaths> callback);
-    
+
     /**
      * Call service to delete disk resources (i.e. {@link File}s and {@link Folder}s)
-     * 
+     *
      * @param diskResources a set of <code>DiskResource</code>s to be deleted
      * @param callback callback executed when service call completes.
      */
@@ -243,7 +233,7 @@ public interface DiskResourceServiceFacade {
 
     /**
      * Get info about a selected file or folder
-     * 
+     *
      * @param body request body
      * @param callback callback object
      * @deprecated User {@link #getStat(HasPaths, AsyncCallback)}
@@ -253,7 +243,7 @@ public interface DiskResourceServiceFacade {
 
     /**
      * Get info about a selected file or folder
-     * 
+     *
      * @param diskResourcePaths the paths to query
      * @param callback callback object
      */
@@ -293,7 +283,7 @@ public interface DiskResourceServiceFacade {
 
     /**
      * Restore deleted disk resources.
-     * 
+     *
      * @param request
      * @param callback
      */
@@ -343,24 +333,40 @@ public interface DiskResourceServiceFacade {
 
     /**
      * Convenience method which returns a valid {@link DiskResourceAutoBeanFactory} instance.
-     * 
+     *
      * @return a ready to use <code>DiskResourceAutoBeanFactory</code>
      */
     DiskResourceAutoBeanFactory getDiskResourceFactory();
 
     /**
      * Restore all items in trash to its original location.
-     * 
+     *
      * @param callback
      */
     void restoreAll(AsyncCallback<String> callback);
 
     /**
      * Method to use when user selects all items in a folder.
-     * 
+     *
      * @param parentFolderId
      * @param callback
      */
     void downloadContents(String parentFolderId, AsyncCallback<String> callback);
+
+    /**
+     * Method  used to retrieve list of metadata templates
+     * @param callback
+     */
+    void getMetadataTemplateListing(AsyncCallback<String> callback);
+
+
+    /**
+     * Method used to retrieve a metadata template
+     *
+     * @param templateId id of the template
+     * @param callback
+     */
+    void getMetadataTemplate(String templateId, AsyncCallback<String> callback);
+
 }
 

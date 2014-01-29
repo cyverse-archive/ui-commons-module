@@ -30,20 +30,6 @@ public interface AnchorDefaultResources extends ClientBundle {
          */
         String anchorText();
 
-        /**
-         * The additive style attached to the link when the mouse cursor is over top of it.
-         * @deprecated This is redundant and shouldn't be used.
-         */
-        @Deprecated
-        String anchorMouseOver();
-
-        /**
-         * The additive style attached to the link when the mouse cursor is not over top of it.
-         * 
-         * @deprecated This is redundant and shouldn't be used.
-         */
-        @Deprecated
-        String anchorMouseOut();
     }
 
 	AnchorDefaultResources INSTANCE = GWT.create(AnchorDefaultResources.class);

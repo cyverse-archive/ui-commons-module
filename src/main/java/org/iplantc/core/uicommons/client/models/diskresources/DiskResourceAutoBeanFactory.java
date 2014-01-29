@@ -46,6 +46,11 @@ public interface DiskResourceAutoBeanFactory extends AutoBeanFactory {
     AutoBean<DiskResourceMove> diskResourceMove();
 
     AutoBean<DiskResourceRename> diskResourceRename();
-    
+
     AutoBean<Folder> folderContents();
+
+    AutoBean<MetadataTemplateInfoList> getTemplateListing();
+
+    AutoBean<MetadataTemplate> getTemplate();
+
 }

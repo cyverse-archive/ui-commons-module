@@ -21,7 +21,6 @@
     <inherits name="com.google.gwt.uibinder.UiBinder" />
 
     <!-- Testing -->
-    <inherits name="com.google.gwt.junit.JUnit" />
     <inherits name='org.iplantc.de.DiscoveryEnvironmentCommon' />
     <source path="client"/>
     <source path="uicommons"/>
@@ -38,5 +37,9 @@
     <replace-with 
     		class="org.iplantc.core.uicommons.client.appearance.widgets.InternalAnchorDefaultAppearance">
     	<when-type-is class="org.iplantc.core.uicommons.client.widgets.InternalAnchor.Appearance"/>
+    </replace-with>
+    
+    <replace-with class="org.iplantc.core.uicommons.client.services.impl.SearchServiceFacadeImpl">
+        <when-type-is class="org.iplantc.core.uicommons.client.services.SearchServiceFacade"/>
     </replace-with>
 </module>

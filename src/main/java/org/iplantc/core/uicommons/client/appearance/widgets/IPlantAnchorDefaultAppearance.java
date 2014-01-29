@@ -3,13 +3,14 @@
  */
 package org.iplantc.core.uicommons.client.appearance.widgets;
 
-import org.iplantc.core.uicommons.client.widgets.IPlantAnchorAppearance;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.dom.XElement;
+
+import org.iplantc.core.uicommons.client.widgets.IPlantAnchorAppearance;
 
 /**
  * @author sriram
@@ -30,22 +31,6 @@ public class IPlantAnchorDefaultAppearance implements IPlantAnchorAppearance {
         this.style.ensureInjected();
 
         this.template = GWT.create(Template.class);
-    }
-
-    /* (non-Javadoc)
-     * @see org.iplantc.core.uicommons.client.widgets.IPlantAnchorAppearance#onMouseOver(com.sencha.gxt.core.client.dom.XElement)
-     */
-    @Override
-    public void onMouseOver(XElement element) {
-        // intentionally left empty.
-    }
-
-    /* (non-Javadoc)
-     * @see org.iplantc.core.uicommons.client.widgets.IPlantAnchorAppearance#onMouseOut(com.sencha.gxt.core.client.dom.XElement)
-     */
-    @Override
-    public void onMouseOut(XElement element) {
-        // intentionally left empty.
     }
 
     /* (non-Javadoc)

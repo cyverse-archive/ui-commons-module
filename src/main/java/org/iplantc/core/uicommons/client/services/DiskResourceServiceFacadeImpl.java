@@ -22,25 +22,30 @@ import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 import org.iplantc.core.uicommons.client.models.diskresources.RootFolders;
 import org.iplantc.core.uicommons.client.models.services.DiskResourceMove;
 import org.iplantc.core.uicommons.client.models.services.DiskResourceRename;
+import org.iplantc.core.uicommons.client.services.impl.models.DiskResourceMetadataBatchRequest;
+import org.iplantc.core.uicommons.client.services.impl.models.DiskResourceServiceAutoBeanFactory;
 import org.iplantc.core.uicommons.client.util.DiskResourceUtil;
 import org.iplantc.core.uicommons.client.util.WindowUtil;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
 import com.sencha.gxt.core.client.util.Format;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.SortDir;
+import com.sencha.gxt.data.shared.SortInfoBean;
 import com.sencha.gxt.data.shared.TreeStore;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 
 /**
  * Provides access to remote services for folder operations.
@@ -63,14 +68,14 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         EventBus.getInstance().addHandler(DiskResourceRefreshEvent.TYPE, this);
     }
 
-    private static final DiskResourceAutoBeanFactory FACTORY = GWT.create(DiskResourceAutoBeanFactory.class);
+    private static final DiskResourceServiceAutoBeanFactory FACTORY = GWT.create(DiskResourceServiceAutoBeanFactory.class);
 
     private static <T> String encode(final T entity) {
         return AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(entity)).getPayload();
     }
 
-    private static <T> T decode(Class<T> clazz, String playload) {
-        return AutoBeanCodex.decode(FACTORY, clazz, playload).as();
+    private static <T> T decode(Class<T> clazz, String payload) {
+        return AutoBeanCodex.decode(FACTORY, clazz, payload).as();
     }
 
     @Override
@@ -126,39 +131,43 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
     }
 
     @Override
-    public void getFolderContents(final String path,int pageSize,int offset,String sortCol, String sortOrder, final AsyncCallback<Folder> callback) {
-        String address = getDirectoryListingEndpoint(path,pageSize,offset, sortCol, sortOrder);
+    public void getFolderContents(final Folder folder, final FilterPagingLoadConfigBean loadConfig, final AsyncCallback<Folder> callback){
+        String address = getDirectoryListingEndpoint(folder, loadConfig);
         ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
         callService(wrapper, new AsyncCallbackConverter<String, Folder>(callback) {
 
             @Override
-            protected Folder convertFrom(String result) {
-                // Decode JSON result into a folder
-                return decode(Folder.class, result);
+            protected Folder convertFrom(String object) {
+                return decode(Folder.class, object);
             }
         });
+
     }
 
     @Override
-    public void getSubFolders(final String path, final AsyncCallback<List<Folder>> callback) {
-        Folder folder = findModelWithKey(path);
+    public void getSubFolders(final Folder parent, final AsyncCallback<List<Folder>> callback) {
+        final Folder folder = findModel(parent);
 
         if (hasFoldersLoaded(folder)) {
             callback.onSuccess(getSubFolders(folder));
         } else {
-            String address = getDirectoryListingEndpoint(path, false);
+            String address = getDirectoryListingEndpoint(parent.getPath(), false);
             ServiceCallWrapper wrapper = new ServiceCallWrapper(address);
             callService(wrapper, new AsyncCallbackConverter<String, List<Folder>>(callback) {
 
                 @Override
                 protected List<Folder> convertFrom(String result) {
                     // Decode JSON result into a folder
-                    Folder folder = decode(Folder.class, result);
+                    Folder folderListing = decode(Folder.class, result);
+
+                    // KLUDGE The folder in the result may have a different ID if parent is a root.
+                    // This can be removed once folders have persistent IDs separate from their paths.
+                    folderListing.setId(folder.getId());
 
                     // Store or update the folder's subfolders.
-                    saveSubFolders(folder);
+                    saveSubFolders(folderListing);
 
-                    return getSubFolders(folder);
+                    return getSubFolders(folderListing);
                 }
             });
         }
@@ -208,15 +217,35 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
         return address;
     }
-    
-    private String getDirectoryListingEndpoint(final String path,int pageSize,int offset,String sortCol, String sortOrder ) {
-        String address = DEProperties.getInstance().getDataMgmtBaseUrl()
-                + "paged-directory?"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//<<<<<<< HEAD
+//
+//    private String getDirectoryListingEndpoint(final String path,int pageSize,int offset,String sortCol, String sortOrder ) {
+//        String address = DEProperties.getInstance().getDataMgmtBaseUrl()
+//                + "paged-directory?"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//=======
+//>>>>>>> CORE-4876: Updated DiskResourceServiceFacade
 
-        if (!Strings.isNullOrEmpty(path)) {
-            address += "path=" + URL.encodePathSegment(path) + "&sort-col="+ sortCol + "&limit=" + pageSize + "" + "&offset=" + offset + "&sort-order=" + sortOrder; //$NON-NLS-1$
+    /**
+     * This method constructs the address for the paged-directory listing endpoint.
+     *
+     * If the sort info contained in the configBean parameter is null, then a default sort info object will be used in
+     * its place.
+     *
+     * @param folder
+     * @param configBean
+     * @return the fully constructed address for the paged-directory listing endpoint.
+     */
+    private String getDirectoryListingEndpoint(final Folder folder, final FilterPagingLoadConfigBean configBean){
+        String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "paged-directory?";
+
+        SortInfoBean sortInfo = Iterables.getFirst(configBean.getSortInfo(), new SortInfoBean("NAME", SortDir.ASC));
+        if(!Strings.isNullOrEmpty(folder.getPath())){
+            address += "path=" + URL.encodePathSegment(folder.getPath())
+                    + "&sort-col=" + sortInfo.getSortField()
+                    + "&limit=" + configBean.getLimit()
+                    + "&offset=" + configBean.getOffset()
+                    + "&sort-order=" + sortInfo.getSortDir().toString();
         }
-
         return address;
     }
 
@@ -486,7 +515,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, address, body);
         callService(wrapper, callback);
     }
-    
+
     @Override
     public void downloadContents(String parentFolderId, AsyncCallback<String> callback) {
         final String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "download-contents"; //$NON-NLS-1$
@@ -554,33 +583,29 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "metadata-batch" //$NON-NLS-1$
                 + "?path=" + URL.encodePathSegment(resource.getPath()); //$NON-NLS-1$
 
-        // Create json body consisting of md to updata and md to delete.
-        JSONObject obj = new JSONObject();
-        obj.put("add", buildMetadataToAddJsonArray(mdToUpdate));
-        obj.put("delete", buildMetadataToDeleteJsonArray(mdToDelete));
+        // Create request consisting of metadata to update and delete.
+        DiskResourceMetadataBatchRequest request = FACTORY.metadataBatchRequest().as();
+        request.setAdd(buildMetadataToAddRequest(mdToUpdate));
+        request.setDelete(buildMetadataToDeleteRequest(mdToDelete));
 
         ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress,
-                obj.toString());
+                encode(request));
         callService(wrapper, callback);
     }
 
-    private JSONValue buildMetadataToAddJsonArray(Set<DiskResourceMetadata> metadata) {
-        final JSONArray arr = new JSONArray();
-        int i = 0;
+    private Set<DiskResourceMetadata> buildMetadataToAddRequest(Set<DiskResourceMetadata> metadata) {
         for (DiskResourceMetadata md : metadata) {
-            JSONValue jsonValue = JSONParser.parseStrict(encode(md));
-            arr.set(i++, jsonValue);
+            md.setId(null);
         }
-        return arr;
+        return metadata;
     }
 
-    private JSONValue buildMetadataToDeleteJsonArray(Set<DiskResourceMetadata> metadataToDelete) {
-        JSONArray arr = new JSONArray();
-        int i = 0;
+    private Set<String> buildMetadataToDeleteRequest(Set<DiskResourceMetadata> metadataToDelete) {
+        Set<String> deleteRequest = Sets.newHashSet();
         for (DiskResourceMetadata md : metadataToDelete) {
-            arr.set(i++, new JSONString(md.getAttribute()));
+            deleteRequest.add(md.getAttribute());
         }
-        return arr;
+        return deleteRequest;
     }
 
     @Override
@@ -830,9 +855,9 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
                 return resourcesMoved;
             }
         });
-        
+
     }
-    
+
     @Override
     public void deleteContents(String selectedFolderId, AsyncCallback<HasPaths> callback) {
         String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "delete-contents"; //$NON-NLS-1$
@@ -855,12 +880,28 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
                 return deletedIds;
             }});
     }
-    
+
     @Override
     public void restoreAll(AsyncCallback<String> callback) {
         final String fullAddress = DEProperties.getInstance().getDataMgmtBaseUrl() + "restore-all"; //$NON-NLS-1$
         final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.POST, fullAddress, "{}");
         callService(wrapper, callback);
     }
+
+	@Override
+	public void getMetadataTemplateListing(AsyncCallback<String> callback) {
+		String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "metadata/templates";
+		final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
+	    callService(wrapper, callback);
+	}
+
+	@Override
+	public void getMetadataTemplate(String templateId,
+			AsyncCallback<String> callback) {
+		String address = DEProperties.getInstance().getDataMgmtBaseUrl() + "metadata/template/" + templateId;
+		final ServiceCallWrapper wrapper = new ServiceCallWrapper(ServiceCallWrapper.Type.GET, address);
+	    callService(wrapper, callback);
+
+	}
 
 }
