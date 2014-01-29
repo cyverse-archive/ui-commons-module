@@ -11,6 +11,7 @@ import com.google.web.bindery.autobean.shared.impl.StringQuoter;
 
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
 import org.iplantc.core.uicommons.client.models.diskresources.DiskResourceAutoBeanFactory;
 import org.iplantc.core.uicommons.client.models.diskresources.File;
 import org.iplantc.core.uicommons.client.models.diskresources.Folder;
@@ -48,7 +49,7 @@ public class SearchServiceFacadeImplStub implements SearchServiceFacade {
     }
 
     @Override
-    public void submitSearchFromQueryTemplate(DiskResourceQueryTemplate queryTemplate, FilterPagingLoadConfigBean loadConfig, SearchType searchType, AsyncCallback<Folder> callback) {
+    public void submitSearchFromQueryTemplate(DiskResourceQueryTemplate queryTemplate, FilterPagingLoadConfigBean loadConfig, SearchType searchType, AsyncCallback<List<DiskResource>> callback) {
         submitSearchFromQueryTemplateStub(queryTemplate, loadConfig, searchType, callback);
 
     }
@@ -69,7 +70,8 @@ public class SearchServiceFacadeImplStub implements SearchServiceFacade {
         return ret;
     }
 
-    void submitSearchFromQueryTemplateStub(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final SearchType searchType, final AsyncCallback<Folder> callback) {
+    void submitSearchFromQueryTemplateStub(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final SearchType searchType,
+            final AsyncCallback<List<DiskResource>> callback) {
         // Create stubbed folder to return
         DiskResourceAutoBeanFactory drFactory = GWT.create(DiskResourceAutoBeanFactory.class);
         File file1 = createStubFile(drFactory, "File_Result_1.txt", "/");
@@ -79,7 +81,9 @@ public class SearchServiceFacadeImplStub implements SearchServiceFacade {
         queryTemplate.setFiles(Lists.newArrayList(file1, file2, file3));
         queryTemplate.setFolders(Collections.<Folder> emptyList());
 
-        callback.onSuccess(queryTemplate);
+        final List<DiskResource> files = Lists.newArrayList();
+        files.addAll(queryTemplate.getFiles());
+        callback.onSuccess(files);
     }
 
     void saveQueryTemplateStub(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<Boolean> callback) {

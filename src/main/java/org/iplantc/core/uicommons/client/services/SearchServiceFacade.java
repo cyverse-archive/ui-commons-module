@@ -5,7 +5,7 @@ import com.google.web.bindery.autobean.shared.AutoBean;
 
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 
-import org.iplantc.core.uicommons.client.models.diskresources.Folder;
+import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
 import org.iplantc.core.uicommons.client.services.impl.DataSearchQueryBuilder;
 
@@ -78,10 +78,10 @@ public interface SearchServiceFacade {
      * @param queryTemplate the template used to construct the query string. The query string derived
      *            from this object will be URL encoded.
      * @param loadConfig the load config which defines the offset and limit for the paged request
-     * @param callback executed when RPC call completes. The files and folders accessible by the returned
-     *            folder's getFiles() and getFolders() methods will only contain the matches returned
-     *            from the search query.
+     * @param callback executed when RPC call completes. The resulting list is in the same order as it is
+     *            returned from the endpoint.
      */
-    void submitSearchFromQueryTemplate(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final SearchType searchType, final AsyncCallback<Folder> callback);
+    void submitSearchFromQueryTemplate(final DiskResourceQueryTemplate queryTemplate, final FilterPagingLoadConfigBean loadConfig, final SearchType searchType,
+            final AsyncCallback<List<DiskResource>> callback);
 
 }
