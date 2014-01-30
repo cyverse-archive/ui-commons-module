@@ -106,7 +106,7 @@ public class SearchServiceFacadeImplTest {
         when(bucketsMock.queryTemplates()).thenReturn(queryTemplatesBucket);
         
         final ArrayList<DiskResourceQueryTemplate> newArrayList = Lists.newArrayList(mock(DiskResourceQueryTemplate.class));
-        unitUnderTest.saveQueryTemplates(newArrayList, asyncQtCaptor.capture());
+        unitUnderTest.saveQueryTemplates(newArrayList, asyncQtListMock);
 
         /* Verify proper construction of service call wrapper */
         ArgumentCaptor<ServiceCallWrapper> wrapperCaptor = ArgumentCaptor.forClass(ServiceCallWrapper.class);
@@ -138,7 +138,7 @@ public class SearchServiceFacadeImplTest {
         final ArrayList<DiskResourceQueryTemplate> newArrayList = Lists.newArrayList(mock1, mock2);
         
         // Call method under test
-        unitUnderTest.saveQueryTemplates(newArrayList, asyncQtCaptor.capture());
+        unitUnderTest.saveQueryTemplates(newArrayList, asyncQtListMock);
 
         /* Verify proper construction of service call wrapper */
         ArgumentCaptor<ServiceCallWrapper> wrapperCaptor = ArgumentCaptor.forClass(ServiceCallWrapper.class);
