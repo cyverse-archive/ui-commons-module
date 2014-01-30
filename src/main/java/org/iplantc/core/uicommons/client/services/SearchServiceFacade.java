@@ -68,7 +68,7 @@ public interface SearchServiceFacade {
      * @param queryTemplates
      * @param callback returns the set of persisted templates on success.
      */
-    void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<Boolean> callback);
+    void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<List<DiskResourceQueryTemplate>> callback);
 
     /**
      * Submits a search query build from the given filter.

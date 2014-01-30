@@ -43,59 +43,6 @@ import java.util.List;
 @SuppressWarnings("nls")
 public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
-
-    class BooleanCallbackConverter extends AsyncCallbackConverter<String, Boolean> {
-        public BooleanCallbackConverter(AsyncCallback<Boolean> callback) {
-            super(callback);
-        }
-
-        @Override
-        protected Boolean convertFrom(String object) {
-            final Splittable split = StringQuoter.split(object);
-            if (split.isUndefined("success")) {
-                GWT.log("saveQueryTemplates callback return is missing \"success\" json key:\n\t" + split.getPayload());
-                return null;
-            }
-            if (!split.get("success").isBoolean()) {
-                GWT.log("saveQueryTemplates callback \"success\" json key is not a boolean but should be:\n\t" + split.getPayload());
-                return null;
-            }
-
-            return split.get("success").asBoolean();
-        }
-    }
-
-    class QueryTemplateListCallbackConverter extends AsyncCallbackConverter<String, List<DiskResourceQueryTemplate>> {
-        public QueryTemplateListCallbackConverter(AsyncCallback<List<DiskResourceQueryTemplate>> callback) {
-            super(callback);
-        }
-
-        @Override
-        protected List<DiskResourceQueryTemplate> convertFrom(String object) {
-            if (Strings.isNullOrEmpty(object)) {
-                return Collections.emptyList();
-            }
-            // Expecting the string to be JSON list
-            Splittable split = StringQuoter.createSplittable();
-            StringQuoter.split(object).assign(split, DiskResourceQueryTemplateList.LIST_KEY);
-            AutoBean<DiskResourceQueryTemplateList> decode = AutoBeanCodex.decode(searchAbFactory, DiskResourceQueryTemplateList.class, split);
-            final List<DiskResourceQueryTemplate> queryTemplateList = decode.as().getQueryTemplateList();
-            final List<DiskResourceQueryTemplate> retQueryTemplateList = Lists.newArrayList();
-            for (DiskResourceQueryTemplate qt : queryTemplateList) {
-                qt.setDirty(false);
-                qt.setFiles(Lists.<File> newArrayList());
-                qt.setFolders(Lists.<Folder> newArrayList());
-                final Splittable encode = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(qt));
-                StringQuoter.create(true).assign(encode, "saved");
-                final AutoBean<DiskResourceQueryTemplate> decode2 = AutoBeanCodex.decode(searchAbFactory, DiskResourceQueryTemplate.class, encode);
-                retQueryTemplateList.add(decode2.as());
-
-            }
-
-            return retQueryTemplateList;
-        }
-    }
-
     public class SubmitSearchCallbackConverter extends AsyncCallbackConverter<String, List<DiskResource>> {
         private final DiskResourceAutoBeanFactory factory;
         private final DiskResourceQueryTemplate queryTemplate;
@@ -142,7 +89,7 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
             return ret;
         }
 
-        private File decodeFileIntoQueryTemplate(Splittable entity, DiskResourceQueryTemplate queryTemplate, DiskResourceAutoBeanFactory factory) {
+        File decodeFileIntoQueryTemplate(Splittable entity, DiskResourceQueryTemplate queryTemplate, DiskResourceAutoBeanFactory factory) {
             // Re-map JSON keys
             GWT.log("Re-mapping JSON keys!  'fileSize' -> 'file-size'");
             entity.get("fileSize").assign(entity, "file-size");
@@ -151,13 +98,13 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
             return decodeFile.as();
         }
 
-        private Folder decodeFolderIntoQueryTemplate(Splittable entity, DiskResourceQueryTemplate queryTemplate, DiskResourceAutoBeanFactory factory) {
+        Folder decodeFolderIntoQueryTemplate(Splittable entity, DiskResourceQueryTemplate queryTemplate, DiskResourceAutoBeanFactory factory) {
             final AutoBean<Folder> decodeFolder = AutoBeanCodex.decode(factory, Folder.class, entity);
             queryTemplate.getFolders().add(decodeFolder.as());
             return decodeFolder.as();
         }
 
-        private void reMapDateKeys(Splittable entity) {
+        void reMapDateKeys(Splittable entity) {
             // Re-map JSON keys
             GWT.log("Re-mapping JSON keys!  'dateModified' -> 'date-modified'");
             final long dateModifiedInSec = Double.valueOf(entity.get("dateModified").asNumber()).longValue();
@@ -168,18 +115,18 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
             StringQuoter.create(dateCreatedInSec * 1000).assign(entity, "date-created");
         }
 
-        private void reMapFileSize(Splittable entity) {
+        void reMapFileSize(Splittable entity) {
             GWT.log("Re-mapping JSON keys!  'fileSize' -> 'file-size'");
             entity.get("fileSize").assign(entity, "file-size");
         }
 
-        private void reMapPath(Splittable entity) {
+        void reMapPath(Splittable entity) {
             final String id = entity.get("id").asString();
             // StringQuoter.create(DiskResourceUtil.parseParent(id)).assign(entity, "path");
             StringQuoter.create(id).assign(entity, "path");
         }
 
-        private void reMapPermissions(Splittable entity) {
+        void reMapPermissions(Splittable entity) {
             Splittable userPermissionsList = entity.get("userPermissions");
             for (int i = 0; i < userPermissionsList.size(); i++) {
                 Splittable permission = userPermissionsList.get(i);
@@ -209,6 +156,106 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
     }
 
+    class QueryTemplateListCallbackConverter extends AsyncCallbackConverter<String, List<DiskResourceQueryTemplate>> {
+        private final SearchAutoBeanFactory factory;
+
+        public QueryTemplateListCallbackConverter(AsyncCallback<List<DiskResourceQueryTemplate>> callback, SearchAutoBeanFactory searchAbFactory) {
+            super(callback);
+            this.factory = searchAbFactory;
+        }
+
+        @Override
+        protected List<DiskResourceQueryTemplate> convertFrom(String object) {
+            if (Strings.isNullOrEmpty(object)) {
+                return Collections.emptyList();
+            }
+            final List<DiskResourceQueryTemplate> queryTemplateList = getQueryTemplateList(object);
+            final List<DiskResourceQueryTemplate> retQueryTemplateList = Lists.newArrayList();
+            for (DiskResourceQueryTemplate qt : queryTemplateList) {
+                qt.setDirty(false);
+                qt.setFiles(Lists.<File> newArrayList());
+                qt.setFolders(Lists.<Folder> newArrayList());
+                DiskResourceQueryTemplate savedFlagSet = setSavedFlag(qt);
+                retQueryTemplateList.add(savedFlagSet);
+            }
+
+            return retQueryTemplateList;
+        }
+
+        /**
+         * Helper method to encapsulate autobean manipulation
+         * 
+         * @param object
+         * @return
+         */
+        List<DiskResourceQueryTemplate> getQueryTemplateList(String object) {
+            // Expecting the string to be JSON list
+            Splittable split = StringQuoter.createSplittable();
+            StringQuoter.split(object).assign(split, DiskResourceQueryTemplateList.LIST_KEY);
+            AutoBean<DiskResourceQueryTemplateList> decode = AutoBeanCodex.decode(factory, DiskResourceQueryTemplateList.class, split);
+            return decode.as().getQueryTemplateList();
+        }
+
+        /**
+         * Helper method to encapsulate autobean manipulation
+         * 
+         * @param qt
+         * @return a query template whose isSaved() method will return true.
+         */
+        DiskResourceQueryTemplate setSavedFlag(DiskResourceQueryTemplate qt) {
+            // Make sure all saved templates are set as saved.
+            final Splittable encode = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(qt));
+            StringQuoter.create(true).assign(encode, "saved");
+            final DiskResourceQueryTemplate as = AutoBeanCodex.decode(factory, DiskResourceQueryTemplate.class, encode).as();
+            return as;
+        }
+    }
+
+    class SavedSearchCallbackConverter extends AsyncCallbackConverter<String, List<DiskResourceQueryTemplate>> {
+        private final SearchAutoBeanFactory factory;
+        private final List<DiskResourceQueryTemplate> submittedTemplates;
+
+        public SavedSearchCallbackConverter(AsyncCallback<List<DiskResourceQueryTemplate>> callback, List<DiskResourceQueryTemplate> queryTemplates, SearchAutoBeanFactory searchAbFactory) {
+            super(callback);
+            this.submittedTemplates = queryTemplates;
+            this.factory = searchAbFactory;
+        }
+
+        @Override
+        protected List<DiskResourceQueryTemplate> convertFrom(String object) {
+            final Splittable split = StringQuoter.split(object);
+            if (split.isUndefined("success")) {
+                GWT.log("saveQueryTemplates callback return is missing \"success\" json key:\n\t" + split.getPayload());
+                return Collections.emptyList();
+            }
+            if (!split.get("success").isBoolean()) {
+                GWT.log("saveQueryTemplates callback \"success\" json key is not a boolean but should be:\n\t" + split.getPayload());
+                return Collections.emptyList();
+            }
+            List<DiskResourceQueryTemplate> savedTemplates = Lists.newArrayList();
+
+            for (DiskResourceQueryTemplate qt : submittedTemplates) {
+                DiskResourceQueryTemplate savedFlagSet = setSavedFlag(qt);
+                savedTemplates.add(savedFlagSet);
+            }
+
+            return savedTemplates;
+        }
+
+        /**
+         * Helper method to encapsulate autobean manipulation
+         * 
+         * @param qt
+         * @return a query template whose isSaved() method will return true.
+         */
+        DiskResourceQueryTemplate setSavedFlag(DiskResourceQueryTemplate qt) {
+            // Make sure all saved templates are set as saved.
+            final Splittable encode = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(qt));
+            StringQuoter.create(true).assign(encode, "saved");
+            final DiskResourceQueryTemplate as = AutoBeanCodex.decode(factory, DiskResourceQueryTemplate.class, encode).as();
+            return as;
+        }
+    }
 
     private final ReservedBuckets buckets;
     private final DEServiceFacade deServiceFacade;
@@ -232,13 +279,8 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
     public List<DiskResourceQueryTemplate> createFrozenList(List<DiskResourceQueryTemplate> queryTemplates) {
         List<DiskResourceQueryTemplate> toSave = Lists.newArrayList();
         for (DiskResourceQueryTemplate qt : queryTemplates) {
-            // Create copy of template
-            Splittable qtSplittable = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(qt));
-            AutoBean<DiskResourceQueryTemplate> decode = AutoBeanCodex.decode(searchAbFactory, DiskResourceQueryTemplate.class, qtSplittable);
-
-            // Freeze the autobean
-            decode.setFrozen(true);
-            toSave.add(decode.as());
+            DiskResourceQueryTemplate frozenTemplate = freezeQueryTemplate(qt);
+            toSave.add(frozenTemplate);
         }
         return Collections.unmodifiableList(toSave);
     }
@@ -248,23 +290,20 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
         //String address = endpoints.buckets() + "/" + userInfo.getUsername() + "/" + buckets.queryTemplates();
         String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "buckets/" + userInfo.getUsername() + "/reserved/" + buckets.queryTemplates();
         ServiceCallWrapper wrapper = new ServiceCallWrapper(GET, address);
-        deServiceFacade.getServiceData(wrapper, new QueryTemplateListCallbackConverter(callback));
+        deServiceFacade.getServiceData(wrapper, new QueryTemplateListCallbackConverter(callback, searchAbFactory));
     }
-    
+
     @Override
-    public void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<Boolean> callback) {
+    public void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<List<DiskResourceQueryTemplate>> callback) {
         String address = DEProperties.getInstance().getMuleServiceBaseUrl() + "buckets/" + userInfo.getUsername() + "/reserved/" + buckets.queryTemplates();
 
-        // check to see if query templates all have names, and that they are unique.throw illegal
-        // argument exception
-        Splittable body = StringQuoter.createIndexed();
-        int index = 0;
-        for (DiskResourceQueryTemplate qt : queryTemplates) {
-            final Splittable encode = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(qt));
-            encode.assign(body, index++);
-        }
-        ServiceCallWrapper wrapper = new ServiceCallWrapper(POST, address, body.getPayload());
-        deServiceFacade.getServiceData(wrapper, new BooleanCallbackConverter(callback));
+        /*
+         * TODO check to see if query templates all have names, and that they are unique.throw illegal
+         * argument exception
+         */
+        String payload = templateListToIndexedSplittablePayload(queryTemplates);
+        ServiceCallWrapper wrapper = new ServiceCallWrapper(POST, address, payload);
+        deServiceFacade.getServiceData(wrapper, new SavedSearchCallbackConverter(callback, queryTemplates, searchAbFactory));
     }
 
     @Override
@@ -291,7 +330,7 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
 
     }
 
-    private String convertSortField(String sortField) {
+    String convertSortField(String sortField) {
         if ("id".equalsIgnoreCase(sortField)) {
             return "entity.id";
         }
@@ -313,5 +352,25 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
         }
 
         return sortField;
+    }
+
+    DiskResourceQueryTemplate freezeQueryTemplate(DiskResourceQueryTemplate qt) {
+        // Create copy of template
+        Splittable qtSplittable = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(qt));
+        AutoBean<DiskResourceQueryTemplate> decode = AutoBeanCodex.decode(searchAbFactory, DiskResourceQueryTemplate.class, qtSplittable);
+
+        // Freeze the autobean
+        decode.setFrozen(true);
+        return decode.as();
+    }
+
+    String templateListToIndexedSplittablePayload(List<DiskResourceQueryTemplate> queryTemplates) {
+        Splittable indexedSplittable = StringQuoter.createIndexed();
+        int index = 0;
+        for (DiskResourceQueryTemplate qt : queryTemplates) {
+            final Splittable encode = AutoBeanCodex.encode(AutoBeanUtils.getAutoBean(qt));
+            encode.assign(indexedSplittable, index++);
+        }
+        return indexedSplittable.getPayload();
     }
 }
