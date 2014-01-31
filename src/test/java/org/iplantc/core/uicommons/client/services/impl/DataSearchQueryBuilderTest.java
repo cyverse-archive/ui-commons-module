@@ -52,7 +52,7 @@ public class DataSearchQueryBuilderTest {
         final String expectedMetadataAttributeQuery = setMetadataAttributeQuery(
                 "some* metadata* query*", dsf);
         final String expectedMetadataValueQuery = setMetadataValueQuery("some* metadata* query*", dsf);
-        final String expectedOwnedBy = setOwnedBy("someUser", dsf);
+		final String expectedOwnedBy = setOwnedBy("someuser", dsf);
         final String expectedFileSizeRange = setFileSizeRange(0.1, 100.78763, dsf);
         final String expectedSharedWith = setSharedWith("some users who were shared with", dsf);
 
@@ -71,7 +71,7 @@ public class DataSearchQueryBuilderTest {
 
     @Test
     public void testOwnedBy() {
-        final String expectedValue = setOwnedBy("someUser", dsf);
+		final String expectedValue = setOwnedBy("someuser", dsf);
 
         String result = new DataSearchQueryBuilder(dsf).ownedBy().toString();
         assertEquals(wrappedQuery(expectedValue), result);

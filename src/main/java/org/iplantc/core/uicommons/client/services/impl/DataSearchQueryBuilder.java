@@ -89,7 +89,7 @@ public class DataSearchQueryBuilder {
         if (!Strings.isNullOrEmpty(content)) {
             // {"wildcard": {"label": "*txt*"}}
             content = SearchFieldDecorator.applyImplicitAsteriskSearchText(content);
-            appendArrayItem(queryList, createQuery("wildcard", "label", content));
+            appendArrayItem(queryList, createWildcard("label", content));
         }
         return this;
     }
@@ -142,7 +142,7 @@ public class DataSearchQueryBuilder {
             Splittable nested = addChild(metadata, "nested");
             StringQuoter.create("metadata").assign(nested, "path");
 
-            createQuery("wildcard", "attribute", content).assign(nested, "query");
+            createWildcard("attribute", content).assign(nested, "query");
 
             appendArrayItem(queryList, metadata);
         }
@@ -160,7 +160,7 @@ public class DataSearchQueryBuilder {
             Splittable nested = addChild(metadata, "nested");
             StringQuoter.create("metadata").assign(nested, "path");
 
-            createQuery("wildcard", "value", content).assign(nested, "query");
+            createWildcard("value", content).assign(nested, "query");
 
             appendArrayItem(queryList, metadata);
         }
@@ -210,7 +210,7 @@ public class DataSearchQueryBuilder {
             content = "-" + Joiner.on(" -").join(split);
 
             // {"field": {"label": "-*txt*"}}
-            appendArrayItem(queryList, createQuery("field", "label", content));
+            appendArrayItem(queryList, createField("label", content));
         }
         return this;
     }
@@ -230,7 +230,7 @@ public class DataSearchQueryBuilder {
             Splittable nested = addChild(sharedWith, "nested");
             StringQuoter.create("userPermissions").assign(nested, "path");
 
-            createQuery("wildcard", "user", content).assign(nested, "query");
+            createWildcard("user", content).assign(nested, "query");
 
             appendArrayItem(must, sharedWith);
 
@@ -249,6 +249,19 @@ public class DataSearchQueryBuilder {
         Splittable bool = addChild(query, "bool");
         queryList.assign(bool, "must");
         return query.getPayload();
+    }
+
+    private Splittable createWildcard(String field, String content) {
+        // {"wildcard": {field: content}}
+		// Use lowercase values since wildcard queries are not analyzed by the
+		// service and values are indexed as lowercase.
+		content = Strings.isNullOrEmpty(content) ? null : content.toLowerCase();
+		return createQuery("wildcard", field, content);
+    }
+
+    private Splittable createField(String field, String content) {
+        // {"field": {field: content}}
+        return createQuery("field", field, content);
     }
 
     private Splittable createQuery(String queryType, String field, String content) {
@@ -307,7 +320,7 @@ public class DataSearchQueryBuilder {
         Splittable must = addArray(bool, "must");
 
         appendArrayItem(must, createQuery("term", "permission", "own"));
-        appendArrayItem(must, createQuery("wildcard", "user", applyImplicitUsernameWildcard(user)));
+        appendArrayItem(must, createWildcard("user", applyImplicitUsernameWildcard(user)));
 
         return ownedBy;
     }
