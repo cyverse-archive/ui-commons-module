@@ -253,10 +253,10 @@ public class DataSearchQueryBuilder {
 
     private Splittable createWildcard(String field, String content) {
         // {"wildcard": {field: content}}
-		// Use lowercase values since wildcard queries are not analyzed by the
-		// service and values are indexed as lowercase.
-		content = Strings.isNullOrEmpty(content) ? null : content.toLowerCase();
-		return createQuery("wildcard", field, content);
+        // Use lowercase values since wildcard queries are not analyzed by the
+        // service and values are indexed as lowercase.
+        content = Strings.isNullOrEmpty(content) ? null : content.toLowerCase();
+        return createQuery("wildcard", field, content);
     }
 
     private Splittable createField(String field, String content) {
