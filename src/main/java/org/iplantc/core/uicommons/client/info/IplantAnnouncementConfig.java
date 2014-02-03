@@ -1,7 +1,7 @@
 package org.iplantc.core.uicommons.client.info;
 
-import org.iplantc.core.resources.client.AnnouncerStyle;
-import org.iplantc.core.resources.client.IplantResources;
+import org.iplantc.de.resources.client.AnnouncerStyle;
+import org.iplantc.de.resources.client.IplantResources;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;

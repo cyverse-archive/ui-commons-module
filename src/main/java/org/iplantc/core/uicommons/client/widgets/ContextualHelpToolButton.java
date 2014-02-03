@@ -1,6 +1,6 @@
 package org.iplantc.core.uicommons.client.widgets;
 
-import org.iplantc.core.resources.client.IplantResources;
+import org.iplantc.de.resources.client.IplantResources;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.button.ToolButton;

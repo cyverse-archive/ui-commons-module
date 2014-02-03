@@ -2,7 +2,7 @@ package org.iplantc.core.uicommons.client.collaborators.views;
 
 import java.util.List;
 
-import org.iplantc.core.resources.client.messages.I18N;
+import org.iplantc.de.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.collaborators.events.UserSearchResultSelected.USER_SEARCH_EVENT_TAG;
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;
 import org.iplantc.core.uicommons.client.collaborators.presenter.ManageCollaboratorsPresenter;

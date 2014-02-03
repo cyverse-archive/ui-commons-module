@@ -3,7 +3,7 @@ package org.iplantc.core.uicommons.client;
 import java.util.Date;
 
 import org.iplantc.core.jsonutil.JsonUtil;
-import org.iplantc.core.resources.client.messages.I18N;
+import org.iplantc.de.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.errorHandling.models.ServiceError;
 import org.iplantc.core.uicommons.client.views.gxt3.dialogs.ErrorDialog3;
 

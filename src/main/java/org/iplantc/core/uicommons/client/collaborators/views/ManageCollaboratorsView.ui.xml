@@ -10,8 +10,8 @@
 	xmlns:userSearch = "urn:import:org.iplantc.core.uicommons.client.collaborators.util"
 	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form">
 
-   <ui:with type="org.iplantc.core.resources.client.IplantResources" field="icons"/>
-   <ui:with type="org.iplantc.core.resources.client.messages.IplantDisplayStrings" field="strings" />
+   <ui:with type="org.iplantc.de.resources.client.IplantResources" field="icons"/>
+   <ui:with type="org.iplantc.de.resources.client.messages.IplantDisplayStrings" field="strings" />
  	<!-- Main Panel -->
 	<ui:with field="listStore" type="com.sencha.gxt.data.shared.ListStore" />
 	<ui:with field="cm"

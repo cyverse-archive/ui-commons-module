@@ -1,6 +1,6 @@
 package org.iplantc.core.uicommons.client.views.gxt3.dialogs;
 
-import org.iplantc.core.resources.client.messages.I18N;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
