@@ -44,7 +44,7 @@ public class SearchServiceFacadeImplStub implements SearchServiceFacade {
     }
 
     @Override
-    public void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<Boolean> callback) {
+    public void saveQueryTemplates(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<List<DiskResourceQueryTemplate>> callback) {
         saveQueryTemplateStub(queryTemplates, callback);
     }
 
@@ -86,7 +86,7 @@ public class SearchServiceFacadeImplStub implements SearchServiceFacade {
         callback.onSuccess(files);
     }
 
-    void saveQueryTemplateStub(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<Boolean> callback) {
+    void saveQueryTemplateStub(List<DiskResourceQueryTemplate> queryTemplates, AsyncCallback<List<DiskResourceQueryTemplate>> callback) {
         List<DiskResourceQueryTemplate> returnList = Lists.newArrayList();
         for (DiskResourceQueryTemplate template : queryTemplates) {
 
@@ -99,8 +99,7 @@ public class SearchServiceFacadeImplStub implements SearchServiceFacade {
         }
         stubbedSavedQueryTemplateList.clear();
         stubbedSavedQueryTemplateList.addAll(returnList);
-        // callback.onSuccess(returnList);
-        callback.onSuccess(true);
+        callback.onSuccess(returnList);
     }
 
     void getSavedQueryTemplatesStub(AsyncCallback<List<DiskResourceQueryTemplate>> callback) {

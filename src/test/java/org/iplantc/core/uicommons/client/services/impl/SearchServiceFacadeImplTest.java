@@ -48,7 +48,6 @@ public class SearchServiceFacadeImplTest {
     @Mock AutoBean<DiskResourceQueryTemplateList> qtlistAbMock;
     
     @Mock AsyncCallback<List<DiskResourceQueryTemplate>> asyncQtListMock;
-    @Mock AsyncCallback<Boolean> asyncBooleanMock;
 
     @Captor ArgumentCaptor<AsyncCallback<List<DiskResourceQueryTemplate>>> asyncQtCaptor;
     @Captor ArgumentCaptor<AsyncCallbackConverter<String, List<DiskResourceQueryTemplate>>> asyncStringCaptor;
@@ -107,7 +106,7 @@ public class SearchServiceFacadeImplTest {
         when(bucketsMock.queryTemplates()).thenReturn(queryTemplatesBucket);
         
         final ArrayList<DiskResourceQueryTemplate> newArrayList = Lists.newArrayList(mock(DiskResourceQueryTemplate.class));
-        unitUnderTest.saveQueryTemplates(newArrayList, asyncBooleanMock);
+        unitUnderTest.saveQueryTemplates(newArrayList, asyncQtListMock);
 
         /* Verify proper construction of service call wrapper */
         ArgumentCaptor<ServiceCallWrapper> wrapperCaptor = ArgumentCaptor.forClass(ServiceCallWrapper.class);
@@ -139,7 +138,7 @@ public class SearchServiceFacadeImplTest {
         final ArrayList<DiskResourceQueryTemplate> newArrayList = Lists.newArrayList(mock1, mock2);
         
         // Call method under test
-        unitUnderTest.saveQueryTemplates(newArrayList, asyncBooleanMock);
+        unitUnderTest.saveQueryTemplates(newArrayList, asyncQtListMock);
 
         /* Verify proper construction of service call wrapper */
         ArgumentCaptor<ServiceCallWrapper> wrapperCaptor = ArgumentCaptor.forClass(ServiceCallWrapper.class);
