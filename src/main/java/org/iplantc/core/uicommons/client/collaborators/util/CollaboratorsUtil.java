@@ -5,7 +5,7 @@ package org.iplantc.core.uicommons.client.collaborators.util;
 
 import java.util.List;
 
-import org.iplantc.core.jsonutil.JsonUtil;
+import org.iplantc.de.jsonutil.client.JsonUtil;
 import org.iplantc.de.resources.client.messages.I18N;
 import org.iplantc.core.uicommons.client.ErrorHandler;
 import org.iplantc.core.uicommons.client.collaborators.models.Collaborator;

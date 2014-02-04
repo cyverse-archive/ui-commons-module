@@ -1,6 +1,9 @@
 package org.iplantc.core.uicommons.client.services;
 
-import org.iplantc.core.jsonutil.JsonUtil;
+import java.util.List;
+import java.util.Set;
+
+import org.iplantc.de.jsonutil.client.JsonUtil;
 import org.iplantc.core.uicommons.client.DEClientConstants;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
 import org.iplantc.core.uicommons.client.events.EventBus;
