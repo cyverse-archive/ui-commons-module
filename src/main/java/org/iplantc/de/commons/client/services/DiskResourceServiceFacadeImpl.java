@@ -3,7 +3,7 @@ package org.iplantc.de.commons.client.services;
 import java.util.List;
 import java.util.Set;
 
-import org.iplantc.de.jsonutil.client.JsonUtil;
+import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.commons.client.DEClientConstants;
 import org.iplantc.de.commons.client.DEServiceFacade;
 import org.iplantc.de.commons.client.events.EventBus;

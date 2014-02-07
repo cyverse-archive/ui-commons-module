@@ -1,6 +1,6 @@
 package org.iplantc.de.commons.client.models;
 
-import org.iplantc.de.jsonutil.client.JsonUtil;
+import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.commons.client.Constants;
 import org.iplantc.de.commons.client.models.diskresources.DiskResourceAutoBeanFactory;
 import org.iplantc.de.commons.client.models.diskresources.Folder;

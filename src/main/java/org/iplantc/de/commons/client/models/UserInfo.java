@@ -2,7 +2,7 @@ package org.iplantc.de.commons.client.models;
 
 import java.util.List;
 
-import org.iplantc.de.jsonutil.client.JsonUtil;
+import org.iplantc.de.commons.client.util.JsonUtil;
 
 import com.google.gwt.json.client.JSONObject;
 

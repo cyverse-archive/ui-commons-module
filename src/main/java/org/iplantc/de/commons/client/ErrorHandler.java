@@ -2,7 +2,7 @@ package org.iplantc.de.commons.client;
 
 import java.util.Date;
 
-import org.iplantc.de.jsonutil.client.JsonUtil;
+import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.resources.client.messages.I18N;
 import org.iplantc.de.commons.client.errorHandling.models.ServiceError;
 import org.iplantc.de.commons.client.views.gxt3.dialogs.ErrorDialog3;

@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.iplantc.de.jsonutil.client.JsonUtil;
 import org.iplantc.de.commons.client.models.CommonModelAutoBeanFactory;
 import org.iplantc.de.commons.client.models.HasId;
 import org.iplantc.de.commons.client.models.UserInfo;
