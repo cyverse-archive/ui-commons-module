@@ -1,16 +1,17 @@
 package org.iplantc.de.commons.client.info;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import org.iplantc.de.commons.client.events.EventBus;
 
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * A queue for IplantAnnouncement popups that controls which one is displayed and its position.

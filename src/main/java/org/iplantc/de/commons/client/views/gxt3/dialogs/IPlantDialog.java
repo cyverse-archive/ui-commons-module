@@ -1,16 +1,17 @@
 package org.iplantc.de.commons.client.views.gxt3.dialogs;
 
-import java.util.ArrayList;
-
 import org.iplantc.de.commons.client.widgets.ContextualHelpToolButton;
 
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.sencha.gxt.widget.core.client.Dialog;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.button.ToolButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+
+import java.util.ArrayList;
 
 /**
  * A base class for GXT 3.x IPlant dialogs. All IPlant dialogs will be modal windows.

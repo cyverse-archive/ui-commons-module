@@ -1,11 +1,19 @@
 package org.iplantc.de.commons.client.services;
 
+import org.iplantc.de.client.models.HasPaths;
+import org.iplantc.de.client.models.diskResources.DiskResource;
+import org.iplantc.de.client.models.diskResources.DiskResourceAutoBeanFactory;
+import org.iplantc.de.client.models.diskResources.DiskResourceExistMap;
+import org.iplantc.de.client.models.diskResources.DiskResourceMetadata;
+import org.iplantc.de.client.models.diskResources.DiskResourceStatMap;
+import org.iplantc.de.client.models.diskResources.Folder;
+import org.iplantc.de.client.models.diskResources.RootFolders;
+import org.iplantc.de.client.models.services.DiskResourceMove;
+
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
-import org.iplantc.de.commons.client.models.HasPaths;
-import org.iplantc.de.commons.client.models.diskresources.*;
-import org.iplantc.de.commons.client.models.services.DiskResourceMove;
 
 import java.util.List;
 import java.util.Set;

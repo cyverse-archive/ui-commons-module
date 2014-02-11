@@ -1,13 +1,11 @@
 package org.iplantc.de.commons.client.collaborators.views;
 
-import java.util.List;
-
-import org.iplantc.de.resources.client.messages.I18N;
+import org.iplantc.de.client.models.collaborators.Collaborator;
 import org.iplantc.de.commons.client.collaborators.events.UserSearchResultSelected.USER_SEARCH_EVENT_TAG;
-import org.iplantc.de.commons.client.collaborators.models.Collaborator;
 import org.iplantc.de.commons.client.collaborators.presenter.ManageCollaboratorsPresenter;
 import org.iplantc.de.commons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
 import org.iplantc.de.commons.client.collaborators.util.UserSearchField;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -16,6 +14,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.sencha.gxt.core.client.Style.LayoutRegion;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
@@ -30,6 +29,8 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
+
+import java.util.List;
 
 public class ManageCollaboratorsViewImpl extends Composite implements ManageCollaboratorsView {
 

@@ -1,9 +1,7 @@
 package org.iplantc.de.commons.client.services.impl;
 
-import java.util.Date;
-
-import org.iplantc.de.commons.client.models.UserInfo;
-import org.iplantc.de.commons.client.models.search.DiskResourceQueryTemplate;
+import org.iplantc.de.client.models.UserInfo;
+import org.iplantc.de.client.models.search.DiskResourceQueryTemplate;
 import org.iplantc.de.commons.client.widgets.search.SearchFieldDecorator;
 
 import com.google.common.base.Joiner;

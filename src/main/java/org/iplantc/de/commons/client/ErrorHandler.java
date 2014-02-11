@@ -1,11 +1,9 @@
 package org.iplantc.de.commons.client;
 
-import java.util.Date;
-
+import org.iplantc.de.client.models.errorHandling.ServiceError;
 import org.iplantc.de.commons.client.util.JsonUtil;
-import org.iplantc.de.resources.client.messages.I18N;
-import org.iplantc.de.commons.client.errorHandling.models.ServiceError;
 import org.iplantc.de.commons.client.views.gxt3.dialogs.ErrorDialog3;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
@@ -13,7 +11,10 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
+
 import com.sencha.gxt.core.client.GXT;
+
+import java.util.Date;
 
 /**
  * Provides a uniform manner for posting errors to the user.

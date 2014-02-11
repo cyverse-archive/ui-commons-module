@@ -1,30 +1,27 @@
 package org.iplantc.de.commons.client.services;
 
-import java.util.List;
-import java.util.Set;
-
-import org.iplantc.de.commons.client.util.JsonUtil;
+import org.iplantc.de.client.models.DEProperties;
+import org.iplantc.de.client.models.HasPaths;
+import org.iplantc.de.client.models.UserInfo;
+import org.iplantc.de.client.models.diskResources.DiskResource;
+import org.iplantc.de.client.models.diskResources.DiskResourceAutoBeanFactory;
+import org.iplantc.de.client.models.diskResources.DiskResourceExistMap;
+import org.iplantc.de.client.models.diskResources.DiskResourceMetadata;
+import org.iplantc.de.client.models.diskResources.DiskResourceStatMap;
+import org.iplantc.de.client.models.diskResources.File;
+import org.iplantc.de.client.models.diskResources.Folder;
+import org.iplantc.de.client.models.diskResources.RootFolders;
+import org.iplantc.de.client.models.services.DiskResourceMove;
+import org.iplantc.de.client.models.services.DiskResourceRename;
 import org.iplantc.de.commons.client.DEClientConstants;
 import org.iplantc.de.commons.client.DEServiceFacade;
 import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.commons.client.events.diskresources.DiskResourceRefreshEvent;
 import org.iplantc.de.commons.client.events.diskresources.DiskResourceRefreshEvent.DiskResourceRefreshEventHandler;
-import org.iplantc.de.commons.client.models.DEProperties;
-import org.iplantc.de.commons.client.models.HasPaths;
-import org.iplantc.de.commons.client.models.UserInfo;
-import org.iplantc.de.commons.client.models.diskresources.DiskResource;
-import org.iplantc.de.commons.client.models.diskresources.DiskResourceAutoBeanFactory;
-import org.iplantc.de.commons.client.models.diskresources.DiskResourceExistMap;
-import org.iplantc.de.commons.client.models.diskresources.DiskResourceMetadata;
-import org.iplantc.de.commons.client.models.diskresources.DiskResourceStatMap;
-import org.iplantc.de.commons.client.models.diskresources.File;
-import org.iplantc.de.commons.client.models.diskresources.Folder;
-import org.iplantc.de.commons.client.models.diskresources.RootFolders;
-import org.iplantc.de.commons.client.models.services.DiskResourceMove;
-import org.iplantc.de.commons.client.models.services.DiskResourceRename;
 import org.iplantc.de.commons.client.services.impl.models.DiskResourceMetadataBatchRequest;
 import org.iplantc.de.commons.client.services.impl.models.DiskResourceServiceAutoBeanFactory;
 import org.iplantc.de.commons.client.util.DiskResourceUtil;
+import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.commons.client.util.WindowUtil;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 

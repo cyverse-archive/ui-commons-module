@@ -2,6 +2,7 @@ package org.iplantc.de.commons.client.widgets;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+
 import com.sencha.gxt.widget.core.client.Popup;
 import com.sencha.gxt.widget.core.client.event.ShowEvent;
 

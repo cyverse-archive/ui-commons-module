@@ -3,11 +3,12 @@
  */
 package org.iplantc.de.commons.client.collaborators.util;
 
+import org.iplantc.de.client.models.collaborators.Collaborator;
 import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.collaborators.models.Collaborator;
 import org.iplantc.de.commons.client.collaborators.util.UserSearchField.UsersLoadConfig;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;

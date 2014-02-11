@@ -1,6 +1,7 @@
 package org.iplantc.de.commons.client.info;
 
 import com.google.gwt.dom.client.Style.Float;
+
 import com.sencha.gxt.widget.core.client.Popup;
 import com.sencha.gxt.widget.core.client.button.ToolButton;
 import com.sencha.gxt.widget.core.client.container.CssFloatLayoutContainer;

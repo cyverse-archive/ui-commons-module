@@ -3,6 +3,8 @@
  */
 package org.iplantc.de.commons.client.collaborators.models;
 
+import org.iplantc.de.client.models.collaborators.Collaborator;
+
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 

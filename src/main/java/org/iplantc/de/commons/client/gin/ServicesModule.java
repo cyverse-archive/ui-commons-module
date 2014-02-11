@@ -1,15 +1,15 @@
 package org.iplantc.de.commons.client.gin;
 
-import com.google.gwt.inject.client.AbstractGinModule;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
-
+import org.iplantc.de.client.models.UserInfo;
 import org.iplantc.de.commons.client.DEServiceFacade;
-import org.iplantc.de.commons.client.models.UserInfo;
 import org.iplantc.de.commons.client.services.DiskResourceServiceFacade;
 import org.iplantc.de.commons.client.services.SearchServiceFacade;
 import org.iplantc.de.commons.client.services.ToolRequestProvider;
 import org.iplantc.de.commons.client.services.impl.SearchServiceFacadeImpl;
+
+import com.google.gwt.inject.client.AbstractGinModule;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 
 final class ServicesModule extends AbstractGinModule {
 

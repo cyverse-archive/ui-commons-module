@@ -1,8 +1,8 @@
 package org.iplantc.de.commons.client.validators;
 
-import java.util.List;
-
 import com.sencha.gxt.widget.core.client.form.Validator;
+
+import java.util.List;
 
 public interface HasValidators<T> {
     

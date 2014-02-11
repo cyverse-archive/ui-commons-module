@@ -3,14 +3,14 @@
  */
 package org.iplantc.de.commons.client.appearance.widgets;
 
+import org.iplantc.de.commons.client.widgets.IPlantAnchorAppearance;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.dom.XElement;
-
-import org.iplantc.de.commons.client.widgets.IPlantAnchorAppearance;
 
 /**
  * @author sriram

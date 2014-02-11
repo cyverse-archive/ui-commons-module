@@ -7,22 +7,18 @@
   "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
     <!-- GWT Dependencies -->
-    <inherits name="com.google.gwt.user.User" />
-    <inherits name="com.google.gwt.json.JSON" />
     <inherits name="com.google.common.collect.Collect"/>
-    <inherits name="com.google.gwt.i18n.I18N" />
     <inherits name="com.google.gwt.inject.Inject"/>
-    
-    <!-- GXT Dependencies -->
-    <inherits name='com.sencha.gxt.ui.GXT' />
     
     <!-- UIBinder -->
     <inherits name="com.google.web.bindery.autobean.AutoBean"/>
     <inherits name="com.google.gwt.uibinder.UiBinder" />
 
-    <!-- Testing -->
+    <!-- GXT Dependencies -->
+    <inherits name='com.sencha.gxt.ui.GXT' />
+
+    <inherits name='org.iplantc.de.resources.ui-resources' />
     <inherits name='org.iplantc.de.DiscoveryEnvironmentCommon' />
-    <source path="client"/>
 
     <!-- Default Services -->
     <replace-with class="org.iplantc.de.commons.client.services.DiskResourceServiceFacadeImpl">
@@ -33,12 +29,15 @@
     </replace-with>
     
     <!-- Default Appearances -->
-    <replace-with 
-    		class="org.iplantc.de.commons.client.appearance.widgets.InternalAnchorDefaultAppearance">
+    <replace-with class="org.iplantc.de.commons.client.appearance.widgets.InternalAnchorDefaultAppearance">
     	<when-type-is class="org.iplantc.de.commons.client.widgets.InternalAnchor.Appearance"/>
     </replace-with>
     
     <replace-with class="org.iplantc.de.commons.client.services.impl.SearchServiceFacadeImpl">
         <when-type-is class="org.iplantc.de.commons.client.services.SearchServiceFacade"/>
     </replace-with>
+    
+    
+    <source path="client"/>
+
 </module>

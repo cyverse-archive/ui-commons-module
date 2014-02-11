@@ -3,24 +3,24 @@
  */
 package org.iplantc.de.commons.client.collaborators.presenter;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.iplantc.de.resources.client.messages.I18N;
+import org.iplantc.de.client.models.UserInfo;
+import org.iplantc.de.client.models.collaborators.Collaborator;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.commons.client.collaborators.events.UserSearchResultSelected;
-import org.iplantc.de.commons.client.collaborators.models.Collaborator;
 import org.iplantc.de.commons.client.collaborators.util.CollaboratorsUtil;
 import org.iplantc.de.commons.client.collaborators.views.ManageCollaboratorsView;
 import org.iplantc.de.commons.client.collaborators.views.ManageCollaboratorsView.Presenter;
 import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.commons.client.info.ErrorAnnouncementConfig;
 import org.iplantc.de.commons.client.info.IplantAnnouncer;
-import org.iplantc.de.commons.client.models.UserInfo;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasOneWidget;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author sriram

@@ -1,8 +1,8 @@
 package org.iplantc.de.commons.client.services.impl;
 
-import org.iplantc.core.uicommons.client.models.search.DateInterval;
-import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
-import org.iplantc.core.uicommons.client.models.search.FileSizeRange;
+import org.iplantc.de.client.models.search.DateInterval;
+import org.iplantc.de.client.models.search.DiskResourceQueryTemplate;
+import org.iplantc.de.client.models.search.FileSizeRange;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -16,13 +16,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.iplantc.de.commons.client.models.search.DateInterval;
-import org.iplantc.de.commons.client.models.search.DiskResourceQueryTemplate;
-import org.iplantc.de.commons.client.models.search.FileSizeRange;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

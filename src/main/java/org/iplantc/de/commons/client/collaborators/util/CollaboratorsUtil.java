@@ -3,20 +3,18 @@
  */
 package org.iplantc.de.commons.client.collaborators.util;
 
-import java.util.List;
-
-import org.iplantc.de.commons.client.util.JsonUtil;
-import org.iplantc.de.resources.client.messages.I18N;
+import org.iplantc.de.client.models.UserInfo;
+import org.iplantc.de.client.models.collaborators.Collaborator;
+import org.iplantc.de.client.models.collaborators.CollaboratorAutoBeanFactory;
+import org.iplantc.de.client.models.collaborators.CollaboratorsList;
 import org.iplantc.de.commons.client.ErrorHandler;
-import org.iplantc.de.commons.client.collaborators.models.Collaborator;
-import org.iplantc.de.commons.client.collaborators.models.CollaboratorAutoBeanFactory;
-import org.iplantc.de.commons.client.collaborators.models.CollaboratorsList;
 import org.iplantc.de.commons.client.events.CollaboratorsLoadedEvent;
 import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.commons.client.info.ErrorAnnouncementConfig;
 import org.iplantc.de.commons.client.info.IplantAnnouncer;
-import org.iplantc.de.commons.client.models.UserInfo;
 import org.iplantc.de.commons.client.services.CollaboratorsServiceFacade;
+import org.iplantc.de.commons.client.util.JsonUtil;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -26,7 +24,10 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+
 import com.sencha.gxt.core.shared.FastMap;
+
+import java.util.List;
 
 /**
  * @author sriram

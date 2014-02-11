@@ -1,8 +1,8 @@
 package org.iplantc.de.commons.client.services.impl.models;
 
-import java.util.Set;
+import org.iplantc.de.client.models.diskResources.DiskResourceMetadata;
 
-import org.iplantc.de.commons.client.models.diskresources.DiskResourceMetadata;
+import java.util.Set;
 
 public interface DiskResourceMetadataBatchRequest {
 

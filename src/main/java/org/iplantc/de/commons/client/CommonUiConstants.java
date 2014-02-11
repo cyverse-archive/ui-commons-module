@@ -1,9 +1,9 @@
 package org.iplantc.de.commons.client;
 
-import org.iplantc.de.client.CommonConstants;
+import com.google.gwt.i18n.client.Constants;
 
 /** Configurable constants shared by applications */
-public interface CommonUiConstants extends CommonConstants {
+public interface CommonUiConstants extends Constants {
 
     /**
      * URL for error icon image.
@@ -18,6 +18,13 @@ public interface CommonUiConstants extends CommonConstants {
      * @return a string representing the URL.
      */
     String forumsUrl();
+
+    /**
+     * URL for landing page.
+     * 
+     * @return a string representing the URL.
+     */
+    String iplantHome();
 
     /**
      * URL to iplant services

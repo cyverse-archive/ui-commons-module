@@ -3,12 +3,12 @@
  */
 package org.iplantc.de.commons.client.collaborators.views;
 
-import java.util.List;
-
-import org.iplantc.de.commons.client.collaborators.models.Collaborator;
+import org.iplantc.de.client.models.collaborators.Collaborator;
 import org.iplantc.de.commons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
 
 import com.google.gwt.user.client.ui.IsWidget;
+
+import java.util.List;
 
 /**
  * @author sriram

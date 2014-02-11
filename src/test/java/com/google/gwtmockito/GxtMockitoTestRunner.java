@@ -1,7 +1,6 @@
 package com.google.gwtmockito;
 
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.web.bindery.autobean.shared.AutoBean;
 
 import com.sencha.gxt.core.client.dom.XDOM;

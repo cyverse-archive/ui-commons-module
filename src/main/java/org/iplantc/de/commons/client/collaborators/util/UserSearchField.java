@@ -3,10 +3,10 @@
  */
 package org.iplantc.de.commons.client.collaborators.util;
 
-import org.iplantc.de.resources.client.messages.I18N;
+import org.iplantc.de.client.models.collaborators.Collaborator;
 import org.iplantc.de.commons.client.collaborators.events.UserSearchResultSelected;
-import org.iplantc.de.commons.client.collaborators.models.Collaborator;
 import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory;
+
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell;
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.core.client.XTemplates;

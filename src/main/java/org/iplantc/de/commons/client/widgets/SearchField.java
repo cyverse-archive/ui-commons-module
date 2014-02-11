@@ -1,5 +1,7 @@
 package org.iplantc.de.commons.client.widgets;
 
+import org.iplantc.de.commons.client.widgets.search.SearchFieldDecorator;
+
 import com.google.common.base.Strings;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
@@ -19,8 +21,6 @@ import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.sencha.gxt.data.shared.loader.PagingLoader;
 import com.sencha.gxt.widget.core.client.form.TextField;
-
-import org.iplantc.de.commons.client.widgets.search.SearchFieldDecorator;
 
 import java.util.ArrayList;
 import java.util.List;

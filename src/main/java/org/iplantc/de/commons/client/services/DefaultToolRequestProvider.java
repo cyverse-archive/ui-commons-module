@@ -1,10 +1,10 @@
 package org.iplantc.de.commons.client.services;
 
+import org.iplantc.de.client.models.DEProperties;
+import org.iplantc.de.client.models.toolRequests.NewToolRequest;
+import org.iplantc.de.client.models.toolRequests.RequestedToolDetails;
+import org.iplantc.de.client.models.toolRequests.ToolRequestFactory;
 import org.iplantc.de.commons.client.DEServiceFacade;
-import org.iplantc.de.commons.client.models.DEProperties;
-import org.iplantc.de.commons.client.models.toolrequests.NewToolRequest;
-import org.iplantc.de.commons.client.models.toolrequests.RequestedToolDetails;
-import org.iplantc.de.commons.client.models.toolrequests.ToolRequestFactory;
 import org.iplantc.de.shared.services.BaseServiceCallWrapper.Type;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
 

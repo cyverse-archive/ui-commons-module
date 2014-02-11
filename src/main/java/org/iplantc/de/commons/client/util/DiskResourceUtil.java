@@ -3,16 +3,12 @@
  */
 package org.iplantc.de.commons.client.util;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import org.iplantc.de.commons.client.models.CommonModelAutoBeanFactory;
-import org.iplantc.de.commons.client.models.HasId;
-import org.iplantc.de.commons.client.models.UserInfo;
-import org.iplantc.de.commons.client.models.diskresources.DiskResource;
-import org.iplantc.de.commons.client.models.diskresources.File;
-import org.iplantc.de.commons.client.models.diskresources.Folder;
+import org.iplantc.de.client.models.CommonModelAutoBeanFactory;
+import org.iplantc.de.client.models.HasId;
+import org.iplantc.de.client.models.UserInfo;
+import org.iplantc.de.client.models.diskResources.DiskResource;
+import org.iplantc.de.client.models.diskResources.File;
+import org.iplantc.de.client.models.diskResources.Folder;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -25,6 +21,10 @@ import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.Splittable;
 import com.google.web.bindery.autobean.shared.impl.StringQuoter;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author sriram

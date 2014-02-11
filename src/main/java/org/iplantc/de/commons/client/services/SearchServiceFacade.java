@@ -1,13 +1,13 @@
 package org.iplantc.de.commons.client.services;
 
+import org.iplantc.de.client.models.diskResources.DiskResource;
+import org.iplantc.de.client.models.search.DiskResourceQueryTemplate;
+import org.iplantc.de.commons.client.services.impl.DataSearchQueryBuilder;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBean;
 
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
-
-import org.iplantc.de.commons.client.models.diskresources.DiskResource;
-import org.iplantc.de.commons.client.models.search.DiskResourceQueryTemplate;
-import org.iplantc.de.commons.client.services.impl.DataSearchQueryBuilder;
 
 import java.util.List;
 

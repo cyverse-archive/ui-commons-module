@@ -1,5 +1,8 @@
 package org.iplantc.de.commons.client.widgets.search;
 
+import org.iplantc.de.commons.client.events.SubmitTextSearchEvent;
+import org.iplantc.de.commons.client.widgets.search.SearchFieldDecorator.SearchFieldDelayedTask;
+
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -14,8 +17,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-import org.iplantc.de.commons.client.events.SubmitTextSearchEvent;
-import org.iplantc.de.commons.client.widgets.search.SearchFieldDecorator.SearchFieldDelayedTask;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

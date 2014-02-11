@@ -1,5 +1,9 @@
 package org.iplantc.de.commons.client.widgets.search;
 
+import org.iplantc.de.commons.client.events.SubmitTextSearchEvent;
+import org.iplantc.de.commons.client.events.SubmitTextSearchEvent.HasSubmitTextSearchEvents;
+import org.iplantc.de.commons.client.events.SubmitTextSearchEvent.SubmitTextSearchEventHandler;
+
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -16,10 +20,6 @@ import com.google.gwt.event.shared.HasHandlers;
 import com.google.gwt.user.client.ui.HasText;
 
 import com.sencha.gxt.core.client.util.DelayedTask;
-
-import org.iplantc.de.commons.client.events.SubmitTextSearchEvent;
-import org.iplantc.de.commons.client.events.SubmitTextSearchEvent.HasSubmitTextSearchEvents;
-import org.iplantc.de.commons.client.events.SubmitTextSearchEvent.SubmitTextSearchEventHandler;
 
 /**
  * A simple decorator class which fires {@link SubmitTextSearchEvent}s after a the given search field

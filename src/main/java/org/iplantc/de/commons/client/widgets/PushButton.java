@@ -8,6 +8,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Image;
+
 import com.sencha.gxt.core.client.dom.XDOM;
 import com.sencha.gxt.widget.core.client.Component;
 

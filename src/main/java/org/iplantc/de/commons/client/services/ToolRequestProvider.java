@@ -1,7 +1,7 @@
 package org.iplantc.de.commons.client.services;
 
-import org.iplantc.de.commons.client.models.toolrequests.RequestedToolDetails;
-import org.iplantc.de.commons.client.models.toolrequests.NewToolRequest;
+import org.iplantc.de.client.models.toolRequests.NewToolRequest;
+import org.iplantc.de.client.models.toolRequests.RequestedToolDetails;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

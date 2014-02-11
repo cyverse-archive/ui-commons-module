@@ -1,13 +1,14 @@
 package org.iplantc.de.commons.client.validators;
 
-import java.util.List;
-
 import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.EditorError;
+
 import com.sencha.gxt.widget.core.client.form.error.DefaultEditorError;
 import com.sencha.gxt.widget.core.client.form.validator.AbstractValidator;
+
+import java.util.List;
 
 /**
  * validates that the length of some string value is within a given range.

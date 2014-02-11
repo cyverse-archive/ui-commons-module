@@ -1,8 +1,8 @@
 package org.iplantc.de.commons.client.services.impl.models;
 
-import org.iplantc.de.commons.client.models.diskresources.DiskResourceAutoBeanFactory;
-import org.iplantc.de.commons.client.models.diskresources.DiskResourceExistMap;
-import org.iplantc.de.commons.client.models.diskresources.DiskResourceStatMap;
+import org.iplantc.de.client.models.diskResources.DiskResourceAutoBeanFactory;
+import org.iplantc.de.client.models.diskResources.DiskResourceExistMap;
+import org.iplantc.de.client.models.diskResources.DiskResourceStatMap;
 
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanFactory.Category;

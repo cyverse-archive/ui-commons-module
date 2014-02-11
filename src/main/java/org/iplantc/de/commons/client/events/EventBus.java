@@ -1,13 +1,13 @@
 package org.iplantc.de.commons.client.events;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides a simple manner for components to communicate via events. Components that wish to handle
