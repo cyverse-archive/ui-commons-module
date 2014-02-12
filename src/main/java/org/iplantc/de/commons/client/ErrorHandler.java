@@ -1,7 +1,7 @@
 package org.iplantc.de.commons.client;
 
 import org.iplantc.de.client.models.errorHandling.ServiceError;
-import org.iplantc.de.commons.client.util.JsonUtil;
+import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.commons.client.views.gxt3.dialogs.ErrorDialog3;
 import org.iplantc.de.resources.client.messages.I18N;
 

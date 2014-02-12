@@ -3,17 +3,17 @@
  */
 package org.iplantc.de.commons.client.collaborators.util;
 
+import org.iplantc.de.client.events.EventBus;
 import org.iplantc.de.client.models.UserInfo;
 import org.iplantc.de.client.models.collaborators.Collaborator;
 import org.iplantc.de.client.models.collaborators.CollaboratorAutoBeanFactory;
 import org.iplantc.de.client.models.collaborators.CollaboratorsList;
+import org.iplantc.de.client.services.CollaboratorsServiceFacade;
+import org.iplantc.de.client.util.JsonUtil;
 import org.iplantc.de.commons.client.ErrorHandler;
 import org.iplantc.de.commons.client.events.CollaboratorsLoadedEvent;
-import org.iplantc.de.commons.client.events.EventBus;
 import org.iplantc.de.commons.client.info.ErrorAnnouncementConfig;
 import org.iplantc.de.commons.client.info.IplantAnnouncer;
-import org.iplantc.de.commons.client.services.CollaboratorsServiceFacade;
-import org.iplantc.de.commons.client.util.JsonUtil;
 import org.iplantc.de.resources.client.messages.I18N;
 
 import com.google.gwt.core.client.GWT;

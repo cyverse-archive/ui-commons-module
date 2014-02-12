@@ -1,6 +1,6 @@
 package org.iplantc.de.commons.client.info;
 
-import org.iplantc.de.commons.client.events.EventBus;
+import org.iplantc.de.client.events.EventBus;
 
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;

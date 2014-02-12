@@ -1,11 +1,11 @@
 package org.iplantc.de.commons.client.gin;
 
 import org.iplantc.de.client.models.UserInfo;
-import org.iplantc.de.commons.client.DEServiceFacade;
-import org.iplantc.de.commons.client.services.DiskResourceServiceFacade;
-import org.iplantc.de.commons.client.services.SearchServiceFacade;
-import org.iplantc.de.commons.client.services.ToolRequestProvider;
-import org.iplantc.de.commons.client.services.impl.SearchServiceFacadeImpl;
+import org.iplantc.de.client.services.DEServiceFacade;
+import org.iplantc.de.client.services.DiskResourceServiceFacade;
+import org.iplantc.de.client.services.SearchServiceFacade;
+import org.iplantc.de.client.services.ToolRequestProvider;
+import org.iplantc.de.client.services.impl.SearchServiceFacadeImpl;
 
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.inject.Provides;

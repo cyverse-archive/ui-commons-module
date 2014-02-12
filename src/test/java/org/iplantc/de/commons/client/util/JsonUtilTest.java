@@ -1,6 +1,6 @@
-package org.iplantc.de.jsonutil.client;
+package org.iplantc.de.commons.client.util;
 
-import org.iplantc.de.commons.client.util.JsonUtil;
+import org.iplantc.de.client.util.JsonUtil;
 
 import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONNumber;
@@ -18,7 +18,7 @@ import java.util.List;
 
 
 /**
- * Unit tests for the {@link org.iplantc.de.jsonutil.client.JsonUtil} class.
+ * Unit tests for the {@link org.iplantc.de.client.util.JsonUtil} class.
  * 
  * TODO JDS Evaluate necessity of ignored test cases.
  * If ignored test cases are necessary, they will need to be in a 

@@ -12,7 +12,6 @@ import com.google.gwtmockito.GxtMockitoTestRunner;
 
 import com.sencha.gxt.widget.core.client.form.TextField;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -117,40 +116,4 @@ public class SearchFieldDecoratorTest {
         verifyNoMoreInteractions(textFieldMock, hasHandlersMock);
     }
 
-    /**
-     * when asterisks needed
-     */
-    @Test public void testApplyImplicitAsteriskSearchText_Case1() {
-        String searchText = "one two three";
-        final String applyImplicitAsteriskSearchText = SearchFieldDecorator.applyImplicitAsteriskSearchText(searchText);
-        final String expected = "*one* *two* *three*";
-        assertEquals("Verify application of implicit asterisk(*)", expected, applyImplicitAsteriskSearchText);
-    }
-
-    /**
-     * when string contains '*'
-     */
-    @Test public void testApplyImplicitAsteriskSearchText_Case2() {
-        String searchText = "one* two three";
-        final String applyImplicitAsteriskSearchText = SearchFieldDecorator.applyImplicitAsteriskSearchText(searchText);
-        assertEquals("Verify that implicit asterisk NOT applied", searchText, applyImplicitAsteriskSearchText);
-    }
-
-    /**
-     * when string contains '?'
-     */
-    @Test public void testApplyImplicitAsteriskSearchText_Case3() {
-        String searchText = "one ?two three";
-        final String applyImplicitAsteriskSearchText = SearchFieldDecorator.applyImplicitAsteriskSearchText(searchText);
-        assertEquals("Verify that implicit asterisk NOT applied", searchText, applyImplicitAsteriskSearchText);
-    }
-
-    /**
-     * when string contains '\'
-     */
-    @Test public void testApplyImplicitAsteriskSearchText_Case4() {
-        String searchText = "one two \\three";
-        final String applyImplicitAsteriskSearchText = SearchFieldDecorator.applyImplicitAsteriskSearchText(searchText);
-        assertEquals("Verify that implicit asterisk NOT applied", searchText, applyImplicitAsteriskSearchText);
-    }
 }
