@@ -1,27 +1,29 @@
 package org.iplantc.core.uicommons.client.services.impl;
 
+import org.iplantc.core.uicommons.client.models.search.DateInterval;
+import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
+import org.iplantc.core.uicommons.client.models.search.FileSizeRange;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+
+import com.sencha.gxt.core.client.util.DateWrapper;
+import com.sencha.gxt.core.client.util.Format;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.iplantc.core.uicommons.client.models.search.DateInterval;
-import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
-import org.iplantc.core.uicommons.client.models.search.FileSizeRange;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import com.sencha.gxt.core.client.util.DateWrapper;
-import com.sencha.gxt.core.client.util.Format;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 
@@ -166,8 +168,8 @@ public class DataSearchQueryBuilderTest {
 
         when(dsf.getCreatedWithin()).thenReturn(di);
 
-        return "{\"range\":{\"dateCreated\":{\"gte\":\"" + fromDate.getTime() / 1000 + "\",\"lte\":\""
-                + toDate.getTime() / 1000 + "\"}}}";
+        return "{\"range\":{\"dateCreated\":{\"gte\":\"" + fromDate.getTime() + "\",\"lte\":\""
+                + toDate.getTime() + "\"}}}";
     }
 
     /**
@@ -230,8 +232,8 @@ public class DataSearchQueryBuilderTest {
         when(di.getTo()).thenReturn(to);
 
         when(dsf.getModifiedWithin()).thenReturn(di);
-        return "{\"range\":{\"dateModified\":{\"gte\":\"" + from.getTime() / 1000 + "\",\"lte\":\""
-                + to.getTime() / 1000 + "\"}}}";
+        return "{\"range\":{\"dateModified\":{\"gte\":\"" + from.getTime() + "\",\"lte\":\""
+                + to.getTime() + "\"}}}";
     }
 
     /**
