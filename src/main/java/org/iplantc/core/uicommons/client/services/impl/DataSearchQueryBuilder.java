@@ -2,6 +2,8 @@ package org.iplantc.core.uicommons.client.services.impl;
 
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
+import org.iplantc.core.uicommons.client.models.search.FileSizeRange;
+import org.iplantc.core.uicommons.client.models.search.SearchModelUtils;
 import org.iplantc.core.uicommons.client.widgets.search.SearchFieldDecorator;
 
 import com.google.common.base.Joiner;
@@ -99,9 +101,12 @@ public class DataSearchQueryBuilder {
      * @return
      */
     public DataSearchQueryBuilder fileSizeRange() {
-        if ((dsf.getFileSizeRange() != null)) {
-            Double minSize = dsf.getFileSizeRange().getMin();
-            Double maxSize = dsf.getFileSizeRange().getMax();
+        FileSizeRange fileSizeRange = dsf.getFileSizeRange();
+        if (fileSizeRange != null) {
+            Double minSize = SearchModelUtils.convertFileSizeToBytes(fileSizeRange.getMin(),
+                    fileSizeRange.getMinUnit());
+            Double maxSize = SearchModelUtils.convertFileSizeToBytes(fileSizeRange.getMax(),
+                    fileSizeRange.getMaxUnit());
 
             if ((minSize != null) && (maxSize != null)) {
                 // {"range": {"fileSize": {"gte":"1000","lte":"100000"}}}
