@@ -1,23 +1,5 @@
 package org.iplantc.core.uicommons.client.services.impl;
 
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.http.client.URL;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.Inject;
-import com.google.web.bindery.autobean.shared.AutoBean;
-import com.google.web.bindery.autobean.shared.AutoBeanCodex;
-import com.google.web.bindery.autobean.shared.AutoBeanUtils;
-import com.google.web.bindery.autobean.shared.Splittable;
-import com.google.web.bindery.autobean.shared.impl.StringQuoter;
-
-import com.sencha.gxt.core.client.util.Format;
-import com.sencha.gxt.data.shared.SortDir;
-import com.sencha.gxt.data.shared.SortInfoBean;
-import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
-
 import static org.iplantc.de.shared.services.BaseServiceCallWrapper.Type.GET;
 import static org.iplantc.de.shared.services.BaseServiceCallWrapper.Type.POST;
 
@@ -36,6 +18,24 @@ import org.iplantc.core.uicommons.client.services.Endpoints;
 import org.iplantc.core.uicommons.client.services.ReservedBuckets;
 import org.iplantc.core.uicommons.client.services.SearchServiceFacade;
 import org.iplantc.de.shared.services.ServiceCallWrapper;
+
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.Inject;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
+import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+import com.google.web.bindery.autobean.shared.Splittable;
+import com.google.web.bindery.autobean.shared.impl.StringQuoter;
+
+import com.sencha.gxt.core.client.util.Format;
+import com.sencha.gxt.data.shared.SortDir;
+import com.sencha.gxt.data.shared.SortInfoBean;
+import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
 
 import java.util.Collections;
 import java.util.List;
@@ -90,8 +90,7 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
         }
 
         File decodeFileIntoQueryTemplate(Splittable entity, DiskResourceQueryTemplate queryTemplate, DiskResourceAutoBeanFactory factory) {
-            // Re-map JSON keys
-            GWT.log("Re-mapping JSON keys!  'fileSize' -> 'file-size'");
+            // KLUDGE Re-map JSON keys until service JSON is unified.
             entity.get("fileSize").assign(entity, "file-size");
             final AutoBean<File> decodeFile = AutoBeanCodex.decode(factory, File.class, entity);
             queryTemplate.getFiles().add(decodeFile.as());
@@ -104,22 +103,26 @@ public class SearchServiceFacadeImpl implements SearchServiceFacade {
             return decodeFolder.as();
         }
 
+        /**
+         * KLUDGE Re-map JSON keys until service JSON is unified.
+         */
         void reMapDateKeys(Splittable entity) {
-            // Re-map JSON keys
-            GWT.log("Re-mapping JSON keys!  'dateModified' -> 'date-modified'");
             final long dateModifiedInSec = Double.valueOf(entity.get("dateModified").asNumber()).longValue();
-            StringQuoter.create(dateModifiedInSec * 1000).assign(entity, "date-modified");
-            // Re-map JSON keys
-            GWT.log("Re-mapping JSON keys!  'dateCreated' -> 'date-created'");
+            StringQuoter.create(dateModifiedInSec).assign(entity, "date-modified");
             final long dateCreatedInSec = Double.valueOf(entity.get("dateCreated").asNumber()).longValue();
-            StringQuoter.create(dateCreatedInSec * 1000).assign(entity, "date-created");
+            StringQuoter.create(dateCreatedInSec).assign(entity, "date-created");
         }
 
+        /**
+         * KLUDGE Re-map JSON keys until service JSON is unified.
+         */
         void reMapFileSize(Splittable entity) {
-            GWT.log("Re-mapping JSON keys!  'fileSize' -> 'file-size'");
             entity.get("fileSize").assign(entity, "file-size");
         }
 
+        /**
+         * KLUDGE Re-map JSON keys until service JSON is unified.
+         */
         void reMapPath(Splittable entity) {
             final String id = entity.get("id").asString();
             // StringQuoter.create(DiskResourceUtil.parseParent(id)).assign(entity, "path");
