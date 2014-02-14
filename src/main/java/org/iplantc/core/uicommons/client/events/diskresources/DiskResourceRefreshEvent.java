@@ -1,33 +1,31 @@
 package org.iplantc.core.uicommons.client.events.diskresources;
 
-import java.util.List;
-
 import org.iplantc.core.uicommons.client.events.diskresources.DiskResourceRefreshEvent.DiskResourceRefreshEventHandler;
-import org.iplantc.core.uicommons.client.models.diskresources.DiskResource;
+import org.iplantc.core.uicommons.client.models.diskresources.Folder;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
+/**
+ * FIXME this event and its handler should be renamed to FolderRefreshEvent.
+ */
 public class DiskResourceRefreshEvent extends GwtEvent<DiskResourceRefreshEventHandler> {
 
     public interface DiskResourceRefreshEventHandler extends EventHandler {
-        void onRefresh(DiskResourceRefreshEvent mdre);
+        void onRefresh(DiskResourceRefreshEvent event);
     }
 
     public static final GwtEvent.Type<DiskResourceRefreshEventHandler> TYPE = new GwtEvent.Type<DiskResourceRefreshEventHandler>();
 
-    private final String currentFolderId;
-    private List<DiskResource> resources;
+    private final Folder folder;
 
-    public DiskResourceRefreshEvent(String currentFolderId, List<DiskResource> resources) {
-        this.currentFolderId = currentFolderId;
-        this.setResources(resources);
+    public DiskResourceRefreshEvent(Folder folder) {
+        this.folder = folder;
     }
 
     @Override
-    protected void dispatch(DiskResourceRefreshEventHandler arg0) {
-        arg0.onRefresh(this);
-
+    protected void dispatch(DiskResourceRefreshEventHandler handler) {
+        handler.onRefresh(this);
     }
 
     @Override
@@ -35,22 +33,7 @@ public class DiskResourceRefreshEvent extends GwtEvent<DiskResourceRefreshEventH
         return TYPE;
     }
 
-    public String getCurrentFolderId() {
-        return currentFolderId;
+    public Folder getFolder() {
+        return folder;
     }
-
-    /**
-     * @param resources the resources to set
-     */
-    public void setResources(List<DiskResource> resources) {
-        this.resources = resources;
-    }
-
-    /**
-     * @return the resources
-     */
-    public List<DiskResource> getResources() {
-        return resources;
-    }
-
 }

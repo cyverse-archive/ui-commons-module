@@ -1,8 +1,5 @@
 package org.iplantc.core.uicommons.client.services;
 
-import java.util.List;
-import java.util.Set;
-
 import org.iplantc.core.jsonutil.JsonUtil;
 import org.iplantc.core.uicommons.client.DEClientConstants;
 import org.iplantc.core.uicommons.client.DEServiceFacade;
@@ -40,12 +37,16 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 import com.google.web.bindery.autobean.shared.AutoBeanUtils;
+
 import com.sencha.gxt.core.client.util.Format;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.SortDir;
 import com.sencha.gxt.data.shared.SortInfoBean;
 import com.sencha.gxt.data.shared.TreeStore;
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfigBean;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Provides access to remote services for folder operations.
@@ -61,7 +62,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
             @Override
             public String getKey(Folder item) {
-                return item.getId();
+                return item == null ? null : item.getId();
             }
         });
 
@@ -460,7 +461,7 @@ public class DiskResourceServiceFacadeImpl extends TreeStore<Folder> implements
 
     @Override
     public void onRefresh(DiskResourceRefreshEvent event) {
-        Folder folder = findModelWithKey(event.getCurrentFolderId());
+        Folder folder = findModel(event.getFolder());
         if (folder == null) {
             return;
         }
