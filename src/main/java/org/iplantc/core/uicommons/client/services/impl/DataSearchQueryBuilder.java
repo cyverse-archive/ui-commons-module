@@ -1,7 +1,5 @@
 package org.iplantc.core.uicommons.client.services.impl;
 
-import java.util.Date;
-
 import org.iplantc.core.uicommons.client.models.UserInfo;
 import org.iplantc.core.uicommons.client.models.search.DiskResourceQueryTemplate;
 import org.iplantc.core.uicommons.client.widgets.search.SearchFieldDecorator;
@@ -11,6 +9,8 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.web.bindery.autobean.shared.Splittable;
 import com.google.web.bindery.autobean.shared.impl.StringQuoter;
+
+import java.util.Date;
 
 /**
  * This class uses a builder pattern to construct a search query from a given query template.
@@ -62,17 +62,16 @@ public class DataSearchQueryBuilder {
             Date dateFrom = dsf.getCreatedWithin().getFrom();
             Date dateTo = dsf.getCreatedWithin().getTo();
             if ((dateFrom != null) && (dateTo != null)) {
-                // {"range": {"dateCreated": {"gte":"1380559151","lte":"1390511909"}}}
-                Splittable range = createRangeQuery("dateCreated", dateFrom.getTime() / 1000,
-                        dateTo.getTime() / 1000);
+                // {"range": {"dateCreated": {"gte":"1380559151000","lte":"1390511909000"}}}
+                Splittable range = createRangeQuery("dateCreated", dateFrom.getTime(), dateTo.getTime());
                 appendArrayItem(queryList, range);
             } else if (dateFrom != null) {
-                // {"range": {"dateModified": {"gte":"1380559151"}}}
-                Splittable range = createMinRangeQuery("dateCreated", dateFrom.getTime() / 1000);
+                // {"range": {"dateModified": {"gte":"1380559151000"}}}
+                Splittable range = createMinRangeQuery("dateCreated", dateFrom.getTime());
                 appendArrayItem(queryList, range);
             } else if (dateTo != null) {
-                // {"range": {"dateModified": {"lte":"1390511909"}}}
-                Splittable range = createMaxRangeQuery("dateCreated", dateTo.getTime() / 1000);
+                // {"range": {"dateModified": {"lte":"1390511909000"}}}
+                Splittable range = createMaxRangeQuery("dateCreated", dateTo.getTime());
                 appendArrayItem(queryList, range);
             }
         }
@@ -178,17 +177,16 @@ public class DataSearchQueryBuilder {
             Date dateTo = dsf.getModifiedWithin().getTo();
 
             if ((dateFrom != null) && (dateTo != null)) {
-                // {"range": {"dateModified": {"gte":"1380559151","lte":"1390511909"}}}
-                Splittable range = createRangeQuery("dateModified", dateFrom.getTime() / 1000,
-                        dateTo.getTime() / 1000);
+                // {"range": {"dateModified": {"gte":"1380559151000","lte":"1390511909000"}}}
+                Splittable range = createRangeQuery("dateModified", dateFrom.getTime(), dateTo.getTime());
                 appendArrayItem(queryList, range);
             } else if (dateFrom != null) {
-                // {"range": {"dateModified": {"gte":"1380559151"}}}
-                Splittable range = createMinRangeQuery("dateModified", dateFrom.getTime() / 1000);
+                // {"range": {"dateModified": {"gte":"1380559151000"}}}
+                Splittable range = createMinRangeQuery("dateModified", dateFrom.getTime());
                 appendArrayItem(queryList, range);
             } else if (dateTo != null) {
-                // {"range": {"dateModified": {"lte":"1390511909"}}}
-                Splittable range = createMaxRangeQuery("dateModified", dateTo.getTime() / 1000);
+                // {"range": {"dateModified": {"lte":"1390511909000"}}}
+                Splittable range = createMaxRangeQuery("dateModified", dateTo.getTime());
                 appendArrayItem(queryList, range);
             }
         }
