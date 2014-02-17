@@ -1,5 +1,6 @@
 package org.iplantc.de.commons.client.views.gxt3.dialogs;
 
+import org.iplantc.de.client.models.IsHideable;
 import org.iplantc.de.commons.client.widgets.ContextualHelpToolButton;
 
 import com.google.gwt.cell.client.Cell.Context;
