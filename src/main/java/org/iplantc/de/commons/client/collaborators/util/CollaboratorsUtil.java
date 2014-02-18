@@ -4,6 +4,7 @@
 package org.iplantc.de.commons.client.collaborators.util;
 
 import org.iplantc.de.client.events.EventBus;
+import org.iplantc.de.client.gin.ServicesInjector;
 import org.iplantc.de.client.models.UserInfo;
 import org.iplantc.de.client.models.collaborators.Collaborator;
 import org.iplantc.de.client.models.collaborators.CollaboratorAutoBeanFactory;
@@ -38,7 +39,7 @@ public class CollaboratorsUtil {
     private static List<Collaborator> currentCollaborators;
     private static List<Collaborator> searchResutls;
     private static CollaboratorAutoBeanFactory factory = GWT.create(CollaboratorAutoBeanFactory.class);
-    private static CollaboratorsServiceFacade facade = GWT.create(CollaboratorsServiceFacade.class);
+    private static CollaboratorsServiceFacade facade = ServicesInjector.INSTANCE.getCollaboratorsServiceFacade();
 
     private static List<Collaborator> parseResults(String result) {
         AutoBean<CollaboratorsList> bean = AutoBeanCodex
