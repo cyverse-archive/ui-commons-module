@@ -1,8 +1,6 @@
 package org.iplantc.de.commons.client.collaborators.views;
 
 import org.iplantc.de.client.models.collaborators.Collaborator;
-import org.iplantc.de.commons.client.collaborators.models.CollaboratorKeyProvider;
-import org.iplantc.de.commons.client.collaborators.models.CollaboratorProperties;
 import org.iplantc.de.commons.client.collaborators.presenter.ManageCollaboratorsPresenter;
 import org.iplantc.de.commons.client.collaborators.presenter.ManageCollaboratorsPresenter.MODE;
 import org.iplantc.de.commons.client.collaborators.views.ManageCollaboratorsView.Presenter;
