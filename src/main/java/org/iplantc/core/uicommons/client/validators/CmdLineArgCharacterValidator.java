@@ -10,7 +10,8 @@ import com.google.gwt.editor.client.EditorError;
 import com.sencha.gxt.widget.core.client.form.error.DefaultEditorError;
 import com.sencha.gxt.widget.core.client.form.validator.AbstractValidator;
 
-public class CmdLineArgCharacterValidator extends AbstractValidator<String> {
+public class CmdLineArgCharacterValidator extends AbstractValidator<String> implements
+        IPlantDefaultValidator {
 
     private final String restrictedChars;
 
@@ -32,7 +33,7 @@ public class CmdLineArgCharacterValidator extends AbstractValidator<String> {
             return Collections.emptyList();
         }
         // We have an error
-        char[] restrictedCharsArr = restrictedChars.toCharArray(); //$NON-NLS-1$
+        char[] restrictedCharsArr = restrictedChars.toCharArray();
         StringBuilder restrictedFound = new StringBuilder();
 
         for (char restricted : restrictedCharsArr) {
@@ -45,7 +46,8 @@ public class CmdLineArgCharacterValidator extends AbstractValidator<String> {
         }
 
         if (restrictedFound.length() > 0) {
-            String errorMsg = I18N.VALIDATION.unsupportedChars(restrictedChars) + " " + I18N.VALIDATION.invalidChars(restrictedFound.toString());
+            String errorMsg = I18N.VALIDATION.unsupportedChars(restrictedChars) + " " //$NON-NLS-1$
+                    + I18N.VALIDATION.invalidChars(restrictedFound.toString());
             return createError(new DefaultEditorError(editor, errorMsg, value));
         }
 
