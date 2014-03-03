@@ -17,7 +17,8 @@ import java.util.List;
  * @author psarando
  * 
  */
-public class DiskResourceNameValidator extends AbstractValidator<String> {
+public class DiskResourceNameValidator extends AbstractValidator<String> implements
+        IPlantDefaultValidator {
 
     @Override
     public List<EditorError> validate(Editor<String> editor, String value) {
