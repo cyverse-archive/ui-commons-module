@@ -1,6 +1,8 @@
 package org.iplantc.de.commons.client.views.gxt3.dialogs;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -37,6 +39,16 @@ public class IPlantPromptDialog extends IPlantDialog {
         okButton.setEnabled(false);
         setInitialText(initialText);
         init(caption, maxLength, validator);
+        Scheduler.get().scheduleFinally(new ScheduledCommand() {
+
+            @Override
+            public void execute() {
+                setFocusWidget(textField);
+                textField.selectAll();
+            }
+        });
+        ;
+
     }
 
     private void init(String caption, int maxLength, Validator<String> validator) {
@@ -76,12 +88,4 @@ public class IPlantPromptDialog extends IPlantDialog {
     public String getFieldText() {
         return textField.getCurrentValue();
     }
-
-    @Override
-    protected void afterShow() {
-        super.afterShow();
-        textField.focus();
-        textField.selectAll();
-    }
-
 }
